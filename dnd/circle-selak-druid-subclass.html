@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circle of the Selak — Druid Subclass</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IM+Fell+English+SC&display=swap');
+
+:root {
+  --green-glow: #3dff7a;
+  --green-dim: #1a4a2a;
+  --green-mid: #2d8a4e;
+  --parchment: #f4e8c1;
+  --ink: #1a1a1a;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: 'Crimson Text', Georgia, serif;
+  background: #0a0a0a;
+  color: var(--parchment);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ============ HERO ============ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(61,255,122,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 80%, rgba(61,255,122,0.04) 0%, transparent 50%),
+    linear-gradient(180deg, #050a06 0%, #0d1a10 40%, #0a0f0b 100%);
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%233dff7a' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.hero-glow {
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(61,255,122,0.15) 0%, rgba(61,255,122,0.05) 40%, transparent 70%);
+  top: 15%; left: 50%;
+  transform: translateX(-50%);
+  animation: pulseGlow 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+}
+
+.hero h1 {
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--parchment);
+  text-shadow: 0 0 40px rgba(61,255,122,0.3), 0 0 80px rgba(61,255,122,0.1), 0 2px 4px rgba(0,0,0,0.8);
+  margin-bottom: 0.5rem;
+  position: relative; z-index: 1;
+}
+
+.hero .subtitle {
+  font-family: 'IM Fell English SC', serif;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  color: var(--green-glow);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-bottom: 2rem;
+  position: relative; z-index: 1;
+}
+
+.hero .epigraph {
+  max-width: 600px;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: rgba(244,232,193,0.7);
+  line-height: 1.8;
+  position: relative; z-index: 1;
+  padding: 0 1rem;
+}
+
+.hero .epigraph .attribution {
+  display: block;
+  margin-top: 0.75rem;
+  font-style: normal;
+  font-size: 0.9rem;
+  color: rgba(244,232,193,0.5);
+}
+
+.divider-ornament {
+  width: 200px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--green-glow), transparent);
+  margin: 1.5rem auto;
+  position: relative; z-index: 1;
+  opacity: 0.5;
+}
+
+.divider-ornament::before {
+  content: '\2726';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--green-glow);
+  font-size: 1rem;
+  background: #0a0f0b;
+  padding: 0 0.5rem;
+}
+
+/* ============ NAV ============ */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,15,11,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(61,255,122,0.15);
+  padding: 0.75rem 1rem;
+  display: flex; justify-content: center; flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+}
+
+nav a {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(244,232,193,0.6);
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.3s, text-shadow 0.3s;
+}
+
+nav a:hover {
+  color: var(--green-glow);
+  text-shadow: 0 0 10px rgba(61,255,122,0.3);
+}
+
+/* ============ MAIN CONTENT ============ */
+.content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
+.intro {
+  padding: 3rem 0;
+  font-size: 1.05rem;
+  color: rgba(244,232,193,0.85);
+  line-height: 1.8;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.intro em { color: var(--green-glow); font-style: italic; }
+
+section { margin-top: 3rem; }
+
+h2 {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  color: var(--parchment);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 2px solid rgba(61,255,122,0.2);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
+  text-shadow: 0 0 20px rgba(61,255,122,0.15);
+}
+
+h2 .level-tag {
+  display: block;
+  font-family: 'Crimson Text', serif;
+  font-size: 0.85rem; font-weight: 400;
+  color: var(--green-glow);
+  letter-spacing: 0.05em;
+  text-transform: none;
+  margin-top: 0.25rem;
+  opacity: 0.8;
+}
+
+h3 {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+  color: var(--parchment);
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.aspect-role {
+  font-family: 'Crimson Text', serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 1rem;
+  color: rgba(244,232,193,0.6);
+  margin-left: 0.5rem;
+}
+
+.feature-text {
+  color: rgba(244,232,193,0.85);
+  line-height: 1.75;
+  margin-bottom: 1rem;
+}
+
+.feature-text strong { color: var(--parchment); }
+
+.flavor {
+  font-style: italic;
+  color: rgba(244,232,193,0.55);
+  border-left: 3px solid rgba(61,255,122,0.2);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  background: rgba(61,255,122,0.02);
+  line-height: 1.7;
+}
+
+/* ============ TABLES ============ */
+.spell-table-wrap, .ref-table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+
+table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+
+thead th {
+  font-family: 'Cinzel', serif;
+  font-weight: 600; font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--green-glow);
+  border-bottom: 2px solid rgba(61,255,122,0.3);
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+thead th:first-child { text-align: center; }
+
+tbody td {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid rgba(244,232,193,0.08);
+  color: rgba(244,232,193,0.8);
+}
+
+tbody td:first-child {
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  color: var(--parchment);
+}
+
+tbody tr:hover { background: rgba(61,255,122,0.03); }
+
+.ref-table-wrap {
+  border: 1px solid rgba(61,255,122,0.08);
+  border-radius: 6px;
+}
+
+.ref-table-wrap table { font-size: 0.85rem; min-width: 600px; }
+.ref-table-wrap thead th { background: rgba(61,255,122,0.05); font-size: 0.7rem; padding: 0.6rem 0.75rem; }
+.ref-table-wrap tbody td { padding: 0.5rem 0.75rem; font-size: 0.85rem; }
+
+/* ============ ASPECT CARDS ============ */
+.aspect-card {
+  background: linear-gradient(135deg, rgba(61,255,122,0.03) 0%, transparent 50%), rgba(15,20,16,0.8);
+  border: 1px solid rgba(61,255,122,0.1);
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 2rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.aspect-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 3px;
+  background: linear-gradient(90deg, transparent, var(--green-glow), transparent);
+  opacity: 0.4;
+}
+
+.aspect-card .aspect-img {
+  display: block;
+  max-width: 280px;
+  margin: 0 auto 1.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(61,255,122,0.15);
+  box-shadow: 0 0 30px rgba(61,255,122,0.08), 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.aspect-card h3 { margin-top: 0; font-size: 1.6rem; text-align: center; }
+.aspect-card .aspect-role { display: block; text-align: center; }
+
+.bullet-list { list-style: none; padding: 0; }
+
+.bullet-list li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  color: rgba(244,232,193,0.85);
+  line-height: 1.7;
+}
+
+.bullet-list li::before {
+  content: '\25C8';
+  position: absolute;
+  left: 0;
+  color: var(--green-glow);
+  opacity: 0.6;
+}
+
+.bullet-list li strong { color: var(--parchment); }
+
+/* ============ FEATURE BLOCKS ============ */
+.feature-block {
+  background: rgba(15,20,16,0.6);
+  border: 1px solid rgba(61,255,122,0.08);
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 2rem 0;
+}
+
+.capstone-block {
+  background: radial-gradient(ellipse at 50% 0%, rgba(61,255,122,0.06) 0%, transparent 60%), rgba(15,20,16,0.8);
+  border-color: rgba(61,255,122,0.2);
+}
+
+.capstone-quote {
+  text-align: center;
+  font-style: italic;
+  color: var(--green-glow);
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+  opacity: 0.8;
+}
+
+.capstone-attribution {
+  text-align: center;
+  font-size: 0.9rem;
+  color: rgba(244,232,193,0.5);
+  margin-bottom: 1.5rem;
+}
+
+/* ============ QUICK REF ============ */
+.quick-ref {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 2px solid rgba(61,255,122,0.15);
+}
+
+.quick-ref > h2 { text-align: center; border-bottom: none; margin-bottom: 2rem; }
+
+.shared-note {
+  background: rgba(61,255,122,0.04);
+  border: 1px solid rgba(61,255,122,0.1);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+  color: rgba(244,232,193,0.75);
+}
+
+.shared-note strong { color: var(--green-glow); }
+
+/* ============ SCALING GRID ============ */
+.scaling-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.scale-card {
+  background: rgba(15,20,16,0.6);
+  border: 1px solid rgba(61,255,122,0.08);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.scale-card h4 {
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--green-glow);
+  margin-bottom: 0.75rem;
+  opacity: 0.8;
+}
+
+.scale-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.25rem 0;
+  font-size: 0.85rem;
+  color: rgba(244,232,193,0.7);
+  border-bottom: 1px solid rgba(244,232,193,0.05);
+}
+
+.scale-row:last-child { border-bottom: none; }
+.scale-row .level { color: var(--parchment); font-weight: 600; }
+
+/* ============ FOOTER ============ */
+footer {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: rgba(244,232,193,0.3);
+  font-size: 0.8rem;
+  border-top: 1px solid rgba(61,255,122,0.08);
+}
+
+footer .version {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 600px) {
+  .content { padding: 0 1rem 3rem; }
+  .aspect-card { padding: 1.5rem 1rem; }
+  .aspect-card .aspect-img { max-width: 200px; }
+  .feature-block { padding: 1.5rem 1rem; }
+  nav { gap: 0.25rem 0.5rem; }
+  nav a { font-size: 0.65rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<header class="hero">
+  <div class="hero-glow"></div>
+  <h1>Circle of the Selak</h1>
+  <div class="subtitle">Druid Subclass</div>
+  <div class="divider-ornament"></div>
+  <div class="epigraph">
+    &ldquo;The tukang seher and the tuselak are so close that they are like a light globe to a socket &mdash; they have to be connected to give light.&rdquo;
+    <span class="attribution">&mdash; Bado of Western Lombok, as recorded by Ken Macintyre (1996)</span>
+  </div>
+</header>
+
+<!-- ==================== NAV ==================== -->
+<nav>
+  <a href="#circle-spells">Circle Spells</a>
+  <a href="#selak-form">Selak Form</a>
+  <a href="#ekek">Ekek</a>
+  <a href="#cahaya">Cahaya</a>
+  <a href="#leyak">Leyak</a>
+  <a href="#sentulak">Sentulak</a>
+  <a href="#nengkesur">Nengkesur</a>
+  <a href="#capstone">Capstone</a>
+  <a href="#quick-ref">Quick Ref</a>
+</nav>
+
+<!-- ==================== MAIN ==================== -->
+<main class="content">
+
+  <!-- INTRO -->
+  <div class="intro">
+    <p>In the villages of Lombok, the word <em>selak</em> carries the weight of a moral fall &mdash; derived from <em>salak</em>, meaning &ldquo;wrong&rdquo; or &ldquo;mistaken,&rdquo; it names the art of those whose intentions went astray and who gained something terrible in exchange. The tuselak is a shapeshifter, a predator, a sorcerer who walks between the human and the monstrous. But the oldest stories remember that this was not always an art of malice. Before it became a weapon of cruelty, <em>ilmu selak</em> was a warrior&rsquo;s shield &mdash; a way to test one&rsquo;s strength against the darkness by becoming it.</p>
+    <br>
+    <p>Druids of the Circle of the Selak walk that original, razor-thin line. They draw on the same primal current that creates monsters &mdash; the forbidden knowledge called <em>ilmu hitam</em> &mdash; but channel it through the discipline of the druidic tradition. Their transformations are imperfect and uncanny: beast-shapes that retain human hands, spectral forms that trail green phosphorescence, presences that radiate an almost physical dread. They are healers who smell of decay, protectors whose methods terrify the people they defend.</p>
+  </div>
+
+  <!-- ==================== CIRCLE SPELLS ==================== -->
+  <section id="circle-spells">
+    <h2>Circle Spells <span class="level-tag">3rd-Level Circle of the Selak Feature</span></h2>
+    <p class="feature-text">Your connection to the selak tradition grants you access to certain spells. When you reach a Druid level specified in the table below, you thereafter always have the listed spells prepared.</p>
+    <div class="spell-table-wrap">
+      <table>
+        <thead><tr><th>Druid Level</th><th>Spells</th></tr></thead>
+        <tbody>
+          <tr><td>3</td><td>Hex, Wither and Bloom</td></tr>
+          <tr><td>5</td><td>Blindness/Deafness, Phantasmal Force</td></tr>
+          <tr><td>7</td><td>Fear, Bestow Curse</td></tr>
+          <tr><td>9</td><td>Greater Invisibility, Blight</td></tr>
+          <tr><td>13</td><td>Dominate Person, Mislead</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================== SELAK FORM ==================== -->
+  <section id="selak-form">
+    <h2>Selak Form <span class="level-tag">3rd-Level Circle of the Selak Feature</span></h2>
+    <p class="feature-text">You can channel the shapeshifting art of the <em>selak</em> to assume a form that is neither fully beast nor fully human &mdash; an incomplete, uncanny transformation that retains your mind and statistics while wreathing you in predatory power.</p>
+    <p class="feature-text">As a <strong>Bonus Action</strong>, you can expend a use of your <strong>Wild Shape</strong> to enter your <strong>Selak Form</strong> rather than transforming into a beast. While in Selak Form:</p>
+    <ul class="bullet-list">
+      <li><strong>Duration.</strong> The form lasts for the duration of the Wild Shape feature. It ends early if you dismiss it (no action required), if you are Incapacitated, or if you use Wild Shape again.</li>
+      <li><strong>No Concentration.</strong> This feature does not require Concentration. You can maintain a Concentration spell while in Selak Form.</li>
+      <li><strong>Your Statistics.</strong> You retain all of your game statistics. You do not assume a beast&rsquo;s stat block.</li>
+      <li><strong>Temporary Hit Points.</strong> You gain Temporary Hit Points equal to <strong>2 &times; your Druid level</strong> when you enter Selak Form (some aspects override this amount).</li>
+      <li><strong>The Green Light.</strong> A faint emerald phosphorescence appears on your forehead, dripping downward like luminous sweat. You shed Dim Light in a 10-foot radius. This light cannot be hidden by nonmagical means.</li>
+      <li><strong>Nocturnal Predator.</strong> You have Darkvision out to 60 feet if you don&rsquo;t already have it. Additionally, you have Advantage on Dexterity (Stealth) checks made in dim light or darkness.</li>
+      <li><strong>Selak Strikes.</strong> The special melee spell attacks granted by your Selak Form aspects (Predator&rsquo;s Bite, Vampiric Tongue) count as Unarmed Strikes for the purpose of class features such as Primal Strike.</li>
+    </ul>
+    <p class="feature-text">When you enter Selak Form, choose one of the following three aspects. You can choose a different aspect each time you enter the form.</p>
+  </section>
+
+  <!-- ==================== EKEK ==================== -->
+  <section id="ekek">
+    <div class="aspect-card">
+      <img class="aspect-img" src="https://capeably.github.io/pages/files/ekak.png" alt="Ekek — The Prowler">
+      <h3>Ekek &mdash; The Prowler <span class="aspect-role">Melee Striker</span></h3>
+      <div class="flavor">Your frame hunches and ripples with bestial power. Your fingers end in curved claws, your joints bend at wrong angles, your movements become those of a hunting animal &mdash; and yet your human shape persists, grotesquely intact. Human hands. Human feet. An animal that is not an animal.</div>
+      <p class="feature-text">While in this aspect, you gain the following benefits:</p>
+      <ul class="bullet-list">
+        <li><strong>Fortified Form.</strong> When you enter Selak Form in this aspect, you gain Temporary Hit Points equal to <strong>3 &times; your Druid level</strong>, instead of the normal amount. Because you retain your humanoid form in this aspect, you can continue to wear armor and wield a shield.</li>
+        <li><strong>Predator&rsquo;s Bite.</strong> When you take the Attack action on your turn, you can make a special melee spell attack in place of one of your attacks. On a hit, the target takes <strong>1d8 + your Wisdom modifier Psychic damage</strong>, and the target must succeed on a <strong>Constitution saving throw</strong> against your spell save DC or be <strong>Poisoned</strong> until the end of your next turn. After hitting a creature with this attack, you can move up to <strong>10 feet</strong> without provoking opportunity attacks from that creature. The damage die changes when you reach Druid levels <strong>5</strong> (1d10), <strong>11</strong> (1d12), and <strong>17</strong> (2d6).</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ==================== CAHAYA ==================== -->
+  <section id="cahaya">
+    <div class="aspect-card">
+      <img class="aspect-img" src="https://capeably.github.io/pages/files/cahaya.png" alt="Cahaya — The Ghostlight">
+      <h3>Cahaya &mdash; The Ghostlight <span class="aspect-role">Spectral Infiltrator</span></h3>
+      <div class="flavor">Your outline wavers and blurs, as if seen through the shimmer of heat rising from a rice paddy at midnight. A cold green radiance bleeds from your brow and collects at your fingertips. You become translucent, spectral, wrong &mdash; a ball of foxfire wearing a human shape.</div>
+      <p class="feature-text">While in this aspect, you gain the following benefits:</p>
+      <ul class="bullet-list">
+        <li><strong>Ghostfire Bolt.</strong> As a <strong>Bonus Action</strong>, you can hurl a bolt of spectral green light at one creature you can see within <strong>60 feet</strong>. Make a ranged spell attack. On a hit, the target takes <strong>1d8 + your Wisdom modifier Psychic damage</strong>. The damage die changes when you reach Druid levels <strong>5</strong> (1d10), <strong>11</strong> (1d12), and <strong>17</strong> (2d6).</li>
+        <li><strong>Spectral Drift.</strong> You can move through other creatures as if they were difficult terrain. If you end your turn inside a creature, you are shunted to the nearest unoccupied space and take 1d10 Force damage.</li>
+        <li><strong>Flickering Form.</strong> When a creature you can see hits you with an attack roll, you can use your <strong>Reaction</strong> to force the attacker to reroll the attack roll and use the lower result.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ==================== LEYAK ==================== -->
+  <section id="leyak">
+    <div class="aspect-card">
+      <img class="aspect-img" src="https://capeably.github.io/pages/files/leyak.png" alt="Leyak — The Dread">
+      <h3>Leyak &mdash; The Dread <span class="aspect-role">Drain Controller</span></h3>
+      <div class="flavor">Your head wrenches free. There is no blood &mdash; only a trail of luminous, ropy viscera that dangles beneath you like the roots of an uprooted tree, glowing faintly green and pulsing with a slow, terrible rhythm. Your body crumples behind you as you rise, a floating head haloed in ghostlight, mouth open, eyes wide and unblinking. The stench hits before the fear does.</div>
+      <p class="feature-text">While in this aspect, you gain the following benefits:</p>
+      <ul class="bullet-list">
+        <li><strong>Floating Horror.</strong> Lacking a body in this form, you hover in place of walking. Your walking speed is replaced by an equivalent <strong>hover speed</strong>. You float just above the ground, ignoring <strong>difficult terrain</strong>, but you cannot gain altitude or fly.</li>
+        <li><strong>Vampiric Tongue.</strong> When you take the <strong>Attack action</strong> on your turn, you can make a special melee spell attack with a <strong>reach of 15 feet</strong> in place of one of your attacks. On a hit, the target takes <strong>1d6 + your Wisdom modifier Necrotic damage</strong>. If the target is <strong>Large or smaller</strong>, you can <strong>pull</strong> it up to <strong>10 feet</strong> straight toward you, and the target is <strong>Grappled</strong> by you (escape DC equals your spell save DC). You can grapple only <strong>one creature at a time</strong> with this feature. The grapple ends if your Selak Form ends. The damage die changes when you reach Druid levels <strong>5</strong> (1d8), <strong>11</strong> (1d10), and <strong>17</strong> (1d12).</li>
+        <li><strong>Constricting Feed.</strong> At the <strong>start of each of your turns</strong>, a creature Grappled by you takes <strong>Necrotic damage equal to your Wisdom modifier</strong>, and you <strong>regain hit points</strong> equal to the damage dealt to <strong>one</strong> such creature (your choice).</li>
+        <li><strong>Aura of Dread.</strong> When a creature you can see within <strong>30 feet</strong> makes an attack roll, you can use your <strong>Reaction</strong> to force it to make a <strong>Wisdom saving throw</strong> against your spell save DC. On a failure, the creature is <strong>Frightened</strong> of you until the end of its next turn.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ==================== SENTULAK ==================== -->
+  <section id="sentulak">
+    <div class="feature-block">
+      <h2>Sentulak &mdash; The Returning <span class="level-tag">6th-Level Circle of the Selak Feature</span></h2>
+      <p class="feature-text">You master the counter-art of <em>sentulak</em> &mdash; literally &ldquo;returning the selak&rdquo; &mdash; the discipline of reflecting hostile magic back upon its source. In the Sasak tradition, <em>sentulak</em> is classified as <em>ilmu putih</em> (white knowledge), a defensive art specifically designed to turn a sorcerer&rsquo;s own power against them.</p>
+      <ul class="bullet-list">
+        <li><strong>Warded Mind.</strong> You have <strong>Advantage on saving throws against being Charmed or Frightened</strong>. You have internalized the counter-art: the dread and manipulation that the selak tradition deals in can no longer easily be turned against you.</li>
+        <li><strong>Reflect the Selak.</strong> While in <strong>Selak Form</strong>, when you <strong>succeed on a saving throw</strong> against an effect caused by a creature you can see within 60 feet, you can use your <strong>Reaction</strong> to psychically lash the source. That creature takes <strong>2d8 Psychic damage</strong> and has <strong>Disadvantage on the next attack roll or saving throw it makes before the end of your next turn</strong>. You can use this Reaction a number of times equal to your <strong>Wisdom modifier</strong> (minimum of once), and you regain all expended uses when you finish a <strong>Long Rest</strong>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ==================== ILMU NENGKESUR ==================== -->
+  <section id="nengkesur">
+    <div class="feature-block">
+      <h2>Ilmu Nengkesur &mdash; The Art of Flight <span class="level-tag">10th-Level Circle of the Selak Feature</span></h2>
+      <p class="feature-text">You unlock <em>ilmu nengkesur</em>, the art of flight recognized in the Sasak tradition as one of the highest expressions of supernatural mastery.</p>
+      <p class="feature-text">While in <strong>Selak Form</strong>, you gain the following benefits:</p>
+      <ul class="bullet-list">
+        <li><strong>Flight.</strong> You have a <strong>Fly Speed of 30 feet</strong> and can <strong>hover</strong>.</li>
+        <li><strong>Resistance.</strong> You have <strong>Resistance to Necrotic and Psychic damage</strong>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ==================== CAPSTONE ==================== -->
+  <section id="capstone">
+    <div class="feature-block capstone-block">
+      <h2>Selaq Mate Ndek &mdash; The Undying Selak <span class="level-tag">14th-Level Circle of the Selak Feature</span></h2>
+      <div class="capstone-quote">&ldquo;Tuselak never die.&rdquo;</div>
+      <div class="capstone-attribution">&mdash; Amaq Bahar, shaman of Western Lombok</div>
+      <p class="feature-text">When you are in <strong>Selak Form</strong> and <strong>drop to 0 hit points</strong>, you can use your <strong>Reaction</strong> to refuse death. Instead of falling Unconscious, you drop to a number of hit points equal to <strong>2 &times; your Druid level</strong>, and you release a psychic shockwave of pure dread.</p>
+      <p class="feature-text">Each creature of your choice that you can see within <strong>30 feet</strong> must make a <strong>Wisdom saving throw</strong> against your spell save DC. On a failed save, a creature takes <strong>3d10 Psychic damage</strong> and is <strong>Frightened</strong> of you for 1 minute. On a successful save, a creature takes half as much damage and isn&rsquo;t Frightened. A Frightened creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.</p>
+      <p class="feature-text">Once you use this feature, you can&rsquo;t use it again until you finish a <strong>Long Rest</strong>.</p>
+    </div>
+  </section>
+
+  <!-- ==================== QUICK REFERENCE ==================== -->
+  <section id="quick-ref" class="quick-ref">
+    <h2>Quick Reference</h2>
+
+    <h3>Feature Summary</h3>
+    <div class="ref-table-wrap">
+      <table>
+        <thead>
+          <tr><th>Level</th><th>Feature</th><th>Type</th><th>Action</th><th>Resource</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>3</td><td>Circle Spells</td><td>Spells</td><td>&mdash;</td><td>Spell slots</td></tr>
+          <tr><td>3</td><td>Selak Form (Ekek / Cahaya / Leyak)</td><td>Alt. Wild Shape</td><td>Bonus Action</td><td>Wild Shape use</td></tr>
+          <tr><td>6</td><td>Sentulak: Warded Mind</td><td>Passive</td><td>&mdash;</td><td>&mdash;</td></tr>
+          <tr><td>6</td><td>Sentulak: Reflect the Selak</td><td>Reaction</td><td>Reaction</td><td>Wis mod / Long Rest</td></tr>
+          <tr><td>10</td><td>Ilmu Nengkesur</td><td>Passive (in Selak Form)</td><td>&mdash;</td><td>&mdash;</td></tr>
+          <tr><td>14</td><td>Selaq Mate Ndek</td><td>Reaction (trigger: 0 HP)</td><td>Reaction</td><td>1 / Long Rest</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Aspect Comparison</h3>
+    <div class="ref-table-wrap">
+      <table>
+        <thead>
+          <tr><th>Aspect</th><th>Role</th><th>On Your Turn</th><th>Your Reaction</th><th>Temp HP</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Ekek</strong></td>
+            <td>Melee striker</td>
+            <td>Predator&rsquo;s Bite (replaces an attack, Poisoned on failed Con save), 10ft prowl</td>
+            <td>&mdash; (Sentulak from L6)</td>
+            <td>3 &times; Druid level</td>
+          </tr>
+          <tr>
+            <td><strong>Cahaya</strong></td>
+            <td>Spectral infiltrator</td>
+            <td>BA ranged spell attack (60 ft), move through creatures</td>
+            <td>Flickering Form (force reroll) or Sentulak (L6)</td>
+            <td>2 &times; Druid level</td>
+          </tr>
+          <tr>
+            <td><strong>Leyak</strong></td>
+            <td>Drain controller</td>
+            <td>Vampiric Tongue (15ft reach, grapple, pull), Constricting Feed</td>
+            <td>Aura of Dread (Frighten) or Sentulak (L6)</td>
+            <td>2 &times; Druid level</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="shared-note">
+      <strong>Shared (all aspects):</strong> Green Light (10-ft dim light, unhideable), Nocturnal Predator (Darkvision 60 ft, Advantage on Stealth in dim light/darkness).
+    </div>
+
+    <h3>Damage Scaling</h3>
+    <div class="scaling-grid">
+      <div class="scale-card">
+        <h4>Ekek / Cahaya</h4>
+        <div class="scale-row"><span class="level">Lv 3</span><span>1d8 + Wis</span></div>
+        <div class="scale-row"><span class="level">Lv 5</span><span>1d10 + Wis</span></div>
+        <div class="scale-row"><span class="level">Lv 11</span><span>1d12 + Wis</span></div>
+        <div class="scale-row"><span class="level">Lv 17</span><span>2d6 + Wis</span></div>
+      </div>
+      <div class="scale-card">
+        <h4>Leyak Vampiric Tongue</h4>
+        <div class="scale-row"><span class="level">Lv 3</span><span>1d6 + Wis</span></div>
+        <div class="scale-row"><span class="level">Lv 5</span><span>1d8 + Wis</span></div>
+        <div class="scale-row"><span class="level">Lv 11</span><span>1d10 + Wis</span></div>
+        <div class="scale-row"><span class="level">Lv 17</span><span>1d12 + Wis</span></div>
+      </div>
+      <div class="scale-card">
+        <h4>Temp HP (Ekek)</h4>
+        <div class="scale-row"><span class="level">All levels</span><span>3 &times; Druid level</span></div>
+      </div>
+      <div class="scale-card">
+        <h4>Temp HP (Cahaya / Leyak)</h4>
+        <div class="scale-row"><span class="level">All levels</span><span>2 &times; Druid level</span></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+  <div class="divider-ornament" style="margin-bottom: 1.5rem;"></div>
+  <p class="version">Circle of the Selak &bull; v3.2 Final &bull; 2024 PHB Compatible</p>
+  <p style="margin-top: 0.5rem;">Homebrew Druid Subclass &mdash; Inspired by Sasak folklore of Lombok, Indonesia</p>
+</footer>
+
+</body>
+</html>
