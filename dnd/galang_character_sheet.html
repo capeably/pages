@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galang — Interactive Character Sheet</title>
+<style>
+  :root {
+    --bg: #0e0f12;
+    --bg-panel: #15171c;
+    --bg-card: #1c1f26;
+    --bg-hover: #242832;
+    --border: #2d3139;
+    --text: #e5e7eb;
+    --text-dim: #9ca3af;
+    --text-muted: #6b7280;
+    --accent: #7ce38b;
+    --accent-dim: #4a8a5a;
+    --accent-glow: rgba(124, 227, 139, 0.15);
+    --danger: #ef4444;
+    --warn: #f59e0b;
+    --info: #60a5fa;
+    --necrotic: #a855f7;
+    --psychic: #ec4899;
+    --radiant: #fbbf24;
+    --concentration: #22d3ee;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  h1, h2, h3, h4 { font-weight: 600; }
+  a { color: var(--accent); }
+
+  /* ===== TOP BAR ===== */
+  .top-bar {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 20px;
+    background: linear-gradient(180deg, #1a1d24 0%, #15171c 100%);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .char-name-block h1 {
+    font-size: 22px;
+    color: var(--accent);
+    text-shadow: 0 0 12px var(--accent-glow);
+    letter-spacing: 0.5px;
+  }
+  .char-name-block .sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .stat-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    text-align: center;
+    min-width: 80px;
+  }
+  .stat-block .label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+  }
+  .stat-block .value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-top: 2px;
+  }
+  .hp-block { min-width: 160px; }
+  .hp-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 4px;
+  }
+  .hp-display input {
+    width: 50px;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 4px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .hp-display .sep { color: var(--text-muted); }
+  .btn-icon {
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .btn-icon:hover { background: var(--accent-dim); color: var(--bg); }
+  .temp-hp { font-size: 11px; color: var(--info); margin-top: 2px; }
+  .temp-hp input {
+    width: 40px;
+    background: transparent;
+    color: var(--info);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0 4px;
+    font-size: 11px;
+  }
+  .inspiration-toggle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--warn);
+    background: var(--bg-card);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--warn);
+    transition: all 0.2s;
+  }
+  .inspiration-toggle.active {
+    background: var(--warn);
+    color: var(--bg);
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
+  }
+  .rest-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .rest-btn.short { border-color: var(--info); color: var(--info); }
+  .rest-btn.long { border-color: var(--accent); color: var(--accent); }
+  .rest-btn:hover { background: var(--bg-hover); }
+
+  /* ===== LAYOUT ===== */
+  .main-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 16px;
+    padding: 16px 20px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  @media (max-width: 900px) {
+    .main-layout { grid-template-columns: 1fr; }
+    .top-bar { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .sidebar-panel h3 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ability-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .ability-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 4px;
+    text-align: center;
+  }
+  .ability-box .name {
+    font-size: 9px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+  .ability-box .mod {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-top: 2px;
+  }
+  .ability-box .score {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+  .ability-box .save {
+    font-size: 10px;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .ability-box.prof { border-color: var(--accent-dim); }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 13px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row .val { color: var(--accent); font-weight: 600; }
+
+  .skill-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 4px;
+    font-size: 12px;
+    border-radius: 4px;
+  }
+  .skill-row:hover { background: var(--bg-hover); }
+  .skill-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid var(--text-muted);
+    flex-shrink: 0;
+  }
+  .skill-dot.prof {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 4px var(--accent-glow);
+  }
+  .skill-row .skill-name { flex: 1; }
+  .skill-row .skill-mod {
+    color: var(--accent);
+    font-weight: 600;
+    min-width: 30px;
+    text-align: right;
+  }
+  .skill-row .skill-abil {
+    color: var(--text-muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    min-width: 30px;
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  .main-content {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .tab-bar {
+    display: flex;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab-btn {
+    padding: 12px 18px;
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  .tab-btn:hover { color: var(--text); background: var(--bg-hover); }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: var(--bg-panel);
+  }
+  .tab-content {
+    padding: 18px;
+    display: none;
+  }
+  .tab-content.active { display: block; }
+
+  /* ===== FILTER CHIPS ===== */
+  .filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .chip {
+    padding: 6px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  .chip:hover { background: var(--bg-hover); color: var(--text); }
+  .chip.active {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    transition: all 0.15s;
+  }
+  .card:hover { background: var(--bg-hover); border-color: var(--accent-dim); }
+  .card.hidden { display: none; }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .card-title .sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 400;
+    margin-left: 6px;
+  }
+  .card-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+  .tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--bg-hover);
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .tag.action { background: #3a1f1f; color: #fca5a5; }
+  .tag.bonus { background: #1f2e3a; color: #93c5fd; }
+  .tag.reaction { background: #2e1f3a; color: #d8b4fe; }
+  .tag.attack { background: #3a2e1f; color: #fcd34d; }
+  .tag.conc { background: #0e2a33; color: var(--concentration); }
+  .tag.ritual { background: #1a2e1f; color: var(--accent); }
+  .tag.free { background: #1a2e1f; color: var(--accent); }
+  .tag.limited { background: #3a1f2e; color: #f9a8d4; }
+  .tag.circle { background: #1a3a2e; color: var(--accent); }
+  .tag.cantrip { background: #2a2a3a; color: #c7d2fe; }
+  .tag.lvl1 { background: #1f2e3a; color: #93c5fd; }
+  .tag.lvl2 { background: #2e2a3a; color: #c4b5fd; }
+  .tag.lvl3 { background: #3a1f2e; color: #f9a8d4; }
+  .tag.class { background: #1a2e1f; color: var(--accent); }
+  .tag.subclass { background: #2e1f3a; color: #d8b4fe; }
+  .tag.species { background: #3a2e1f; color: #fcd34d; }
+  .tag.background { background: #1f2e3a; color: #93c5fd; }
+  .tag.feat { background: #3a1f2e; color: #f9a8d4; }
+
+  .card-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .card-stats span strong { color: var(--text); }
+  .card-body {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .card-body p { margin-bottom: 6px; }
+  .card-body em { color: var(--text-dim); }
+  .card-body strong { color: var(--accent); }
+  .card-body .damage {
+    color: var(--warn);
+    font-weight: 600;
+  }
+  .card-body .save-effect {
+    color: var(--info);
+  }
+
+  /* ===== PIPS ===== */
+  .pip-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+  .pip-row .pip-label {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .pip-row .pip-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 400;
+    display: block;
+    margin-top: 2px;
+  }
+  .pips {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .pip {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-dim);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .pip.used {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+  }
+  .pip.slot { border-color: var(--info); }
+  .pip.slot.used { background: var(--info); box-shadow: 0 0 8px rgba(96, 165, 250, 0.4); }
+  .pip.luck { border-color: var(--warn); }
+  .pip.luck.used { background: var(--warn); box-shadow: 0 0 8px rgba(245, 158, 11, 0.4); }
+  .pip.witch { border-color: var(--necrotic); }
+  .pip.witch.used { background: var(--necrotic); box-shadow: 0 0 8px rgba(168, 85, 247, 0.4); }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--bg-panel);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 0 40px var(--accent-glow);
+  }
+  .modal h2 {
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-size: 18px;
+  }
+  .modal p { margin-bottom: 16px; font-size: 13px; color: var(--text-dim); }
+  .modal ul { margin-bottom: 16px; padding-left: 20px; font-size: 13px; }
+  .modal ul li { margin-bottom: 4px; }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .btn:hover { filter: brightness(1.15); }
+
+  /* Selak form cards */
+  .selak-form {
+    background: linear-gradient(135deg, #1c1f26 0%, #15171c 100%);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .selak-form.ekek { border-left: 4px solid #fca5a5; }
+  .selak-form.cahaya { border-left: 4px solid #93c5fd; }
+  .selak-form.leyak { border-left: 4px solid #d8b4fe; }
+  .selak-form h3 {
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .selak-form .tagline {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+  .stat-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .stat-pill {
+    background: var(--bg-card);
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .stat-pill strong { color: var(--text); }
+
+  .backstory-prose {
+    max-width: 780px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+  }
+  .backstory-prose h3 {
+    color: var(--accent);
+    margin: 24px 0 10px;
+    font-size: 16px;
+  }
+  .backstory-prose p { margin-bottom: 14px; }
+  .backstory-prose em { color: var(--text-dim); }
+
+  .inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 10px;
+  }
+  .item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .item-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .item-desc { font-size: 12px; color: var(--text-dim); }
+
+  .section-head {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin: 16px 0 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-head:first-child { margin-top: 0; }
+
+  .quote {
+    font-style: italic;
+    color: var(--text-dim);
+    border-left: 3px solid var(--accent-dim);
+    padding: 6px 12px;
+    margin: 12px 0;
+    background: var(--bg-card);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== TOP BAR ===== -->
+<div class="top-bar">
+  <div class="char-name-block">
+    <h1>Galang</h1>
+    <div class="sub">Human • Druid 5 • Circle of the Selak • Wayfarer</div>
+  </div>
+  <div class="stat-block hp-block">
+    <div class="label">Hit Points</div>
+    <div class="hp-display">
+      <button class="btn-icon" onclick="adjustHP(-1)">−</button>
+      <input type="number" id="hp-current" value="43" onchange="saveState()">
+      <span class="sep">/</span>
+      <input type="number" id="hp-max" value="43" onchange="saveState()">
+      <button class="btn-icon" onclick="adjustHP(1)">+</button>
+    </div>
+    <div class="temp-hp">Temp: <input type="number" id="hp-temp" value="0" onchange="saveState()"></div>
+  </div>
+  <div class="stat-block">
+    <div class="label">AC</div>
+    <div class="value">18</div>
+    <div class="sub" style="font-size:10px;color:var(--text-muted);">scale + shield</div>
+  </div>
+  <div class="stat-block">
+    <div class="label">Initiative</div>
+    <div class="value">+3</div>
+  </div>
+  <div class="inspiration-toggle" id="inspiration-toggle" onclick="toggleInspiration()" title="Heroic Inspiration (Human Resourceful grants 1 on Long Rest)">★</div>
+  <div style="display:flex;gap:8px;">
+    <button class="rest-btn short" onclick="openRest('short')">Short Rest</button>
+    <button class="rest-btn long" onclick="openRest('long')">Long Rest</button>
+  </div>
+</div>
+
+<!-- ===== MAIN LAYOUT ===== -->
+<div class="main-layout">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside>
+    <div class="sidebar-panel">
+      <h3>Ability Scores</h3>
+      <div class="ability-grid">
+        <div class="ability-box"><div class="name">STR</div><div class="mod">+1</div><div class="score">12</div><div class="save">save +1</div></div>
+        <div class="ability-box"><div class="name">DEX</div><div class="mod">+3</div><div class="score">16</div><div class="save">save +3</div></div>
+        <div class="ability-box"><div class="name">CON</div><div class="mod">+3</div><div class="score">16</div><div class="save">save +3</div></div>
+        <div class="ability-box prof"><div class="name">INT</div><div class="mod">+1</div><div class="score">12</div><div class="save">save +4 ★</div></div>
+        <div class="ability-box prof"><div class="name">WIS</div><div class="mod">+5</div><div class="score">20</div><div class="save">save +8 ★</div></div>
+        <div class="ability-box"><div class="name">CHA</div><div class="mod">−1</div><div class="score">8</div><div class="save">save −1</div></div>
+      </div>
+    </div>
+
+    <div class="sidebar-panel">
+      <h3>Combat</h3>
+      <div class="stat-row"><span>Proficiency</span><span class="val">+3</span></div>
+      <div class="stat-row"><span>Speed</span><span class="val">30 ft</span></div>
+      <div class="stat-row"><span>Spell Save DC</span><span class="val">16</span></div>
+      <div class="stat-row"><span>Spell Attack</span><span class="val">+8</span></div>
+      <div class="stat-row"><span>Hit Dice</span><span class="val">5d8</span></div>
+      <div class="stat-row"><span>Passive Perception</span><span class="val">18</span></div>
+      <div class="stat-row"><span>Passive Insight</span><span class="val">18</span></div>
+      <div class="stat-row"><span>Passive Investigation</span><span class="val">11</span></div>
+      <div class="stat-row"><span>Darkvision</span><span class="val">60 ft (Selak)</span></div>
+    </div>
+
+    <div class="sidebar-panel">
+      <h3>Skills</h3>
+      <div class="skill-row"><div class="skill-dot"></div><span class="skill-abil">DEX</span><span class="skill-name">Acrobatics</span><span class="skill-mod">+3</span></div>
+      <div class="skill-row"><div class="skill-dot"></div><span class="skill-abil">WIS</span><span class="skill-name">Animal Handling</span><span class="skill-mod">+5</span></div>
+      <div class="skill-row"><div class="skill-dot prof"></div><span class="skill-abil">INT</span><span class="skill-name">Arcana</span><span class="skill-mod">+4</span></div>
+      <div class="skill-row"><div class="skill-dot"></div><span class="skill-abil">STR</span><span class="skill-name">Athletics</span><span class="skill-mod">+1</span></div>
+      <div class="skill-row"><div class="skill-dot"></div><span class="skill-abil">CHA</span><span class="skill-name">Deception</span><span class="skill-mod">−1</span></div>
+      <div class="skill-row"><div class="skill-dot"></div><span class="skill-abil">INT</span><span class="skill-name">History</span><span class="skill-mod">+1</span></div>
+      <div class="skill-row"><div class="skill-dot prof"></div><span class="skill-abil">WIS</span><span class="skill-name">Insight</span><span class="skill-mod">+8</span></div>
+      <div class="skill-row"><div class="skill-dot"></div><span class="skill-abil">CHA</span><span class="skill-name">Intimidation</span><span class="skill-mod">−1</span></div>
+      <div class="skill-row"><div class="skill-dot"></div><span class="skill-abil">INT</span><span class="skill-name">Investigation</span><span class="skill-mod">+1</span></div>
+      <div class="skill-row"><div class="skill-dot"></div><span class="skill-abil">WIS</span><span class="skill-name">Medicine</span><span class="skill-mod">+5</span></div>
+      <div class="skill-row"><div class="skill-dot prof"></div><span class="skill-abil">INT</span><span class="skill-name">Nature</span><span class="skill-mod">+4</span></div>
+      <div class="skill-row"><div class="skill-dot prof"></div><span class="skill-abil">WIS</span><span class="skill-name">Perception</span><span class="skill-mod">+8</span></div>
+      <div class="skill-row"><div class="skill-dot"></div><span class="skill-abil">CHA</span><span class="skill-name">Performance</span><span class="skill-mod">−1</span></div>
+      <div class="skill-row"><div class="skill-dot"></div><span class="skill-abil">CHA</span><span class="skill-name">Persuasion</span><span class="skill-mod">−1</span></div>
+      <div class="skill-row"><div class="skill-dot"></div><span class="skill-abil">INT</span><span class="skill-name">Religion</span><span class="skill-mod">+1</span></div>
+      <div class="skill-row"><div class="skill-dot"></div><span class="skill-abil">DEX</span><span class="skill-name">Sleight of Hand</span><span class="skill-mod">+3</span></div>
+      <div class="skill-row"><div class="skill-dot prof"></div><span class="skill-abil">DEX</span><span class="skill-name">Stealth</span><span class="skill-mod">+6</span></div>
+      <div class="skill-row"><div class="skill-dot prof"></div><span class="skill-abil">WIS</span><span class="skill-name">Survival</span><span class="skill-mod">+8</span></div>
+    </div>
+
+    <div class="sidebar-panel">
+      <h3>Proficiencies</h3>
+      <div class="stat-row"><span>Armor</span><span style="text-align:right;font-size:11px;color:var(--text);">Light, Medium, Shields</span></div>
+      <div class="stat-row"><span>Weapons</span><span style="font-size:11px;color:var(--text);">Simple</span></div>
+      <div class="stat-row"><span>Tools</span><span style="font-size:11px;color:var(--text);">Herbalism Kit</span></div>
+    </div>
+
+    <div class="sidebar-panel">
+      <h3>Languages</h3>
+      <div class="stat-row"><span>Common</span></div>
+      <div class="stat-row"><span>Orc</span></div>
+      <div class="stat-row"><span>Common Sign Language</span></div>
+      <div class="stat-row"><span>Druidic</span></div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-content">
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="actions">Actions</button>
+      <button class="tab-btn" data-tab="spells">Spells</button>
+      <button class="tab-btn" data-tab="resources">Resources</button>
+      <button class="tab-btn" data-tab="selak">Selak Forms</button>
+      <button class="tab-btn" data-tab="features">Features</button>
+      <button class="tab-btn" data-tab="inventory">Inventory</button>
+      <button class="tab-btn" data-tab="background">Background</button>
+      <button class="tab-btn" data-tab="notes">Backstory</button>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="tab-content active" id="tab-actions">
+      <div class="filter-chips" data-filter-group="actions">
+        <div class="chip active" data-filter="all">All</div>
+        <div class="chip" data-filter="action">Action</div>
+        <div class="chip" data-filter="bonus">Bonus Action</div>
+        <div class="chip" data-filter="reaction">Reaction</div>
+        <div class="chip" data-filter="attack">Attack</div>
+        <div class="chip" data-filter="free">Free / Other</div>
+        <div class="chip" data-filter="limited">Limited Use</div>
+      </div>
+
+      <div class="section-head">Selak Form — Ekek (Go-To)</div>
+
+      <div class="card" data-categories="action attack">
+        <div class="card-header">
+          <div class="card-title">Predator's Bite <span class="sub">Ekek — replaces one Attack-action attack</span></div>
+          <div class="card-tags"><span class="tag attack">Attack</span><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-stats">
+          <span><strong>To Hit:</strong> +8</span>
+          <span><strong>Reach:</strong> 5 ft</span>
+          <span><strong>Type:</strong> Melee spell atk</span>
+        </div>
+        <div class="card-body">
+          <p><span class="damage">2d6 + 5 Psychic</span>. Target: <span class="save-effect">DC 16 CON save</span> or <strong>Poisoned</strong> until end of your next turn.</p>
+          <p><em>With Hex: +1d6 Necrotic per hit. Counts as magical (Primal Strike).</em></p>
+        </div>
+      </div>
+
+      <div class="section-head">Other Weapon Actions</div>
+
+      <div class="card" data-categories="action attack">
+        <div class="card-header">
+          <div class="card-title">Quarterstaff <span class="sub">versatile, druidic focus</span></div>
+          <div class="card-tags"><span class="tag attack">Attack</span><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-stats">
+          <span><strong>To Hit:</strong> +4</span>
+          <span><strong>Reach:</strong> 5 ft</span>
+        </div>
+        <div class="card-body">
+          <p><span class="damage">1d6 + 1 Bludgeoning</span> (1d8 + 1 two-handed).</p>
+          <p><em>With Shillelagh (not prepared): spell attack +8, 1d8 + 5 Force/Bludgeoning.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action attack">
+        <div class="card-header">
+          <div class="card-title">Unarmed Strike</div>
+          <div class="card-tags"><span class="tag attack">Attack</span><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-stats">
+          <span><strong>To Hit:</strong> +4</span>
+          <span><strong>Reach:</strong> 5 ft</span>
+        </div>
+        <div class="card-body">
+          <p>Choose: <span class="damage">2 Bludgeoning</span>, push 5 ft, or grapple (Athletics vs Athletics/Acrobatics).</p>
+        </div>
+      </div>
+
+      <div class="section-head">Cantrips (Damaging)</div>
+
+      <div class="card" data-categories="action attack">
+        <div class="card-header">
+          <div class="card-title">Thorn Whip <span class="sub">cantrip • 30 ft</span></div>
+          <div class="card-tags"><span class="tag attack">Attack</span><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-stats"><span><strong>To Hit:</strong> +8</span><span><strong>Range:</strong> 30 ft</span></div>
+        <div class="card-body">
+          <p><span class="damage">2d6 Piercing</span>. If Large or smaller, pull target up to 10 ft closer.</p>
+          <p><em>Combos with Spike Growth: pull them through the thorns.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action attack">
+        <div class="card-header">
+          <div class="card-title">Starry Wisp <span class="sub">cantrip • 60 ft</span></div>
+          <div class="card-tags"><span class="tag attack">Attack</span><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-stats"><span><strong>To Hit:</strong> +8</span></div>
+        <div class="card-body">
+          <p><span class="damage">2d8 Radiant</span>. Target sheds Dim Light 10 ft and can't benefit from Invisible until end of your next turn.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action">
+        <div class="card-header">
+          <div class="card-title">Mind Sliver <span class="sub">cantrip • 60 ft</span></div>
+          <div class="card-tags"><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Save:</strong> DC 16 INT</span></div>
+        <div class="card-body">
+          <p><span class="damage">2d6 Psychic</span> on fail. Target takes −1d4 on its next save before end of your next turn.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action">
+        <div class="card-header">
+          <div class="card-title">Toll the Dead <span class="sub">cantrip • 60 ft</span></div>
+          <div class="card-tags"><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Save:</strong> DC 16 WIS</span></div>
+        <div class="card-body">
+          <p><span class="damage">2d8 Necrotic</span> (2d12 if already damaged).</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action">
+        <div class="card-header">
+          <div class="card-title">Thunderclap <span class="sub">cantrip • Self 5-ft radius</span></div>
+          <div class="card-tags"><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Save:</strong> DC 16 CON</span></div>
+        <div class="card-body">
+          <p>All creatures within 5 ft: <span class="damage">1d6 Thunder</span> on fail. <em>(Only if prepared via swap — not in core list.)</em></p>
+        </div>
+      </div>
+
+      <div class="section-head">Bonus Actions</div>
+
+      <div class="card" data-categories="bonus limited">
+        <div class="card-header">
+          <div class="card-title">Wild Shape / Selak Form <span class="sub">2/Short Rest</span></div>
+          <div class="card-tags"><span class="tag bonus">Bonus</span><span class="tag limited">2/SR</span></div>
+        </div>
+        <div class="card-body">
+          <p>Transform into a beast form or activate <strong>Selak Form</strong> (Ekek / Cahaya / Leyak). Gain 10 Temp HP on Selak entry.</p>
+          <p><em>First night activation per combat is free (Waxing Hour).</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="bonus">
+        <div class="card-header">
+          <div class="card-title">Hex <span class="sub">1st lvl • Circle Spell • 90 ft</span></div>
+          <div class="card-tags"><span class="tag bonus">Bonus</span><span class="tag conc">Concentration</span></div>
+        </div>
+        <div class="card-body">
+          <p>Curse target: +1d6 Necrotic on your hits. Disadvantage on checks with chosen ability. Move to new target as Bonus Action when original drops. <strong>1 hour.</strong></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="bonus">
+        <div class="card-header">
+          <div class="card-title">Healing Word <span class="sub">1st lvl • 60 ft</span></div>
+          <div class="card-tags"><span class="tag bonus">Bonus</span></div>
+        </div>
+        <div class="card-body">
+          <p>One creature regains <span class="damage">2d4 + 5 HP</span>. +2d4 per higher slot.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="bonus">
+        <div class="card-header">
+          <div class="card-title">Ghostfire Bolt <span class="sub">Cahaya — 60 ft</span></div>
+          <div class="card-tags"><span class="tag bonus">Bonus</span><span class="tag attack">Attack</span></div>
+        </div>
+        <div class="card-stats"><span><strong>To Hit:</strong> +8</span></div>
+        <div class="card-body">
+          <p><span class="damage">1d10 + 5 Psychic</span>. Only while in Cahaya form.</p>
+        </div>
+      </div>
+
+      <div class="section-head">Reactions</div>
+
+      <div class="card" data-categories="reaction">
+        <div class="card-header">
+          <div class="card-title">Opportunity Attack</div>
+          <div class="card-tags"><span class="tag reaction">Reaction</span></div>
+        </div>
+        <div class="card-body">
+          <p>When a creature leaves your reach, make one melee attack against it.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="reaction">
+        <div class="card-header">
+          <div class="card-title">War Caster OA — Cast a Spell</div>
+          <div class="card-tags"><span class="tag reaction">Reaction</span></div>
+        </div>
+        <div class="card-body">
+          <p>Instead of an OA, cast a <strong>1-action spell targeting only that creature</strong>. Good options: Thorn Whip (pull back), Toll the Dead, Mind Sliver.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="reaction limited">
+        <div class="card-header">
+          <div class="card-title">Flickering Form <span class="sub">Cahaya form only</span></div>
+          <div class="card-tags"><span class="tag reaction">Reaction</span><span class="tag limited">3/LR</span></div>
+        </div>
+        <div class="card-body">
+          <p>When attacked, add <span class="damage">1d8 to AC</span> against that attack. 3 uses per Long Rest.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="reaction">
+        <div class="card-header">
+          <div class="card-title">Aura of Dread <span class="sub">Leyak form only</span></div>
+          <div class="card-tags"><span class="tag reaction">Reaction</span></div>
+        </div>
+        <div class="card-body">
+          <p>When a creature within 30 ft (60 ft at night) makes an attack roll, force a <span class="save-effect">DC 16 WIS save</span> or <strong>Frightened</strong> until end of its next turn.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="reaction limited">
+        <div class="card-header">
+          <div class="card-title">Lucky <span class="sub">Wayfarer feat</span></div>
+          <div class="card-tags"><span class="tag reaction">Reaction</span><span class="tag limited">3/LR</span></div>
+        </div>
+        <div class="card-body">
+          <p>Spend 1 Luck Point: when a creature makes an attack roll against you, impose <strong>Disadvantage</strong>. (Or on your own d20 Test: gain <strong>Advantage</strong> — not a reaction.)</p>
+        </div>
+      </div>
+
+      <div class="section-head">Other Actions (situational)</div>
+
+      <div class="card" data-categories="action">
+        <div class="card-header">
+          <div class="card-title">Call Lightning — Repeat Strike</div>
+          <div class="card-tags"><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-body">
+          <p>While Concentrating on Call Lightning, use an Action each turn to call another bolt: <span class="damage">3d10 Lightning</span> (Dex save DC 16 half). +1d10 if outdoors in storm.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action">
+        <div class="card-header">
+          <div class="card-title">Move Moonbeam <span class="sub">if prepared</span></div>
+          <div class="card-tags"><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-body">
+          <p>Move the Moonbeam cylinder up to 60 ft. Shapechangers forced out must save or revert to true form.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action attack">
+        <div class="card-header">
+          <div class="card-title">Vampiric Tongue <span class="sub">Leyak — replaces attack</span></div>
+          <div class="card-tags"><span class="tag attack">Attack</span><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-stats">
+          <span><strong>To Hit:</strong> +8</span>
+          <span><strong>Reach:</strong> 15 ft</span>
+        </div>
+        <div class="card-body">
+          <p><span class="damage">1d8 + 5 Necrotic</span>. Heal <strong>5 HP</strong>. Pull target 10 ft. <span class="save-effect">DC 16 STR save</span> or <strong>Grappled</strong>.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="free">
+        <div class="card-header">
+          <div class="card-title">Constricting Feed <span class="sub">Leyak — start of your turn, passive</span></div>
+          <div class="card-tags"><span class="tag free">Passive</span></div>
+        </div>
+        <div class="card-body">
+          <p>Creature Grappled by you takes <span class="damage">5 Necrotic</span>. You heal 5 HP.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="free">
+        <div class="card-header">
+          <div class="card-title">Green Light <span class="sub">while in Selak Form</span></div>
+          <div class="card-tags"><span class="tag free">Passive</span></div>
+        </div>
+        <div class="card-body">
+          <p>Dim light, 10 ft radius. <strong>Cannot be hidden by nonmagical means.</strong></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="free">
+        <div class="card-header">
+          <div class="card-title">Nocturnal Predator <span class="sub">while in Selak Form</span></div>
+          <div class="card-tags"><span class="tag free">Passive</span></div>
+        </div>
+        <div class="card-body">
+          <p>Darkvision 60 ft. <strong>Advantage on Stealth</strong> in dim light or darkness.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="free">
+        <div class="card-header">
+          <div class="card-title">Selak Strikes (Primal Strike)</div>
+          <div class="card-tags"><span class="tag free">Passive</span></div>
+        </div>
+        <div class="card-body">
+          <p>Predator's Bite and Vampiric Tongue count as <strong>magical</strong> for overcoming resistance/immunity.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="free limited">
+        <div class="card-header">
+          <div class="card-title">Lucky — Advantage <span class="sub">Wayfarer feat</span></div>
+          <div class="card-tags"><span class="tag free">Free</span><span class="tag limited">3/LR</span></div>
+        </div>
+        <div class="card-body">
+          <p>Spend 1 Luck Point on your own d20 Test to gain <strong>Advantage</strong>. (Use reactively to impose Disadvantage on an enemy attack.)</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action limited">
+        <div class="card-header">
+          <div class="card-title">Witch Bolt (free cast) <span class="sub">1/LR via Magic Initiate</span></div>
+          <div class="card-tags"><span class="tag action">Action</span><span class="tag limited">1/LR</span></div>
+        </div>
+        <div class="card-body">
+          <p>Ranged spell attack (+8), 30 ft. On hit: <span class="damage">1d12 Lightning</span>, then <strong>1d12 automatic</strong> each turn (Action to repeat) while Concentrating. Competes with Hex for Concentration.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action limited">
+        <div class="card-header">
+          <div class="card-title">Wild Resurgence <span class="sub">1/LR</span></div>
+          <div class="card-tags"><span class="tag free">Free</span><span class="tag limited">1/LR</span></div>
+        </div>
+        <div class="card-body">
+          <p>When you use Wild Shape, regain one expended spell slot of <strong>3rd level or lower</strong>. Once per Long Rest.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPELLS -->
+    <div class="tab-content" id="tab-spells">
+      <div class="filter-chips" data-filter-group="spells">
+        <div class="chip active" data-filter="all">All</div>
+        <div class="chip" data-filter="cantrip">Cantrips</div>
+        <div class="chip" data-filter="lvl1">1st Level</div>
+        <div class="chip" data-filter="lvl2">2nd Level</div>
+        <div class="chip" data-filter="lvl3">3rd Level</div>
+        <div class="chip" data-filter="conc">Concentration</div>
+        <div class="chip" data-filter="circle">Circle / Always Prepared</div>
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:16px;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px;">Spell Slots (click to expend/recover)</div>
+        <div class="pip-row" style="margin:0 0 6px;padding:4px 8px;">
+          <div class="pip-label">1st Level <span class="pip-sub">4 slots</span></div>
+          <div class="pips" data-resource="slots1">
+            <div class="pip slot" data-idx="0"></div>
+            <div class="pip slot" data-idx="1"></div>
+            <div class="pip slot" data-idx="2"></div>
+            <div class="pip slot" data-idx="3"></div>
+          </div>
+        </div>
+        <div class="pip-row" style="margin:0 0 6px;padding:4px 8px;">
+          <div class="pip-label">2nd Level <span class="pip-sub">3 slots</span></div>
+          <div class="pips" data-resource="slots2">
+            <div class="pip slot" data-idx="0"></div>
+            <div class="pip slot" data-idx="1"></div>
+            <div class="pip slot" data-idx="2"></div>
+          </div>
+        </div>
+        <div class="pip-row" style="margin:0;padding:4px 8px;">
+          <div class="pip-label">3rd Level <span class="pip-sub">2 slots</span></div>
+          <div class="pips" data-resource="slots3">
+            <div class="pip slot" data-idx="0"></div>
+            <div class="pip slot" data-idx="1"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head">Cantrips (6 known)</div>
+
+      <div class="card" data-categories="cantrip">
+        <div class="card-header">
+          <div class="card-title">Druidcraft <span class="sub">Transmutation • Primal Order</span></div>
+          <div class="card-tags"><span class="tag cantrip">Cantrip</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>30 ft</span><span>V, S</span><span>Instant</span></div>
+        <div class="card-body"><p>Predict weather, bloom a flower, light/snuff a small flame, or create a harmless sensory effect.</p></div>
+      </div>
+
+      <div class="card" data-categories="cantrip conc">
+        <div class="card-header">
+          <div class="card-title">Guidance <span class="sub">Divination</span></div>
+          <div class="card-tags"><span class="tag cantrip">Cantrip</span><span class="tag conc">Concentration</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>Touch</span><span>V, S</span><span>Conc, 1 min</span></div>
+        <div class="card-body"><p>Target adds <span class="damage">+1d4</span> to one ability check of their choice (one time).</p></div>
+      </div>
+
+      <div class="card" data-categories="cantrip">
+        <div class="card-header">
+          <div class="card-title">Starry Wisp <span class="sub">Evocation</span></div>
+          <div class="card-tags"><span class="tag cantrip">Cantrip</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>60 ft</span><span>V, S</span><span>Instant</span></div>
+        <div class="card-body">
+          <p>Ranged spell attack (+8). On hit: <span class="damage">2d8 Radiant</span>. Target sheds Dim Light 10 ft and can't benefit from <strong>Invisible</strong> until end of your next turn.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="cantrip">
+        <div class="card-header">
+          <div class="card-title">Thorn Whip <span class="sub">Transmutation</span></div>
+          <div class="card-tags"><span class="tag cantrip">Cantrip</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>30 ft</span><span>V, S, M</span><span>Instant</span></div>
+        <div class="card-body">
+          <p>Melee spell attack (+8). On hit: <span class="damage">2d6 Piercing</span>. If Large or smaller, pull up to 10 ft closer.</p>
+          <p><em>Material: stem of a plant with thorns.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="cantrip">
+        <div class="card-header">
+          <div class="card-title">Mind Sliver <span class="sub">Enchantment • Magic Initiate</span></div>
+          <div class="card-tags"><span class="tag cantrip">Cantrip</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>60 ft</span><span>V</span><span>Instant</span></div>
+        <div class="card-body">
+          <p><span class="save-effect">DC 16 INT save</span>. Fail: <span class="damage">2d6 Psychic</span> and −1d4 to next save before end of your next turn.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="cantrip">
+        <div class="card-header">
+          <div class="card-title">Toll the Dead <span class="sub">Necromancy • Magic Initiate</span></div>
+          <div class="card-tags"><span class="tag cantrip">Cantrip</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>60 ft</span><span>V, S</span><span>Instant</span></div>
+        <div class="card-body">
+          <p><span class="save-effect">DC 16 WIS save</span>. Fail: <span class="damage">2d8 Necrotic</span> (<span class="damage">2d12</span> if already damaged).</p>
+        </div>
+      </div>
+
+      <div class="section-head">Circle Spells (always prepared)</div>
+
+      <div class="card" data-categories="lvl1 circle conc">
+        <div class="card-header">
+          <div class="card-title">Hex <span class="sub">1st • Enchantment • Circle</span></div>
+          <div class="card-tags"><span class="tag lvl1">1st</span><span class="tag circle">Circle</span><span class="tag conc">Concentration</span><span class="tag bonus">Bonus</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Bonus Action</strong></span><span>90 ft</span><span>V, S, M</span><span>Conc, 1 hr</span></div>
+        <div class="card-body">
+          <p>Curse a target: your hits deal <span class="damage">+1d6 Necrotic</span>. Target has <strong>Disadvantage</strong> on ability checks using chosen ability. Re-target as Bonus Action when target drops to 0.</p>
+          <p><em>Default Concentration in Ekek form. Synergizes with Predator's Bite.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="lvl2 circle">
+        <div class="card-header">
+          <div class="card-title">Wither and Bloom <span class="sub">2nd • Necromancy • Circle</span></div>
+          <div class="card-tags"><span class="tag lvl2">2nd</span><span class="tag circle">Circle</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>60 ft</span><span>V, S, M</span><span>Instant</span></div>
+        <div class="card-body">
+          <p>10-ft radius: <span class="save-effect">DC 16 CON save</span>, <span class="damage">2d6 Necrotic</span> on fail (half on success). One creature in the area expends and regains <strong>1 Hit Die</strong> (+Con mod). Higher slot: +1d6 damage and +1 Hit Die recovered per level.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="lvl2 circle">
+        <div class="card-header">
+          <div class="card-title">Blindness/Deafness <span class="sub">2nd • Transmutation • Circle</span></div>
+          <div class="card-tags"><span class="tag lvl2">2nd</span><span class="tag circle">Circle</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>30 ft</span><span>V</span><span>1 min (no conc)</span></div>
+        <div class="card-body">
+          <p><span class="save-effect">DC 16 CON save</span>. Fail: <strong>Blinded or Deafened</strong> (your choice) for 1 min. Target saves at end of each turn.</p>
+          <p><em>No Concentration — stack with Hex.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="lvl2 circle conc">
+        <div class="card-header">
+          <div class="card-title">Phantasmal Force <span class="sub">2nd • Illusion • Circle</span></div>
+          <div class="card-tags"><span class="tag lvl2">2nd</span><span class="tag circle">Circle</span><span class="tag conc">Concentration</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>60 ft</span><span>V, S, M</span><span>Conc, 1 min</span></div>
+        <div class="card-body">
+          <p><span class="save-effect">DC 16 INT save</span>. Fail: target is gripped by an illusion only it perceives. If dangerous, illusion deals <span class="damage">2d8 Psychic</span> on its turn.</p>
+        </div>
+      </div>
+
+      <div class="section-head">1st Level (Prepared)</div>
+
+      <div class="card" data-categories="lvl1">
+        <div class="card-header">
+          <div class="card-title">Healing Word</div>
+          <div class="card-tags"><span class="tag lvl1">1st</span><span class="tag bonus">Bonus</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Bonus Action</strong></span><span>60 ft</span><span>V</span><span>Instant</span></div>
+        <div class="card-body"><p>One creature regains <span class="damage">2d4 + 5 HP</span>. +2d4 per higher slot.</p></div>
+      </div>
+
+      <div class="card" data-categories="lvl1">
+        <div class="card-header">
+          <div class="card-title">Cure Wounds</div>
+          <div class="card-tags"><span class="tag lvl1">1st</span><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>Touch</span><span>V, S</span><span>Instant</span></div>
+        <div class="card-body"><p>Touched creature regains <span class="damage">2d8 + 5 HP</span>. +2d8 per higher slot.</p></div>
+      </div>
+
+      <div class="card" data-categories="lvl1">
+        <div class="card-header">
+          <div class="card-title">Goodberry</div>
+          <div class="card-tags"><span class="tag lvl1">1st</span><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>Self</span><span>V, S, M</span><span>24 hours</span></div>
+        <div class="card-body"><p>Create 10 berries. Each restores <span class="damage">1 HP</span> and feeds as a full meal. Lose potency after 24 hours.</p></div>
+      </div>
+
+      <div class="card" data-categories="lvl1 conc">
+        <div class="card-header">
+          <div class="card-title">Entangle</div>
+          <div class="card-tags"><span class="tag lvl1">1st</span><span class="tag conc">Concentration</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>90 ft</span><span>V, S</span><span>Conc, 1 min</span></div>
+        <div class="card-body">
+          <p>20-ft square of grasping plants. <span class="save-effect">DC 16 STR save</span> or <strong>Restrained</strong>. Area is difficult terrain.</p>
+          <p><em>Alt Concentration when Hex doesn't fit.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="lvl1">
+        <div class="card-header">
+          <div class="card-title">Witch Bolt <span class="sub">Magic Initiate • 1/LR free + slot option</span></div>
+          <div class="card-tags"><span class="tag lvl1">1st</span><span class="tag action">Action</span><span class="tag conc">Concentration</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>30 ft</span><span>V, S, M</span><span>Conc, 1 min</span></div>
+        <div class="card-body">
+          <p>Ranged spell attack (+8). Hit: <span class="damage">1d12 Lightning</span>, then <strong>1d12 automatic</strong> per turn as an Action.</p>
+        </div>
+      </div>
+
+      <div class="section-head">2nd Level (Prepared)</div>
+
+      <div class="card" data-categories="lvl2 conc">
+        <div class="card-header">
+          <div class="card-title">Pass Without Trace</div>
+          <div class="card-tags"><span class="tag lvl2">2nd</span><span class="tag conc">Concentration</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>Self (30 ft)</span><span>V, S, M</span><span>Conc, 1 hr</span></div>
+        <div class="card-body">
+          <p><strong>+10 Stealth</strong> for you and up to 8 allies within 30 ft. Cannot be tracked except by magic.</p>
+          <p><em>Stacks with Nocturnal Predator Advantage in darkness.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="lvl2 conc">
+        <div class="card-header">
+          <div class="card-title">Spike Growth</div>
+          <div class="card-tags"><span class="tag lvl2">2nd</span><span class="tag conc">Concentration</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>150 ft</span><span>V, S, M</span><span>Conc, 10 min</span></div>
+        <div class="card-body">
+          <p>20-ft radius: difficult terrain. Each 5 ft of movement costs <span class="damage">2d4 Piercing</span>.</p>
+          <p><em>Combo: Thorn Whip pull them through.</em></p>
+        </div>
+      </div>
+
+      <div class="section-head">3rd Level (Prepared)</div>
+
+      <div class="card" data-categories="lvl3 conc">
+        <div class="card-header">
+          <div class="card-title">Conjure Animals</div>
+          <div class="card-tags"><span class="tag lvl3">3rd</span><span class="tag conc">Concentration</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>60 ft</span><span>V, S</span><span>Conc, 1 hr</span></div>
+        <div class="card-body">
+          <p>Spectral pack in 20-ft emanation. End of each turn: <span class="save-effect">DC 16 DEX save</span> or <span class="damage">3d10 Slashing</span> to creatures within 10 ft of pack. Pack moves with you (30 ft).</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="lvl3">
+        <div class="card-header">
+          <div class="card-title">Dispel Magic</div>
+          <div class="card-tags"><span class="tag lvl3">3rd</span><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>120 ft</span><span>V, S</span><span>Instant</span></div>
+        <div class="card-body">
+          <p>End magical effect on creature/object/area. <strong>Auto-ends</strong> effects of 3rd level or lower; higher: ability check (spellcasting mod) vs DC 10 + spell level.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="lvl3 conc">
+        <div class="card-header">
+          <div class="card-title">Call Lightning</div>
+          <div class="card-tags"><span class="tag lvl3">3rd</span><span class="tag conc">Concentration</span></div>
+        </div>
+        <div class="card-stats"><span><strong>Action</strong></span><span>120 ft</span><span>V, S</span><span>Conc, 10 min</span></div>
+        <div class="card-body">
+          <p>Summon storm cloud. On cast + each subsequent Action: 5-ft cylinder. <span class="save-effect">DC 16 DEX save</span>, <span class="damage">3d10 Lightning</span> (half on success). <strong>+1d10 if outdoors in a storm.</strong></p>
+        </div>
+      </div>
+
+      <div class="section-head">Find Familiar (via Wild Companion)</div>
+
+      <div class="card" data-categories="lvl1">
+        <div class="card-header">
+          <div class="card-title">Find Familiar <span class="sub">costs 1 Wild Shape use, no material</span></div>
+          <div class="card-tags"><span class="tag lvl1">1st</span><span class="tag ritual">Wild Companion</span></div>
+        </div>
+        <div class="card-stats"><span><strong>1 hour (ritual)</strong></span><span>10 ft</span><span>V, S, M</span><span>Until dispel</span></div>
+        <div class="card-body">
+          <p>Summon a Fey familiar in beast shape. Help action, pocket sense sharing, scout, deliver touch spells.</p>
+          <p><em>As a Druid via Wild Companion: uses 1 Wild Shape charge and no material components.</em></p>
+        </div>
+      </div>
+
+      <div class="quote">
+        <strong>Swap candidates</strong> (change on Long Rest): Moonbeam (anti-shapechanger), Faerie Fire (reveals invisible + advantage), Heat Metal (anti-armor), Plant Growth (urban control).
+      </div>
+    </div>
+
+    <!-- RESOURCES -->
+    <div class="tab-content" id="tab-resources">
+      <div class="section-head">Spell Slots</div>
+      <div class="pip-row">
+        <div class="pip-label">1st Level Spell Slots</div>
+        <div class="pips" data-resource="slots1">
+          <div class="pip slot" data-idx="0"></div>
+          <div class="pip slot" data-idx="1"></div>
+          <div class="pip slot" data-idx="2"></div>
+          <div class="pip slot" data-idx="3"></div>
+        </div>
+      </div>
+      <div class="pip-row">
+        <div class="pip-label">2nd Level Spell Slots</div>
+        <div class="pips" data-resource="slots2">
+          <div class="pip slot" data-idx="0"></div>
+          <div class="pip slot" data-idx="1"></div>
+          <div class="pip slot" data-idx="2"></div>
+        </div>
+      </div>
+      <div class="pip-row">
+        <div class="pip-label">3rd Level Spell Slots</div>
+        <div class="pips" data-resource="slots3">
+          <div class="pip slot" data-idx="0"></div>
+          <div class="pip slot" data-idx="1"></div>
+        </div>
+      </div>
+
+      <div class="section-head">Class Resources</div>
+      <div class="pip-row">
+        <div class="pip-label">Wild Shape / Selak Form <span class="pip-sub">Recharges on Short or Long Rest</span></div>
+        <div class="pips" data-resource="wildShape">
+          <div class="pip" data-idx="0"></div>
+          <div class="pip" data-idx="1"></div>
+        </div>
+      </div>
+      <div class="pip-row">
+        <div class="pip-label">Wild Resurgence <span class="pip-sub">1/Long Rest — regain a slot when Wild Shaping</span></div>
+        <div class="pips" data-resource="wildResurgence">
+          <div class="pip" data-idx="0"></div>
+        </div>
+      </div>
+      <div class="pip-row">
+        <div class="pip-label">Waxing Hour <span class="pip-sub">Free Selak activation, 1/combat at night — Short Rest or end-of-combat resets</span></div>
+        <div class="pips" data-resource="waxing">
+          <div class="pip" data-idx="0"></div>
+        </div>
+      </div>
+
+      <div class="section-head">Subclass (Cahaya)</div>
+      <div class="pip-row">
+        <div class="pip-label">Flickering Form <span class="pip-sub">Cahaya reaction — +1d8 AC, 3/Long Rest</span></div>
+        <div class="pips" data-resource="flickering">
+          <div class="pip" data-idx="0"></div>
+          <div class="pip" data-idx="1"></div>
+          <div class="pip" data-idx="2"></div>
+        </div>
+      </div>
+
+      <div class="section-head">Feats</div>
+      <div class="pip-row">
+        <div class="pip-label">Luck Points <span class="pip-sub">Wayfarer (Lucky) — Advantage on d20 or Disadvantage on attack vs you. 3/Long Rest.</span></div>
+        <div class="pips" data-resource="luck">
+          <div class="pip luck" data-idx="0"></div>
+          <div class="pip luck" data-idx="1"></div>
+          <div class="pip luck" data-idx="2"></div>
+        </div>
+      </div>
+      <div class="pip-row">
+        <div class="pip-label">Witch Bolt (free cast) <span class="pip-sub">Magic Initiate: Wizard. 1/Long Rest free cast (spell slots still work).</span></div>
+        <div class="pips" data-resource="witchBolt">
+          <div class="pip witch" data-idx="0"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SELAK FORMS -->
+    <div class="tab-content" id="tab-selak">
+      <div style="background:var(--bg-card);border:1px solid var(--accent-dim);border-radius:8px;padding:12px;margin-bottom:16px;">
+        <div style="font-size:12px;color:var(--text-dim);line-height:1.7;">
+          <strong style="color:var(--accent);">Activate:</strong> Bonus Action, costs 1 Wild Shape use • <strong style="color:var(--accent);">Duration:</strong> 1 hour • <strong style="color:var(--accent);">Temp HP on entry:</strong> 10 • <strong style="color:var(--accent);">Ends early if:</strong> you dismiss, are Incapacitated, or Wild Shape again.
+        </div>
+      </div>
+
+      <div class="selak-form ekek">
+        <h3>★ Ekek — The Prowler <span style="font-size:12px;color:var(--accent);">(Go-To)</span></h3>
+        <div class="tagline">Melee striker. Keeps armor + shield. Poisoning bite.</div>
+        <div class="stat-pills">
+          <div class="stat-pill"><strong>AC</strong> 18</div>
+          <div class="stat-pill"><strong>Temp HP</strong> 10</div>
+          <div class="stat-pill"><strong>Fortified Form</strong> — keeps armor/shield</div>
+        </div>
+        <div class="card-body">
+          <p><strong>Predator's Bite</strong> — replaces one attack in Attack action. Melee spell attack +8, <span class="damage">2d6 + 5 Psychic</span>. Target: <span class="save-effect">DC 16 CON</span> or <strong>Poisoned</strong> until end of your next turn.</p>
+          <p><em>With Hex running: avg 15.5 damage per hit.</em></p>
+        </div>
+      </div>
+
+      <div class="selak-form cahaya">
+        <h3>Cahaya — The Ghostlight</h3>
+        <div class="tagline">Ranged skirmisher. Phases through creatures. Defensive Reaction.</div>
+        <div class="stat-pills">
+          <div class="stat-pill"><strong>AC</strong> 16 (no shield)</div>
+          <div class="stat-pill"><strong>Temp HP</strong> 10</div>
+        </div>
+        <div class="card-body">
+          <p><strong>Ghostfire Bolt</strong> (Bonus Action) — ranged spell attack +8, 60 ft, <span class="damage">1d10 + 5 Psychic</span>.</p>
+          <p><strong>Spectral Drift</strong> — move through creatures (difficult terrain). Shunted + 1d10 Force if you end inside one.</p>
+          <p><strong>Flickering Form</strong> (Reaction, 3/LR) — add <span class="damage">1d8 to AC</span> against an attack.</p>
+        </div>
+      </div>
+
+      <div class="selak-form leyak">
+        <h3>Leyak — The Dread</h3>
+        <div class="tagline">Controller. Floating head. Vampiric tongue with grapple. Fear aura.</div>
+        <div class="stat-pills">
+          <div class="stat-pill"><strong>AC</strong> 16</div>
+          <div class="stat-pill"><strong>Speed</strong> 30 ft hover</div>
+          <div class="stat-pill"><strong>Temp HP</strong> 10</div>
+          <div class="stat-pill">Ignores difficult terrain</div>
+        </div>
+        <div class="card-body">
+          <p><strong>Vampiric Tongue</strong> — replaces one attack. Melee spell atk +8, <strong>15 ft reach</strong>, <span class="damage">1d8 + 5 Necrotic</span>. Heal 5. Pull 10 ft. <span class="save-effect">DC 16 STR</span> or <strong>Grappled</strong>.</p>
+          <p><strong>Constricting Feed</strong> (passive) — start of your turn, grappled target takes <span class="damage">5 Necrotic</span>, you heal 5.</p>
+          <p><strong>Aura of Dread</strong> (Reaction) — enemy within 30 ft (60 ft at night) attacks → <span class="save-effect">DC 16 WIS</span> or <strong>Frightened</strong>.</p>
+        </div>
+      </div>
+
+      <div class="section-head">Always Active in Selak Form</div>
+      <div class="card">
+        <div class="card-body">
+          <p><strong>Green Light</strong> — Dim light 10-ft radius. <em>Cannot be hidden by nonmagical means.</em></p>
+          <p><strong>Nocturnal Predator</strong> — Darkvision 60 ft. Advantage on Stealth in dim light/darkness.</p>
+          <p><strong>Selak Strikes</strong> — Predator's Bite & Vampiric Tongue count as magical (Primal Strike).</p>
+        </div>
+      </div>
+
+      <div class="section-head">Waxing Hour (Night Benefit)</div>
+      <div class="card">
+        <div class="card-body">
+          <p>First Selak Form activation in a combat <strong>at night</strong> (sunset–sunrise, or natural darkness like a deep cave) does <strong>not</strong> cost a Wild Shape use. Does not work in magical darkness.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="tab-content" id="tab-features">
+      <div class="filter-chips" data-filter-group="features">
+        <div class="chip active" data-filter="all">All</div>
+        <div class="chip" data-filter="class">Class</div>
+        <div class="chip" data-filter="subclass">Subclass</div>
+        <div class="chip" data-filter="species">Species</div>
+        <div class="chip" data-filter="background">Background</div>
+        <div class="chip" data-filter="feat">Feats</div>
+      </div>
+
+      <div class="section-head">Druid Class Features</div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header"><div class="card-title">Druidic (Level 1)</div><div class="card-tags"><span class="tag class">Class</span></div></div>
+        <div class="card-body"><p>You know Druidic, the secret language of druids.</p></div>
+      </div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header"><div class="card-title">Primal Order: Magician (Level 1)</div><div class="card-tags"><span class="tag class">Class</span></div></div>
+        <div class="card-body"><p>You know the <strong>Druidcraft</strong> cantrip and have proficiency in the <strong>Arcana</strong> skill.</p></div>
+      </div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header"><div class="card-title">Spellcasting (Level 1)</div><div class="card-tags"><span class="tag class">Class</span></div></div>
+        <div class="card-body">
+          <p>Wisdom is your spellcasting ability. <strong>Spell Save DC 16, Spell Attack +8.</strong> Prepare 9 spells + 4 Circle always-prepared. Druids can swap prepared spells on any Long Rest.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header"><div class="card-title">Wild Shape (Level 2)</div><div class="card-tags"><span class="tag class">Class</span><span class="tag bonus">Bonus</span></div></div>
+        <div class="card-body">
+          <p><strong>2 uses, Short or Long Rest.</strong> Bonus Action to assume a beast form or activate Selak Form. Duration: 1 hour.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header"><div class="card-title">Wild Companion (Level 2)</div><div class="card-tags"><span class="tag class">Class</span></div></div>
+        <div class="card-body"><p>Expend 1 Wild Shape use to cast <strong>Find Familiar</strong> without material components. The familiar is <strong>Fey</strong> rather than Beast.</p></div>
+      </div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header"><div class="card-title">Wild Resurgence (Level 5)</div><div class="card-tags"><span class="tag class">Class</span><span class="tag limited">1/LR</span></div></div>
+        <div class="card-body"><p>Once per Long Rest, when you use Wild Shape, regain one expended spell slot of <strong>3rd level or lower</strong>.</p></div>
+      </div>
+
+      <div class="section-head">Circle of the Selak (Subclass)</div>
+
+      <div class="card" data-categories="subclass">
+        <div class="card-header"><div class="card-title">Circle Spells (Level 3)</div><div class="card-tags"><span class="tag subclass">Subclass</span><span class="tag circle">Always Prepared</span></div></div>
+        <div class="card-body">
+          <p>Always prepared and don't count against your prepared limit: <strong>Hex</strong> (1st), <strong>Wither and Bloom</strong> (2nd), <strong>Blindness/Deafness</strong> (2nd), <strong>Phantasmal Force</strong> (2nd).</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="subclass">
+        <div class="card-header"><div class="card-title">Selak Form (Level 3)</div><div class="card-tags"><span class="tag subclass">Subclass</span><span class="tag bonus">Bonus</span></div></div>
+        <div class="card-body">
+          <p>Instead of a normal Wild Shape, activate a <strong>Selak Form</strong> (Ekek, Cahaya, or Leyak). Bonus Action, costs 1 Wild Shape use. Gain 10 Temp HP. Duration = Wild Shape. Always-on: Green Light, Nocturnal Predator, Selak Strikes.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="subclass">
+        <div class="card-header"><div class="card-title">Waxing Hour (Level 3)</div><div class="card-tags"><span class="tag subclass">Subclass</span></div></div>
+        <div class="card-body">
+          <p>First Selak activation per combat at night is <strong>free</strong> (no Wild Shape charge spent). Does not function in magical darkness.</p>
+        </div>
+      </div>
+
+      <div class="section-head">Species (Human — 2024 PHB)</div>
+
+      <div class="card" data-categories="species">
+        <div class="card-header"><div class="card-title">Resourceful</div><div class="card-tags"><span class="tag species">Species</span></div></div>
+        <div class="card-body"><p>You gain <strong>Heroic Inspiration</strong> after each Long Rest.</p></div>
+      </div>
+
+      <div class="card" data-categories="species">
+        <div class="card-header"><div class="card-title">Skillful</div><div class="card-tags"><span class="tag species">Species</span></div></div>
+        <div class="card-body"><p>Proficiency in one skill of your choice (<strong>Survival</strong>).</p></div>
+      </div>
+
+      <div class="card" data-categories="species">
+        <div class="card-header"><div class="card-title">Versatile</div><div class="card-tags"><span class="tag species">Species</span></div></div>
+        <div class="card-body"><p>Gain an Origin feat (<strong>Magic Initiate: Wizard</strong>).</p></div>
+      </div>
+
+      <div class="section-head">Background (Wayfarer)</div>
+
+      <div class="card" data-categories="background">
+        <div class="card-header"><div class="card-title">Background Skills & Tools</div><div class="card-tags"><span class="tag background">Background</span></div></div>
+        <div class="card-body"><p>Skill proficiencies: <strong>Insight, Stealth</strong>. Tool proficiency: <strong>Thieves' Tools</strong> (per Wayfarer — confirm with DM). Ability score boost: +2 Wisdom, +1 Dexterity.</p></div>
+      </div>
+
+      <div class="card" data-categories="background feat">
+        <div class="card-header"><div class="card-title">Lucky (Origin Feat)</div><div class="card-tags"><span class="tag background">Background</span><span class="tag feat">Feat</span></div></div>
+        <div class="card-body">
+          <p>You have Luck Points equal to your Proficiency Bonus (<strong>3</strong>). Spend 1:</p>
+          <ul style="padding-left:20px;margin:6px 0;">
+            <li>On your own d20 Test — gain <strong>Advantage</strong>.</li>
+            <li>When a creature makes an attack roll against you — impose <strong>Disadvantage</strong>.</li>
+          </ul>
+          <p>All Luck Points regained on a Long Rest.</p>
+        </div>
+      </div>
+
+      <div class="section-head">Feats</div>
+
+      <div class="card" data-categories="feat species">
+        <div class="card-header"><div class="card-title">Magic Initiate: Wizard (Origin — Versatile)</div><div class="card-tags"><span class="tag feat">Feat</span></div></div>
+        <div class="card-body">
+          <p>Spellcasting ability: <strong>Wisdom</strong>.</p>
+          <p><strong>Cantrips:</strong> Mind Sliver, Toll the Dead.</p>
+          <p><strong>1st-Level Spell:</strong> Witch Bolt — 1/Long Rest free cast; can also be cast with a spell slot.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="feat">
+        <div class="card-header"><div class="card-title">War Caster (Level 4 ASI)</div><div class="card-tags"><span class="tag feat">Feat</span></div></div>
+        <div class="card-body">
+          <ul style="padding-left:20px;margin:4px 0;">
+            <li><strong>Advantage on Concentration Con saves.</strong></li>
+            <li>Perform somatic components while holding weapons or a shield.</li>
+            <li>When a creature provokes an OA, cast a 1-action spell targeting only that creature instead of attacking.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div class="tab-content" id="tab-inventory">
+      <div class="section-head">Armor & Shield</div>
+      <div class="inventory-grid">
+        <div class="item"><div class="item-name">Scale Mail</div><div class="item-desc">AC 14 + Dex (max 2) = 16. No Stealth disadvantage at this tier (houseruled — confirm).</div></div>
+        <div class="item"><div class="item-name">Wooden Shield</div><div class="item-desc">+2 AC (total AC 18). Usable in Ekek form via Fortified Form.</div></div>
+      </div>
+
+      <div class="section-head">Weapons</div>
+      <div class="inventory-grid">
+        <div class="item"><div class="item-name">Quarterstaff</div><div class="item-desc">1d6 / 1d8 bludgeoning (versatile). Serves as druidic focus. Shillelagh target if prepared.</div></div>
+        <div class="item"><div class="item-name">Knife (sheathed)</div><div class="item-desc">Utility — ritual work, rope cutting, self-haircuts.</div></div>
+      </div>
+
+      <div class="section-head">Focus & Tools</div>
+      <div class="inventory-grid">
+        <div class="item"><div class="item-name">Druidic Focus</div><div class="item-desc">Quarterstaff or separate totem/talisman. Required for V/S/M spells.</div></div>
+        <div class="item"><div class="item-name">Herbalism Kit</div><div class="item-desc">Proficiency from Druid. Gather medicinal plants, craft potions of healing.</div></div>
+      </div>
+
+      <div class="section-head">Adventuring Gear</div>
+      <div class="inventory-grid">
+        <div class="item"><div class="item-name">Explorer's Pack</div><div class="item-desc">Backpack, bedroll, mess kit, tinderbox, 10 torches, 10 rations, waterskin, 50 ft rope.</div></div>
+        <div class="item"><div class="item-name">Wayfarer's Gear</div><div class="item-desc">Bedroll, mess kit, traveler's clothes, 2-person tent.</div></div>
+        <div class="item"><div class="item-name">Leather Pouch</div><div class="item-desc">Hangs from woven belt. Holds herbalism kit supplies.</div></div>
+        <div class="item"><div class="item-name">80 GP</div><div class="item-desc">Starting funds from Wayfarer background.</div></div>
+      </div>
+
+      <div class="section-head">Upgrade Notes</div>
+      <div class="card">
+        <div class="card-body">
+          <p>Half plate (AC 17 + shield = 19) is a strong upgrade but imposes Stealth disadvantage — works against Nocturnal Predator's Advantage in darkness. Scale mail preserves the night-stalker fantasy.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BACKGROUND -->
+    <div class="tab-content" id="tab-background">
+      <div class="section-head">Identity</div>
+      <div class="card">
+        <div class="card-body">
+          <p><strong>Name:</strong> Galang ("bright" / "illuminate")</p>
+          <p><strong>Age:</strong> 23 • <strong>Height:</strong> ~5'7" • <strong>Heritage:</strong> Sasak (Lombok)</p>
+          <p><strong>Family:</strong> Rangda-aligned practitioners of <em>ilmu selak</em>. Left three years ago.</p>
+          <p><strong>Current location:</strong> Ruman. Arrived a few weeks ago.</p>
+        </div>
+      </div>
+
+      <div class="section-head">Personality Traits</div>
+      <div class="card">
+        <div class="card-body">
+          <p>Quiet and watchful. Speaks carefully. Listens more than he talks.</p>
+          <p>Uncomfortable with trust — both giving and receiving it. Kindness from strangers makes him wary, not grateful.</p>
+          <p>Has a dry, dark sense of humor that surfaces unexpectedly, usually at the worst possible moment.</p>
+          <p>Physically restless at night. Sleeps badly. Walks the perimeter of any camp. The selak transformation sits closer to the surface after dark.</p>
+        </div>
+      </div>
+
+      <div class="section-head">Ideals</div>
+      <div class="card">
+        <div class="card-body">
+          <p><strong>Redemption.</strong> The powers are what they are. What matters is the hand that holds them. He can't undo Tanjung Luar, but he can make the next choice different.</p>
+          <p><strong>Self-determination.</strong> No one else gets to decide what he becomes. Not his family, not the Rangda, not the darkness inside him. The one Rangda principle he still believes in — just applied differently.</p>
+        </div>
+      </div>
+
+      <div class="section-head">Bonds</div>
+      <div class="card">
+        <div class="card-body">
+          <p><strong>Wira.</strong> A fisherman's son from Tanjung Luar, now living with a curse Galang's family put on him. Galang doesn't know if Wira is still alive. He is afraid to find out.</p>
+          <p><strong>His grandmother.</strong> Sent away for trying to teach him the sentulak counter-arts. Somewhere in the Islands of Suria, possibly. Finding her is a quiet, persistent pull.</p>
+          <p><strong>His mother's name.</strong> He doesn't say it out loud. The name Galang was her last gift, and he carries it like a lantern he can't bring himself to light.</p>
+        </div>
+      </div>
+
+      <div class="section-head">Flaws</div>
+      <div class="card">
+        <div class="card-body">
+          <p>He still flinches from the word "monster." It lands too close to something he's afraid might be true — not because of what he is, but because of what he's done.</p>
+          <p>He is better at the dark arts than the light, and he knows it, and the ease of it frightens him. The selak form comes naturally. The sentulak counter-arts feel like a language he learned too late.</p>
+          <p>He runs. When things get complicated — emotionally, socially — his first instinct is to leave. The road is simpler than people.</p>
+        </div>
+      </div>
+
+      <div class="section-head">Physical Description</div>
+      <div class="card">
+        <div class="card-body">
+          <p>Lean, weathered, early twenties. Angular face, high cheekbones, broken-and-healed crooked nose. Watchful dark eyes under a heavy brow. Thick black hair roughly self-cut past his ears. Scarred hands and forearms — ritual work, not combat. A deliberate scar along his left collarbone he doesn't talk about.</p>
+          <p>Dresses plainly: sun-faded cotton shirt, wrapped sarong over trousers, scale mail when armored, dull and unornamented. Smells faintly of crushed herbs and something earthier beneath. At night or in dim light, a faint <strong style="color:var(--accent);">greenish phosphorescence</strong> on his forehead — subtle in torchlight, unmistakable in true darkness.</p>
+        </div>
+      </div>
+
+      <div class="section-head">DM Hooks</div>
+      <div class="card">
+        <div class="card-body">
+          <p><strong>Wira's fate.</strong> Alive? Curse progressed? Could Galang encounter him — or hear news?</p>
+          <p><strong>The grandmother.</strong> Somewhere in the Islands of Suria. Knows the sentulak tradition properly. Possible personal quest tied to L6 feature (Sentulak — The Returning).</p>
+          <p><strong>The family / Rangda cell.</strong> Involved in the dark magic around Ruman? Coincidence, or did he walk toward the very thing he walked away from?</p>
+          <p><strong>The green light.</strong> Anyone from the selak tradition can recognize it on his forehead. Mark, resource, or target.</p>
+          <p><strong>Barong Court interest.</strong> A Rangda-trained practitioner who left voluntarily and wants to do good would be very interesting to them — and he would find their interest suffocating.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTES / BACKSTORY -->
+    <div class="tab-content" id="tab-notes">
+      <div class="backstory-prose">
+
+        <div class="quote"><em>"The name means 'bright' — his mother's last act of hope before the dark closed in."</em></div>
+
+        <h3>The Name</h3>
+        <p>His mother named him Galang — "bright," "illuminate" — and his father said nothing against it, which was the closest thing to tenderness anyone in the family ever offered. Whether she meant it as a prayer or an apology, Galang has never been sure. She was dead within the year, taken by a fever that the village healer could not touch because the village healer would not come to their house. No one came to their house unless they had to.</p>
+        <p>The family had a reputation. In the villages scattered across the Islands of Suria, where the rice paddies run right up to the edge of the jungle and the nights are so dark you can lose your hand in front of your face, people knew the name. They didn't speak it after dark.</p>
+
+        <h3>The Birth</h3>
+        <p>When Galang was born, the <em>orang pintar</em> who attended the birth — a weathered woman with turmeric-stained fingers and eyes that looked through things rather than at them — held him for a long time. Too long. His father told the story later as a point of pride: how the seer's hands had trembled, how she had looked at the family and said nothing, which said everything. The child had ilmu. Strong ilmu. The kind that runs in bloodlines and deepens with each generation.</p>
+        <p>His father sent word to the Rangda Tribe that same week. The family had been Rangda for as long as anyone could remember — not leadership, not inner circle, but loyal practitioners who believed in what the Rangda stood for. <em>Freedom.</em> The right of those with ilmu to live without the Barong Court's rules, without their registries and their oversight and their polite insistence that power must serve the common good. The Rangda said: your power is yours. No one tells you how to use it. No one tells you when to stop.</p>
+        <p>It was a good philosophy, in the abstract. Galang's family took it further than the abstract.</p>
+
+        <h3>The Family</h3>
+        <p>They called themselves practitioners of <em>ilmu selak</em> — the transforming art. The power to shed your human shape and take on something older, something with teeth and hunger and the cold patience of a predator. In the family's telling, this was a gift: a covenant with forces that predated the gods, a source of strength that the soft people in their soft villages could never understand. The Rangda's philosophy of freedom gave the family permission to practice without limit. No oversight. No restraint. No one asking uncomfortable questions about what the selak tradition demanded of its students.</p>
+        <p><em>Ilmu hitam.</em> Dark knowledge. The art of becoming something other than human.</p>
+        <p>Not all Rangda practiced like this. Galang understood that even as a child. The Rangda Tribe was vast and varied — philosophers, rebels, hermits, freedom fighters, people who simply wanted to be left alone. The family occupied one edge of that spectrum: the edge where "freedom from control" became "freedom from consequence." Where the power to transform was also the power to intimidate, to enforce, to remind nearby communities what happened when you crossed people who could become something with teeth.</p>
+        <p>He participated. That is the part he cannot escape, no matter how far he walks.</p>
+        <p>As a child, he thought it was normal. Every family had its secrets, its rituals, its things-done-after-dark. He learned to draw the circles. He learned the chants that tasted like copper on his tongue. He learned to hold still while the green light crept across his forehead for the first time — eight years old, shaking, watching his fingers lengthen and his nails curve and split, feeling his spine reshape itself into something that wanted to crouch, to hunt, to <em>feed</em> — and his father's hand on his shoulder, steady, proud, saying <em>good, good, hold the shape, don't fight it.</em></p>
+        <p>He held the shape. He didn't fight it. For years, he didn't fight it.</p>
+
+        <h3>The Slow Rot</h3>
+        <p>The discomfort came on gradually, like a tooth going bad. You don't notice it until one day the pain is all you can think about.</p>
+        <p>He was fifteen when he first refused an assignment — the family had been asked to deliver a warning to a fishing village whose elders had been talking to Barong Court recruiters. Nothing dramatic — he simply didn't go. His father beat him, and he went the next time, and the time after that. But the refusal had happened, and it sat inside him like a seed.</p>
+        <p>By seventeen, the seed had roots. He started asking questions that no one in the family wanted to answer. <em>Why this village? What did they actually do? Who decides who gets warned and who gets worse?</em> His father stopped answering. His uncle stopped speaking to him entirely. The family's work continued, and Galang's hands were in it, and every night the green light came easier and the shapes came faster and the thing inside him that was not human grew more comfortable in his skin — and every morning he liked himself a little less.</p>
+        <p>He started to notice things he'd trained himself not to see. The way villagers flinched when the family passed. The way mothers pulled their children inside. The way the Rangda cell his family answered to never did its own enforcement — that's what families like Galang's were for. The freedom the Rangda promised was real, but it flowed upward. The people at the top were free. The people at the bottom — the normal people, the ones without ilmu, the ones who just wanted to fish and farm and raise their children — they were free to be afraid.</p>
+
+        <h3>Wira</h3>
+        <p>His name was Wira.</p>
+        <p>A fisherman's son from a village called Tanjung Luar, a three-hour walk through the paddies from Galang's family compound. They'd met as boys — one of those friendships that happens when two kids are both at the river at the same time and one of them has a fishing line and the other doesn't. Wira had no ilmu. He was completely, unremarkably ordinary: a skinny kid with a loud laugh who was good with knots and bad with directions, who wanted to build boats when he grew up, who didn't know what Galang's family did and never thought to ask.</p>
+        <p>For years, Wira was the only person in Galang's life who looked at him and saw a person rather than a practitioner. Galang kept the friendship secret — not because it was forbidden, but because he understood, with the instinct of someone raised in a house full of predators, that anything he visibly cared about could be used against him. He visited when he could. They fished. They talked about nothing. It was the only part of his life that didn't smell like copper and old blood.</p>
+        <p>Tanjung Luar's elders made a mistake. It wasn't even a large mistake — they accepted a visit from a Barong Court envoy, listened politely, and declined to formally ally. But they declined <em>publicly</em>, which meant the Rangda cell heard about it, which meant someone decided that a message needed to be sent. Not to the elders. To the village. The kind of message that reminds an entire community what it means to entertain the wrong visitors.</p>
+        <p>Galang's father volunteered the family. He brought Galang.</p>
+        <p>What happened in Tanjung Luar took less than an hour. The family came at night — of course at night, the selak tradition is always at night — and they did what they were sent to do. Green light in the paddies. Shapes moving between the houses. The sound of people screaming who had never had cause to scream before. No one was supposed to die. That was the understanding: a demonstration, not a massacre. Fear, not death.</p>
+        <p>Wira's father tried to protect his home with a fishing gaff. He was not a brave man — he was a terrified man doing what a terrified father does. One of Galang's cousins broke his arm. When Wira ran out to help, he collided with Galang in the dark — literally ran into him, face-to-face, close enough to see the green light and the shape beneath it and the human eyes still inside the thing that was no longer entirely human. Wira recognized him. Galang saw the recognition happen. And then one of the cousins, not knowing, not caring, lashed out at the boy who was running toward the family.</p>
+        <p>Wira didn't die. That would have been simpler. What the selak curse did to him was worse in some ways — a lingering affliction that settled into his body like rot into wood. The village orang pintar couldn't remove it. Galang heard, weeks later, that Wira couldn't use his right hand anymore. That he woke screaming. That he didn't laugh.</p>
+        <p>Galang's father called it a clean job. Minimal damage. Message delivered.</p>
+        <p>Galang packed a bag that night. He walked out through the rice paddies while the frogs screamed in the ditches. He did not look back. He has not been back.</p>
+
+        <h3>The Road</h3>
+        <p>He has been walking for three years.</p>
+        <p>The Wayfarer's road is not a philosophy for Galang — it is a practical reality. He has no home, no community, no network of allies. The villages he passes through sense something wrong about him even when the green light isn't showing: a faint smell of decay that clings to his clothes, a way of moving that is too quiet, too watchful, too much like something hunting. Children stare. Dogs whine and back away. Old women make signs against evil and look the other way.</p>
+        <p>He has tried to learn the counter-arts — the <em>sentulak</em>, the "returning" — from fragments and whispers, from half-remembered lessons his grandmother once muttered about before his father silenced her. The old woman had known the <em>ilmu putih</em>, the white knowledge, the defensive tradition that exists specifically to check and balance the dark. She tried to teach him, quietly, in the gaps between his father's lessons. His father found out and put a stop to it — not violently, but absolutely. The grandmother was moved to a relative's house on another island. Galang never saw her again.</p>
+        <p>He has pieced together what he can of the sentulak from those fragments. He is not good at it yet. He is better at the dark arts than the light, and that fact sits in his chest like a stone.</p>
+        <p>The Rangda have not come for him. He doesn't know why. Maybe his father covered for him — some residual shred of the feeling that was almost tenderness. Maybe the cell considers him too minor to pursue. Maybe they are patient, and the pursuit is simply slow. He doesn't know. The not-knowing is its own kind of weight.</p>
+
+        <h3>Ruman</h3>
+        <p>He arrived in Ruman a few weeks ago, drawn by nothing more specific than the road ending at the coast and a ferry that was leaving. The Islands of Suria are neutral ground — open to outsiders, aligned with neither Barong nor Rangda — and Ruman is the kind of place where a stranger can exist without being examined too closely. The town smells of incense and salt. People do what they do because they believe it should be done. No one asks why. No one asks him why, either, which suits him.</p>
+        <p>He sleeps in different places — under a boat hull near the docks, in the treeline behind the temple complex, once in a rice storage hut whose owner either didn't notice or didn't care. He has no routine yet, no stall where they know his face, no one who nods when he passes. He is a stranger who smells faintly wrong, and Ruman is polite enough not to mention it.</p>
+        <p>He has heard the whispers. Something dark moving in the towns and villages around Ruman. Refugees arriving with curses on their skin and panic in their eyes. Creatures born from dark magic. The kind of infestation that smells, to Galang, uncomfortably like home.</p>
+        <p>He knows what dark magic looks like from the inside. He knows what it does to communities, to families, to boys who just wanted to build boats. He knows that someone with ilmu should do something about it, and he knows that he has ilmu, and he knows that "not doing anything is just waiting for whatever problem is out there to come here."</p>
+        <p>He does not want to be a hero. He does not trust himself to be one. But he has dark powers and a debt he cannot name, and the screaming has started again in the nearby villages, and he is done walking away from it.</p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ===== REST MODAL ===== -->
+<div class="modal-overlay" id="rest-modal">
+  <div class="modal">
+    <h2 id="rest-title">Take a Rest?</h2>
+    <p id="rest-desc"></p>
+    <div id="rest-list"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeRest()">Cancel</button>
+      <button class="btn btn-primary" id="rest-confirm" onclick="confirmRest()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== STATE & PERSISTENCE ===== */
+const STORAGE_KEY = 'galang_sheet_v1';
+
+const defaultState = () => ({
+  hp: { current: 43, max: 43, temp: 0 },
+  inspiration: false,
+  resources: {
+    slots1:           [false, false, false, false],
+    slots2:           [false, false, false],
+    slots3:           [false, false],
+    wildShape:        [false, false],
+    wildResurgence:   [false],
+    flickering:       [false, false, false],
+    luck:             [false, false, false],
+    witchBolt:        [false],
+    waxing:           [false]
+  }
+});
+
+let state = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultState();
+    const saved = JSON.parse(raw);
+    // Merge with defaults so new resource keys appear
+    const d = defaultState();
+    return {
+      hp: { ...d.hp, ...(saved.hp || {}) },
+      inspiration: saved.inspiration || false,
+      resources: { ...d.resources, ...(saved.resources || {}) }
+    };
+  } catch (e) {
+    return defaultState();
+  }
+}
+
+function saveState() {
+  // Sync HP inputs into state
+  state.hp.current = parseInt(document.getElementById('hp-current').value) || 0;
+  state.hp.max = parseInt(document.getElementById('hp-max').value) || 1;
+  state.hp.temp = parseInt(document.getElementById('hp-temp').value) || 0;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+/* ===== HP ===== */
+function adjustHP(delta) {
+  const curInput = document.getElementById('hp-current');
+  let cur = parseInt(curInput.value) || 0;
+  const max = parseInt(document.getElementById('hp-max').value) || 1;
+  cur = Math.max(0, Math.min(max, cur + delta));
+  curInput.value = cur;
+  saveState();
+}
+
+/* ===== INSPIRATION ===== */
+function toggleInspiration() {
+  state.inspiration = !state.inspiration;
+  renderInspiration();
+  saveState();
+}
+
+function renderInspiration() {
+  const el = document.getElementById('inspiration-toggle');
+  el.classList.toggle('active', state.inspiration);
+}
+
+/* ===== PIPS ===== */
+function renderPips() {
+  document.querySelectorAll('.pips').forEach(container => {
+    const key = container.dataset.resource;
+    const arr = state.resources[key] || [];
+    container.querySelectorAll('.pip').forEach(pip => {
+      const idx = parseInt(pip.dataset.idx);
+      pip.classList.toggle('used', !!arr[idx]);
+    });
+  });
+}
+
+function togglePip(container, pip) {
+  const key = container.dataset.resource;
+  const idx = parseInt(pip.dataset.idx);
+  if (!state.resources[key]) return;
+  state.resources[key][idx] = !state.resources[key][idx];
+  // Sync every pip group with same key across tabs
+  document.querySelectorAll(`.pips[data-resource="${key}"]`).forEach(c => {
+    c.querySelectorAll('.pip').forEach(p => {
+      const i = parseInt(p.dataset.idx);
+      p.classList.toggle('used', !!state.resources[key][i]);
+    });
+  });
+  saveState();
+}
+
+document.addEventListener('click', (e) => {
+  const pip = e.target.closest('.pip');
+  if (pip) {
+    const container = pip.closest('.pips');
+    if (container) togglePip(container, pip);
+  }
+});
+
+/* ===== TABS ===== */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${tab}`));
+  });
+});
+
+/* ===== FILTER CHIPS ===== */
+document.querySelectorAll('.filter-chips').forEach(group => {
+  group.addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    group.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c === chip));
+    const filter = chip.dataset.filter;
+    const tab = group.closest('.tab-content');
+    tab.querySelectorAll('.card[data-categories]').forEach(card => {
+      const cats = card.dataset.categories.split(/\s+/);
+      const show = filter === 'all' || cats.includes(filter);
+      card.classList.toggle('hidden', !show);
+    });
+    // Hide empty section heads (optional polish)
+    tab.querySelectorAll('.section-head').forEach(h => {
+      let next = h.nextElementSibling;
+      let anyVisible = false;
+      while (next && !next.classList.contains('section-head')) {
+        if (next.classList.contains('card') && !next.classList.contains('hidden')) anyVisible = true;
+        next = next.nextElementSibling;
+      }
+      h.style.display = anyVisible ? '' : 'none';
+    });
+  });
+});
+
+/* ===== REST MODALS ===== */
+let pendingRest = null;
+
+function openRest(type) {
+  pendingRest = type;
+  const modal = document.getElementById('rest-modal');
+  const title = document.getElementById('rest-title');
+  const desc = document.getElementById('rest-desc');
+  const list = document.getElementById('rest-list');
+
+  if (type === 'short') {
+    title.textContent = 'Take a Short Rest?';
+    desc.textContent = 'A short rest is at least 1 hour of light activity. Druids recover:';
+    list.innerHTML = `
+      <ul style="padding-left:20px;margin-bottom:16px;font-size:13px;">
+        <li><strong>Wild Shape / Selak Form</strong> — reset to 2 uses</li>
+        <li><strong>Waxing Hour</strong> — reset (treated as end of combat)</li>
+        <li>You may spend Hit Dice to heal (5d8 available)</li>
+      </ul>
+    `;
+  } else {
+    title.textContent = 'Take a Long Rest?';
+    desc.textContent = 'A long rest is 8 hours. This clears almost everything:';
+    list.innerHTML = `
+      <ul style="padding-left:20px;margin-bottom:16px;font-size:13px;">
+        <li>HP restored to <strong>maximum</strong>, Temp HP cleared</li>
+        <li>All spell slots restored</li>
+        <li>Wild Shape reset (2), Wild Resurgence reset, Waxing Hour reset</li>
+        <li>Flickering Form (3) and Luck Points (3) reset</li>
+        <li>Witch Bolt free cast refreshed</li>
+        <li><strong>Heroic Inspiration granted</strong> (Human Resourceful)</li>
+        <li>Choose new prepared spells if desired</li>
+      </ul>
+    `;
+  }
+  modal.classList.add('active');
+}
+
+function closeRest() {
+  document.getElementById('rest-modal').classList.remove('active');
+  pendingRest = null;
+}
+
+function confirmRest() {
+  if (pendingRest === 'short') {
+    state.resources.wildShape = [false, false];
+    state.resources.waxing = [false];
+  } else if (pendingRest === 'long') {
+    state.hp.current = state.hp.max;
+    state.hp.temp = 0;
+    state.resources = {
+      slots1:         [false, false, false, false],
+      slots2:         [false, false, false],
+      slots3:         [false, false],
+      wildShape:      [false, false],
+      wildResurgence: [false],
+      flickering:     [false, false, false],
+      luck:           [false, false, false],
+      witchBolt:      [false],
+      waxing:         [false]
+    };
+    state.inspiration = true;
+    document.getElementById('hp-current').value = state.hp.current;
+    document.getElementById('hp-temp').value = state.hp.temp;
+  }
+  renderAll();
+  saveState();
+  closeRest();
+}
+
+/* Close modal on background click */
+document.getElementById('rest-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'rest-modal') closeRest();
+});
+
+/* ===== INITIAL RENDER ===== */
+function renderAll() {
+  document.getElementById('hp-current').value = state.hp.current;
+  document.getElementById('hp-max').value = state.hp.max;
+  document.getElementById('hp-temp').value = state.hp.temp;
+  renderInspiration();
+  renderPips();
+}
+
+renderAll();
+</script>
+</body>
+</html>
