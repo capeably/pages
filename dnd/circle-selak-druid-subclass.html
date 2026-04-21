@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Circle of the Selak — Druid Subclass</title>
+<title>Circle of the Selak — Druid Subclass (v3-4)</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IM+Fell+English+SC&display=swap');
 
@@ -359,6 +359,26 @@ tbody tr:hover { background: rgba(61,255,122,0.03); }
   margin-bottom: 1.5rem;
 }
 
+.save-result {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  border-left: 3px solid rgba(61,255,122,0.4);
+  background: rgba(61,255,122,0.03);
+}
+
+.save-result.fail { border-left-color: rgba(255,100,100,0.5); background: rgba(255,100,100,0.03); }
+.save-result .label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green-glow);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+.save-result.fail .label { color: #ff8080; }
+
 /* ============ QUICK REF ============ */
 .quick-ref {
   margin-top: 4rem;
@@ -379,6 +399,8 @@ tbody tr:hover { background: rgba(61,255,122,0.03); }
 }
 
 .shared-note strong { color: var(--green-glow); }
+
+.shared-note + .shared-note { margin-top: 0.75rem; }
 
 /* ============ SCALING GRID ============ */
 .scaling-grid {
@@ -461,13 +483,14 @@ footer .version {
 <!-- ==================== NAV ==================== -->
 <nav>
   <a href="#circle-spells">Circle Spells</a>
+  <a href="#nocturnal-predator">Nocturnal Predator</a>
   <a href="#selak-form">Selak Form</a>
   <a href="#ekek">Ekek</a>
   <a href="#cahaya">Cahaya</a>
   <a href="#leyak">Leyak</a>
-  <a href="#sentulak">Sentulak</a>
+  <a href="#counter-arts">Counter-Arts</a>
   <a href="#nengkesur">Nengkesur</a>
-  <a href="#capstone">Capstone</a>
+  <a href="#kededepan">Kededepan</a>
   <a href="#quick-ref">Quick Ref</a>
 </nav>
 
@@ -499,6 +522,17 @@ footer .version {
     </div>
   </section>
 
+  <!-- ==================== NOCTURNAL PREDATOR ==================== -->
+  <section id="nocturnal-predator">
+    <h2>Nocturnal Predator <span class="level-tag">3rd-Level Circle of the Selak Feature</span></h2>
+    <p class="feature-text">The tuselak is a creature of the tropical midnight &mdash; unseen, patient, and always watching. You gain the following benefits at all times, whether or not you are in Selak Form:</p>
+    <ul class="bullet-list">
+      <li><strong>Darkvision.</strong> You have Darkvision out to 60 feet if you don&rsquo;t already have it.</li>
+      <li><strong>Predator&rsquo;s Instinct.</strong> You have Advantage on Dexterity (Stealth) checks made in dim light or darkness.</li>
+    </ul>
+    <div class="flavor">In human form, you move through the night like something that belongs to it. When you enter Selak Form, the Green Light marks you &mdash; and the stealth of the predator gives way to the presence of the monster.</div>
+  </section>
+
   <!-- ==================== SELAK FORM ==================== -->
   <section id="selak-form">
     <h2>Selak Form <span class="level-tag">3rd-Level Circle of the Selak Feature</span></h2>
@@ -510,7 +544,7 @@ footer .version {
       <li><strong>Your Statistics.</strong> You retain all of your game statistics. You do not assume a beast&rsquo;s stat block.</li>
       <li><strong>Temporary Hit Points.</strong> You gain Temporary Hit Points equal to <strong>2 &times; your Druid level</strong> when you enter Selak Form (some aspects override this amount).</li>
       <li><strong>The Green Light.</strong> A faint emerald phosphorescence appears on your forehead, dripping downward like luminous sweat. You shed Dim Light in a 10-foot radius. This light cannot be hidden by nonmagical means.</li>
-      <li><strong>Nocturnal Predator.</strong> You have Darkvision out to 60 feet if you don&rsquo;t already have it. Additionally, you have Advantage on Dexterity (Stealth) checks made in dim light or darkness.</li>
+      <li><strong>Waxing Hour.</strong> The first time you activate Selak Form during a combat encounter while it is <strong>night</strong> &mdash; from sunset to sunrise, or while in an environment of natural darkness such as a deep cave or subterranean hall &mdash; it does <strong>not expend a use of Wild Shape</strong>. Subsequent activations during the same combat cost a Wild Shape use as usual. This benefit does not apply in magical darkness. <em>The night returns to you what the day takes away.</em></li>
       <li><strong>Selak Strikes.</strong> The special melee spell attacks granted by your Selak Form aspects (Predator&rsquo;s Bite, Vampiric Tongue) count as Unarmed Strikes for the purpose of class features such as Primal Strike.</li>
     </ul>
     <p class="feature-text">When you enter Selak Form, choose one of the following three aspects. You can choose a different aspect each time you enter the form.</p>
@@ -521,11 +555,12 @@ footer .version {
     <div class="aspect-card">
       <img class="aspect-img" src="https://capeably.github.io/pages/files/ekak.png" alt="Ekek — The Prowler">
       <h3>Ekek &mdash; The Prowler <span class="aspect-role">Melee Striker</span></h3>
-      <div class="flavor">Your frame hunches and ripples with bestial power. Your fingers end in curved claws, your joints bend at wrong angles, your movements become those of a hunting animal &mdash; and yet your human shape persists, grotesquely intact. Human hands. Human feet. An animal that is not an animal.</div>
+      <div class="flavor">Your frame hunches and ripples with bestial power. Your fingers end in curved claws, your joints bend at wrong angles, your movements become those of a hunting animal &mdash; and yet your human shape persists, grotesquely intact. Human hands. Human feet. An animal that is not an animal. The name <em>ekek</em> is a homage to the selak art of shifting itself &mdash; the fundamental practice of transformation that defines what a tuselak is &mdash; rather than a mark of rank within the tradition.</div>
       <p class="feature-text">While in this aspect, you gain the following benefits:</p>
       <ul class="bullet-list">
         <li><strong>Fortified Form.</strong> Because you retain your humanoid form in this aspect, you can continue to wear armor and wield a shield.</li>
-        <li><strong>Predator&rsquo;s Bite.</strong> When you take the Attack action on your turn, you can make a special melee spell attack in place of one of your attacks. On a hit, the target takes <strong>1d8 + your Wisdom modifier Psychic damage</strong>, and the target must succeed on a <strong>Constitution saving throw</strong> against your spell save DC or be <strong>Poisoned</strong> until the end of your next turn. After hitting a creature with this attack, you can move up to <strong>10 feet</strong> without provoking opportunity attacks from that creature. The damage die changes when you reach Druid levels <strong>5</strong> (1d10), <strong>11</strong> (1d12), and <strong>17</strong> (2d6).</li>
+        <li><strong>Retained Grip.</strong> Your hands remain fully functional in this aspect. You can perform somatic components, manipulate objects, use tools, and wield weapons. Your strikes in Selak Form may be the Predator&rsquo;s Bite, but the human hands that grip a sword or pick a lock have not forgotten what they are.</li>
+        <li><strong>Predator&rsquo;s Bite.</strong> When you take the Attack action on your turn, you can make a special melee spell attack in place of one of your attacks. On a hit, the target takes <strong>2d4 + your Wisdom modifier Psychic damage</strong>, and the target must succeed on a <strong>Constitution saving throw</strong> against your spell save DC or be <strong>Poisoned</strong> until the end of your next turn. The damage dice change when you reach Druid levels <strong>5</strong> (2d6), <strong>11</strong> (2d8), and <strong>17</strong> (2d10).</li>
       </ul>
     </div>
   </section>
@@ -540,7 +575,7 @@ footer .version {
       <ul class="bullet-list">
         <li><strong>Ghostfire Bolt.</strong> As a <strong>Bonus Action</strong>, you can hurl a bolt of spectral green light at one creature you can see within <strong>60 feet</strong>. Make a ranged spell attack. On a hit, the target takes <strong>1d8 + your Wisdom modifier Psychic damage</strong>. The damage die changes when you reach Druid levels <strong>5</strong> (1d10), <strong>11</strong> (1d12), and <strong>17</strong> (2d6).</li>
         <li><strong>Spectral Drift.</strong> You can move through other creatures as if they were difficult terrain. If you end your turn inside a creature, you are shunted to the nearest unoccupied space and take 1d10 Force damage.</li>
-        <li><strong>Flickering Form.</strong> When a creature you can see hits you with an attack roll, you can use your <strong>Reaction</strong> to force the attacker to reroll the attack roll and use the lower result.</li>
+        <li><strong>Flickering Form.</strong> When a creature you can see makes an attack roll against you, you can use your <strong>Reaction</strong> to flicker out of phase, adding <strong>1d6</strong> to your AC against that attack &mdash; potentially turning a hit into a miss. The die changes when you reach Druid levels <strong>5</strong> (1d8), <strong>11</strong> (1d10), and <strong>17</strong> (1d12). You can use this Reaction a number of times equal to your <strong>Proficiency Bonus</strong>, and you regain all expended uses when you finish a <strong>Long Rest</strong>.</li>
       </ul>
     </div>
   </section>
@@ -550,25 +585,25 @@ footer .version {
     <div class="aspect-card">
       <img class="aspect-img" src="https://capeably.github.io/pages/files/leyak.png" alt="Leyak — The Dread">
       <h3>Leyak &mdash; The Dread <span class="aspect-role">Drain Controller</span></h3>
-      <div class="flavor">Your head wrenches free. There is no blood &mdash; only a trail of luminous, ropy viscera that dangles beneath you like the roots of an uprooted tree, glowing faintly green and pulsing with a slow, terrible rhythm. Your body crumples behind you as you rise, a floating head haloed in ghostlight, mouth open, eyes wide and unblinking. The stench hits before the fear does.</div>
+      <div class="flavor">Your head wrenches free. There is no blood &mdash; only a trail of luminous, ropy viscera that dangles beneath you like the roots of an uprooted tree, glowing faintly green and pulsing with a slow, terrible rhythm. Your body crumples behind you as you rise, a floating head haloed in ghostlight, mouth open, eyes wide and unblinking. The stench hits before the fear does. This aspect carries the Balinese name: the floating-head form is deeply rooted in the living traditions of both Bali and western Lombok, where the Sasak and Balinese communities have shared the strait for centuries &mdash; and shared their nightmares with it. The Circle honors both traditions.</div>
       <p class="feature-text">While in this aspect, you gain the following benefits:</p>
       <ul class="bullet-list">
         <li><strong>Floating Horror.</strong> Lacking a body in this form, you hover in place of walking. Your walking speed is replaced by an equivalent <strong>hover speed</strong>. You float just above the ground, ignoring <strong>difficult terrain</strong>, but you cannot gain altitude or fly.</li>
         <li><strong>Vampiric Tongue.</strong> When you take the <strong>Attack action</strong> on your turn, you can make a special melee spell attack with a <strong>reach of 15 feet</strong> in place of one of your attacks. On a hit, the target takes <strong>1d6 + your Wisdom modifier Necrotic damage</strong>, and you <strong>regain hit points equal to your Wisdom modifier</strong>. If the target is <strong>Large or smaller</strong>, you can <strong>pull</strong> it up to <strong>10 feet</strong> straight toward you, and the target must succeed on a <strong>Strength saving throw</strong> against your spell save DC or be <strong>Grappled</strong> by you (escape DC equals your spell save DC). You can grapple only <strong>one creature at a time</strong> with this feature. The grapple ends if your Selak Form ends. The damage die changes when you reach Druid levels <strong>5</strong> (1d8), <strong>11</strong> (1d10), and <strong>17</strong> (1d12).</li>
         <li><strong>Constricting Feed.</strong> At the <strong>start of each of your turns</strong>, a creature Grappled by you takes <strong>Necrotic damage equal to your Wisdom modifier</strong>, and you <strong>regain hit points</strong> equal to the damage dealt to <strong>one</strong> such creature (your choice).</li>
-        <li><strong>Aura of Dread.</strong> When a creature you can see within <strong>30 feet</strong> makes an attack roll, you can use your <strong>Reaction</strong> to force it to make a <strong>Wisdom saving throw</strong> against your spell save DC. On a failure, the creature is <strong>Frightened</strong> of you until the end of its next turn.</li>
+        <li><strong>Aura of Dread.</strong> When a creature you can see within <strong>30 feet</strong> makes an attack roll, you can use your <strong>Reaction</strong> to force it to make a <strong>Wisdom saving throw</strong> against your spell save DC. On a failure, the creature is <strong>Frightened</strong> of you until the end of its next turn. <strong>At night</strong> (as defined under Waxing Hour), this range increases to <strong>60 feet</strong>.</li>
       </ul>
     </div>
   </section>
 
-  <!-- ==================== SENTULAK ==================== -->
-  <section id="sentulak">
+  <!-- ==================== SENTULAK AND SEMPOTER ==================== -->
+  <section id="counter-arts">
     <div class="feature-block">
-      <h2>Sentulak &mdash; The Returning <span class="level-tag">6th-Level Circle of the Selak Feature</span></h2>
-      <p class="feature-text">You master the counter-art of <em>sentulak</em> &mdash; literally &ldquo;returning the selak&rdquo; &mdash; the discipline of reflecting hostile magic back upon its source. In the Sasak tradition, <em>sentulak</em> is classified as <em>ilmu putih</em> (white knowledge), a defensive art specifically designed to turn a sorcerer&rsquo;s own power against them.</p>
+      <h2>Sentulak and Sempoter &mdash; The Counter-Arts <span class="level-tag">6th-Level Circle of the Selak Feature</span></h2>
+      <p class="feature-text">You master the twin counter-arts of <em>ilmu putih</em> &mdash; the white knowledge that stands against the darkness. In the Sasak tradition, <strong>sentulak</strong> is the reflective art that sends hostile power back to its source, and <strong>sempoter</strong> is the defensive art that shields against the predator&rsquo;s dread. Druids of the Circle of the Selak learn both: to be the monster and to fight the monster are two halves of the same practice.</p>
       <ul class="bullet-list">
-        <li><strong>Warded Mind.</strong> You have <strong>Advantage on saving throws against being Charmed or Frightened</strong>. You have internalized the counter-art: the dread and manipulation that the selak tradition deals in can no longer easily be turned against you.</li>
-        <li><strong>Reflect the Selak.</strong> While in <strong>Selak Form</strong>, when you <strong>succeed on a saving throw</strong> against an effect caused by a creature you can see within 60 feet, you can use your <strong>Reaction</strong> to psychically lash the source. That creature takes <strong>2d8 Psychic damage</strong> and has <strong>Disadvantage on the next attack roll or saving throw it makes before the end of your next turn</strong>. You can use this Reaction a number of times equal to your <strong>Wisdom modifier</strong> (minimum of once), and you regain all expended uses when you finish a <strong>Long Rest</strong>.</li>
+        <li><strong>Sempoter &mdash; Warded Mind.</strong> You have <strong>Advantage on saving throws against being Charmed or Frightened</strong>. You have internalized the defensive counter-art: the dread and manipulation that the selak tradition deals in can no longer easily be turned against you.</li>
+        <li><strong>Sentulak &mdash; Reflect the Selak.</strong> While in <strong>Selak Form</strong>, when you <strong>succeed on a saving throw</strong> against an effect caused by a creature you can see within 60 feet, you can use your <strong>Reaction</strong> to psychically lash the source. That creature takes <strong>2d8 Psychic damage</strong> and has <strong>Disadvantage on the next attack roll or saving throw it makes before the end of your next turn</strong>. You can use this Reaction a number of times equal to your <strong>Wisdom modifier</strong> (minimum of once), and you regain all expended uses when you finish a <strong>Long Rest</strong>.</li>
       </ul>
     </div>
   </section>
@@ -586,15 +621,21 @@ footer .version {
     </div>
   </section>
 
-  <!-- ==================== CAPSTONE ==================== -->
-  <section id="capstone">
+  <!-- ==================== KEDEDEPAN ==================== -->
+  <section id="kededepan">
     <div class="feature-block capstone-block">
-      <h2>Selaq Mate Ndek &mdash; The Undying Selak <span class="level-tag">14th-Level Circle of the Selak Feature</span></h2>
-      <div class="capstone-quote">&ldquo;Tuselak never die.&rdquo;</div>
-      <div class="capstone-attribution">&mdash; Amaq Bahar, shaman of Western Lombok</div>
-      <p class="feature-text">When you are in <strong>Selak Form</strong> and <strong>drop to 0 hit points</strong>, you can use your <strong>Reaction</strong> to refuse death. Instead of falling Unconscious, you drop to a number of hit points equal to <strong>2 &times; your Druid level</strong>, and you release a psychic shockwave of pure dread.</p>
-      <p class="feature-text">Each creature of your choice that you can see within <strong>30 feet</strong> must make a <strong>Wisdom saving throw</strong> against your spell save DC. On a failed save, a creature takes <strong>3d10 Psychic damage</strong> and is <strong>Frightened</strong> of you for 1 minute. On a successful save, a creature takes half as much damage and isn&rsquo;t Frightened. A Frightened creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.</p>
-      <p class="feature-text">Once you use this feature, you can&rsquo;t use it again until you finish a <strong>Long Rest</strong>.</p>
+      <h2>Kededepan &mdash; The Waking Paralysis <span class="level-tag">14th-Level Circle of the Selak Feature</span></h2>
+      <p class="feature-text">You command the full terror of the tuselak &mdash; the supernatural paralysis that Sasak villagers call <em>kededepan</em>, the grip that locks a victim in waking stillness while something terrible draws near.</p>
+      <p class="feature-text">While in <strong>Selak Form</strong>, you can use your <strong>Action</strong> to unleash a wave of paralyzing dread. The emerald light on your forehead flares &mdash; a pulse of raw terror that rolls outward like a shockwave. Each creature of your choice that you can see within <strong>30 feet</strong> must make a <strong>Wisdom saving throw</strong> against your spell save DC.</p>
+      <div class="save-result fail">
+        <span class="label">On a failed save</span>
+        A creature is <strong>Paralyzed</strong> until the end of your next turn. While Paralyzed by this feature, the creature is conscious and aware of its surroundings. <em>Its eyes remain open. It sees everything.</em>
+      </div>
+      <div class="save-result">
+        <span class="label">On a successful save</span>
+        A creature is <strong>Frightened</strong> of you until the end of your next turn.
+      </div>
+      <p class="feature-text" style="margin-top: 1.5rem;">Once you use this feature, you can&rsquo;t use it again until you finish a <strong>Long Rest</strong>.</p>
     </div>
   </section>
 
@@ -610,11 +651,14 @@ footer .version {
         </thead>
         <tbody>
           <tr><td>3</td><td>Circle Spells</td><td>Spells</td><td>&mdash;</td><td>Spell slots</td></tr>
+          <tr><td>3</td><td>Nocturnal Predator</td><td>Passive (always-on)</td><td>&mdash;</td><td>&mdash;</td></tr>
           <tr><td>3</td><td>Selak Form (Ekek / Cahaya / Leyak)</td><td>Alt. Wild Shape</td><td>Bonus Action</td><td>Wild Shape use</td></tr>
-          <tr><td>6</td><td>Sentulak: Warded Mind</td><td>Passive</td><td>&mdash;</td><td>&mdash;</td></tr>
+          <tr><td>3</td><td>Waxing Hour (1st entry/combat at night)</td><td>Passive refund</td><td>&mdash;</td><td>Refunds Wild Shape use</td></tr>
+          <tr><td>3</td><td>Flickering Form (Cahaya)</td><td>Reaction</td><td>Reaction</td><td>PB / Long Rest</td></tr>
+          <tr><td>6</td><td>Sempoter: Warded Mind</td><td>Passive (always-on)</td><td>&mdash;</td><td>&mdash;</td></tr>
           <tr><td>6</td><td>Sentulak: Reflect the Selak</td><td>Reaction</td><td>Reaction</td><td>Wis mod / Long Rest</td></tr>
           <tr><td>10</td><td>Ilmu Nengkesur</td><td>Passive (in Selak Form)</td><td>&mdash;</td><td>&mdash;</td></tr>
-          <tr><td>14</td><td>Selaq Mate Ndek</td><td>Reaction (trigger: 0 HP)</td><td>Reaction</td><td>1 / Long Rest</td></tr>
+          <tr><td>14</td><td>Kededepan: The Waking Paralysis</td><td>Action (in Selak Form)</td><td>Action</td><td>1 / Long Rest</td></tr>
         </tbody>
       </table>
     </div>
@@ -629,7 +673,7 @@ footer .version {
           <tr>
             <td><strong>Ekek</strong></td>
             <td>Melee striker</td>
-            <td>Predator&rsquo;s Bite (replaces an attack, Poisoned on failed Con save), 10ft prowl</td>
+            <td>Predator&rsquo;s Bite (replaces an attack, Poisoned on failed Con save). Retained Grip: can wield weapons and use tools.</td>
             <td>&mdash; (Sentulak from L6)</td>
             <td>2 &times; Druid level</td>
           </tr>
@@ -637,14 +681,14 @@ footer .version {
             <td><strong>Cahaya</strong></td>
             <td>Spectral infiltrator</td>
             <td>BA ranged spell attack (60 ft), move through creatures</td>
-            <td>Flickering Form (force reroll) or Sentulak (L6)</td>
+            <td>Flickering Form (+die to AC, PB/LR) or Sentulak (L6)</td>
             <td>2 &times; Druid level</td>
           </tr>
           <tr>
             <td><strong>Leyak</strong></td>
             <td>Drain controller</td>
             <td>Vampiric Tongue (15ft reach, grapple, pull), Constricting Feed</td>
-            <td>Aura of Dread (Frighten) or Sentulak (L6)</td>
+            <td>Aura of Dread (Frighten; 60ft at night) or Sentulak (L6)</td>
             <td>2 &times; Druid level</td>
           </tr>
         </tbody>
@@ -652,27 +696,44 @@ footer .version {
     </div>
 
     <div class="shared-note">
-      <strong>Shared (all aspects):</strong> Green Light (10-ft dim light, unhideable), Nocturnal Predator (Darkvision 60 ft, Advantage on Stealth in dim light/darkness).
+      <strong>Shared (all aspects in Selak Form):</strong> Green Light (10-ft dim light, unhideable); Waxing Hour (first activation per combat at night is free).
+    </div>
+    <div class="shared-note">
+      <strong>Always-on (human form and Selak Form):</strong> Nocturnal Predator (Darkvision 60 ft, Advantage on Stealth in dim light/darkness). Note: the Green Light in Selak Form sheds dim light that reveals your position, effectively negating stealth advantage while transformed.
     </div>
 
-    <h3>Damage Scaling</h3>
+    <h3>Damage &amp; Die Scaling</h3>
     <div class="scaling-grid">
       <div class="scale-card">
-        <h4>Ekek / Cahaya</h4>
+        <h4>Ekek &mdash; Predator&rsquo;s Bite</h4>
+        <div class="scale-row"><span class="level">Lv 3</span><span>2d4 + Wis</span></div>
+        <div class="scale-row"><span class="level">Lv 5</span><span>2d6 + Wis</span></div>
+        <div class="scale-row"><span class="level">Lv 11</span><span>2d8 + Wis</span></div>
+        <div class="scale-row"><span class="level">Lv 17</span><span>2d10 + Wis</span></div>
+      </div>
+      <div class="scale-card">
+        <h4>Cahaya &mdash; Ghostfire Bolt</h4>
         <div class="scale-row"><span class="level">Lv 3</span><span>1d8 + Wis</span></div>
         <div class="scale-row"><span class="level">Lv 5</span><span>1d10 + Wis</span></div>
         <div class="scale-row"><span class="level">Lv 11</span><span>1d12 + Wis</span></div>
         <div class="scale-row"><span class="level">Lv 17</span><span>2d6 + Wis</span></div>
       </div>
       <div class="scale-card">
-        <h4>Leyak Vampiric Tongue</h4>
+        <h4>Cahaya &mdash; Flickering Form</h4>
+        <div class="scale-row"><span class="level">Lv 3</span><span>+1d6 to AC</span></div>
+        <div class="scale-row"><span class="level">Lv 5</span><span>+1d8 to AC</span></div>
+        <div class="scale-row"><span class="level">Lv 11</span><span>+1d10 to AC</span></div>
+        <div class="scale-row"><span class="level">Lv 17</span><span>+1d12 to AC</span></div>
+      </div>
+      <div class="scale-card">
+        <h4>Leyak &mdash; Vampiric Tongue</h4>
         <div class="scale-row"><span class="level">Lv 3</span><span>1d6 + Wis</span></div>
         <div class="scale-row"><span class="level">Lv 5</span><span>1d8 + Wis</span></div>
         <div class="scale-row"><span class="level">Lv 11</span><span>1d10 + Wis</span></div>
         <div class="scale-row"><span class="level">Lv 17</span><span>1d12 + Wis</span></div>
       </div>
       <div class="scale-card">
-        <h4>Temp HP (All Aspects)</h4>
+        <h4>All Aspects &mdash; Temp HP</h4>
         <div class="scale-row"><span class="level">All levels</span><span>2 &times; Druid level</span></div>
       </div>
     </div>
@@ -683,7 +744,7 @@ footer .version {
 <!-- ==================== FOOTER ==================== -->
 <footer>
   <div class="divider-ornament" style="margin-bottom: 1.5rem;"></div>
-  <p class="version">Circle of the Selak &bull; v3.2 Final &bull; 2024 PHB Compatible</p>
+  <p class="version">Circle of the Selak &bull; v3.4 Playtest &bull; 2024 PHB Compatible</p>
   <p style="margin-top: 0.5rem;">Homebrew Druid Subclass &mdash; Inspired by Sasak folklore of Lombok, Indonesia</p>
 </footer>
 

@@ -7,15 +7,17 @@ tags:
   - sasak
   - player-option
 type: homebrew
-status: final
-version: 2
+status: playtest
+version: 4
 system: 2024 PHB (2024-compatible)
 related:
-  - "[[Research - Tuselak in Sasak Folklore]]"
+  - "[[DnD/DnD Indo/World & Setting/Homebrew Workshop/_Inbox/Research - Tuselak in Sasak Folklore]]"
   - "[[Homebrew Druid Subclass - Design Guide]]"
   - "[[Campaign Home]]"
   - "[[2024 Druid - Class & Subclass Reference]]"
   - "[[Circle of the Selak — Homebrew Druid Subclass (v1)]]"
+  - "[[Circle of the Selak — Homebrew Druid Subclass v3-2]]"
+  - "[[Circle of the Selak — Homebrew Druid Subclass v3-3]]"
 ---
 **Full Build Web URL**: https://capeably.github.io/pages/dnd/circle-selak-druid-subclass.html
 
@@ -170,6 +172,19 @@ Your connection to the selak tradition grants you access to certain spells. When
 
 ---
 
+## Nocturnal Predator
+
+*3rd-Level Circle of the Selak Feature*
+
+The tuselak is a creature of the tropical midnight — unseen, patient, and always watching. You gain the following benefits at all times, whether or not you are in Selak Form:
+
+- **Darkvision.** You have Darkvision out to 60 feet if you don't already have it.
+- **Predator's Instinct.** You have Advantage on Dexterity (Stealth) checks made in dim light or darkness.
+
+*In human form, you move through the night like something that belongs to it. When you enter Selak Form, the Green Light marks you — and the stealth of the predator gives way to the presence of the monster.*
+
+---
+
 ## Selak Form
 
 *3rd-Level Circle of the Selak Feature*
@@ -183,22 +198,22 @@ As a **Bonus Action**, you can expend a use of your **Wild Shape** to enter your
 - **Your Statistics.** You retain all of your game statistics. You do not assume a beast's stat block.
 - **Temporary Hit Points.** You gain Temporary Hit Points equal to **2 × your Druid level** when you enter Selak Form (some aspects override this amount).
 - **The Green Light.** A faint emerald phosphorescence appears on your forehead, dripping downward like luminous sweat. You shed Dim Light in a 10-foot radius. This light cannot be hidden by nonmagical means.
-- **Nocturnal Predator.** You have Darkvision out to 60 feet if you don't already have it. Additionally, you have Advantage on Dexterity (Stealth) checks made in dim light or darkness.
+- **Waxing Hour.** The first time you activate Selak Form during a combat encounter while it is **night** — from sunset to sunrise, or while in an environment of natural darkness such as a deep cave or subterranean hall — it does **not expend a use of Wild Shape**. Subsequent activations during the same combat cost a Wild Shape use as usual. This benefit does not apply in magical darkness. *The night returns to you what the day takes away.*
 - **Selak Strikes.** The special melee spell attacks granted by your Selak Form aspects (Predator's Bite, Vampiric Tongue) count as Unarmed Strikes for the purpose of class features such as Primal Strike.
 
 When you enter Selak Form, choose one of the following three aspects. You can choose a different aspect each time you enter the form.
 
 ### Ekek — The Prowler
+![[ekak_scale_sm.png]]
 
-![[Ekak_cmp.png]]
 
-
-*Your frame hunches and ripples with bestial power. Your fingers end in curved claws, your joints bend at wrong angles, your movements become those of a hunting animal — and yet your human shape persists, grotesquely intact. Human hands. Human feet. An animal that is not an animal.*
+*Your frame hunches and ripples with bestial power. Your fingers end in curved claws, your joints bend at wrong angles, your movements become those of a hunting animal — and yet your human shape persists, grotesquely intact. Human hands. Human feet. An animal that is not an animal. The name* ekek *is a homage to the selak art of shifting itself — the fundamental practice of transformation that defines what a tuselak is — rather than a mark of rank within the tradition.*
 
 While in this aspect, you gain the following benefits:
 
-- **Fortified Form.** When you enter Selak Form in this aspect, you gain Temporary Hit Points equal to **3 × your Druid level**, instead of the normal amount. Because you retain your humanoid form in this aspect, you can continue to wear armor and wield a shield.
-- **Predator's Bite.** When you take the Attack action on your turn, you can make a special melee spell attack in place of one of your attacks. On a hit, the target takes **1d8 + your Wisdom modifier Psychic damage**, and the target must succeed on a **Constitution saving throw** against your spell save DC or be **Poisoned** until the end of your next turn. After hitting a creature with this attack, you can move up to **10 feet** without provoking opportunity attacks from that creature. The damage die changes when you reach Druid levels **5** (1d10), **11** (1d12), and **17** (2d6).
+- **Fortified Form.** Because you retain your humanoid form in this aspect, you can continue to wear armor and wield a shield.
+- **Retained Grip.** Your hands remain fully functional in this aspect. You can perform somatic components, manipulate objects, use tools, and wield weapons. Your strikes in Selak Form may be the Predator's Bite, but the human hands that grip a sword or pick a lock have not forgotten what they are.
+- **Predator's Bite.** When you take the Attack action on your turn, you can make a special melee spell attack in place of one of your attacks. On a hit, the target takes **2d4 + your Wisdom modifier Psychic damage**, and the target must succeed on a **Constitution saving throw** against your spell save DC or be **Poisoned** until the end of your next turn. The damage dice change when you reach Druid levels **5** (2d6), **11** (2d8), and **17** (2d10).
 
 ### Cahaya — The Ghostlight
 
@@ -214,38 +229,38 @@ While in this aspect, you gain the following benefits:
 
 - **Spectral Drift.** You can move through other creatures as if they were difficult terrain. If you end your turn inside a creature, you are shunted to the nearest unoccupied space and take 1d10 Force damage. *A creature you pass through feels a sudden chill and catches a fleeting glimpse of something not meant for the living.*
 
-- **Flickering Form.** When a creature you can see hits you with an attack roll, you can use your **Reaction** to force the attacker to reroll the attack roll and use the lower result.
+- **Flickering Form.** When a creature you can see makes an attack roll against you, you can use your **Reaction** to flicker out of phase, adding **1d6** to your AC against that attack — potentially turning a hit into a miss. The die changes when you reach Druid levels **5** (1d8), **11** (1d10), and **17** (1d12). You can use this Reaction a number of times equal to your **Proficiency Bonus**, and you regain all expended uses when you finish a **Long Rest**.
 
 ### Leyak — The Dread
 ![[leyak_cmp_tp.png]]
 
 
-*Your head wrenches free. There is no blood — only a trail of luminous, ropy viscera that dangles beneath you like the roots of an uprooted tree, glowing faintly green and pulsing with a slow, terrible rhythm. Your body crumples behind you as you rise, a floating head haloed in ghostlight, mouth open, eyes wide and unblinking. The stench hits before the fear does.*
+*Your head wrenches free. There is no blood — only a trail of luminous, ropy viscera that dangles beneath you like the roots of an uprooted tree, glowing faintly green and pulsing with a slow, terrible rhythm. Your body crumples behind you as you rise, a floating head haloed in ghostlight, mouth open, eyes wide and unblinking. The stench hits before the fear does. This aspect carries the Balinese name: the floating-head form is deeply rooted in the living traditions of both Bali and western Lombok, where the Sasak and Balinese communities have shared the strait for centuries — and shared their nightmares with it. The Circle honors both traditions.*
 
 While in this aspect, you gain the following benefits:
 
 - **Floating Horror.** Lacking a body in this form, you hover in place of walking. Your walking speed is replaced by an equivalent **hover speed**. You float just above the ground, ignoring **difficult terrain**, but you cannot gain altitude or fly.
 
-- **Vampiric Tongue.** When you take the **Attack action** on your turn, you can make a special melee spell attack with a **reach of 15 feet** in place of one of your attacks. On a hit, the target takes **1d6 + your Wisdom modifier Necrotic damage**. If the target is **Large or smaller**, you can **pull** it up to **10 feet** straight toward you, and the target is **Grappled** by you (escape DC equals your spell save DC). You can grapple only **one creature at a time** with this feature. *(Your trailing entrails coil around the grappled creature, holding it fast while your tongue tastes the air — but this is a single grapple.)* The grapple ends if your Selak Form ends. The damage die changes when you reach Druid levels **5** (1d8), **11** (1d10), and **17** (1d12).
+- **Vampiric Tongue.** When you take the **Attack action** on your turn, you can make a special melee spell attack with a **reach of 15 feet** in place of one of your attacks. On a hit, the target takes **1d6 + your Wisdom modifier Necrotic damage**, and you **regain hit points equal to your Wisdom modifier**. If the target is **Large or smaller**, you can **pull** it up to **10 feet** straight toward you, and the target must succeed on a **Strength saving throw** against your spell save DC or be **Grappled** by you (escape DC equals your spell save DC). You can grapple only **one creature at a time** with this feature. *(Your trailing entrails coil around the grappled creature, holding it fast while your tongue tastes the air — but this is a single grapple.)* The grapple ends if your Selak Form ends. The damage die changes when you reach Druid levels **5** (1d8), **11** (1d10), and **17** (1d12).
 
 - **Constricting Feed.** At the **start of each of your turns**, a creature Grappled by you takes **Necrotic damage equal to your Wisdom modifier**, and you **regain hit points** equal to the damage dealt to **one** such creature (your choice).
 
-- **Aura of Dread.** When a creature you can see within **30 feet** makes an attack roll, you can use your **Reaction** to force it to make a **Wisdom saving throw** against your spell save DC. On a failure, the creature is **Frightened** of you until the end of its next turn.
+- **Aura of Dread.** When a creature you can see within **30 feet** makes an attack roll, you can use your **Reaction** to force it to make a **Wisdom saving throw** against your spell save DC. On a failure, the creature is **Frightened** of you until the end of its next turn. **At night** (as defined under Waxing Hour), this range increases to **60 feet**.
 
 ___
 
 
-## Sentulak — The Returning
+## Sentulak and Sempoter — The Counter-Arts
 
 *6th-Level Circle of the Selak Feature*
 
-You master the counter-art of *sentulak* — literally "returning the selak" — the discipline of reflecting hostile magic back upon its source. In the Sasak tradition, *sentulak* is classified as *ilmu putih* (white knowledge), a defensive art specifically designed to turn a sorcerer's own power against them.
+You master the twin counter-arts of *ilmu putih* — the white knowledge that stands against the darkness. In the Sasak tradition, **sentulak** is the reflective art that sends hostile power back to its source, and **sempoter** is the defensive art that shields against the predator's dread. Druids of the Circle of the Selak learn both: to be the monster and to fight the monster are two halves of the same practice.
 
 You gain the following benefits:
 
-- **Warded Mind.** You have **Advantage on saving throws against being Charmed or Frightened**. You have internalized the counter-art: the dread and manipulation that the selak tradition deals in can no longer easily be turned against you.
+- **Sempoter — Warded Mind.** You have **Advantage on saving throws against being Charmed or Frightened**. You have internalized the defensive counter-art: the dread and manipulation that the selak tradition deals in can no longer easily be turned against you.
 
-- **Reflect the Selak.** While in **Selak Form**, when you **succeed on a saving throw** against an effect caused by a creature you can see within 60 feet, you can use your **Reaction** to psychically lash the source. That creature takes **2d8 Psychic damage** and has **Disadvantage on the next attack roll or saving throw it makes before the end of your next turn**. You can use this Reaction a number of times equal to your **Wisdom modifier** (minimum of once), and you regain all expended uses when you finish a **Long Rest**.
+- **Sentulak — Reflect the Selak.** While in **Selak Form**, when you **succeed on a saving throw** against an effect caused by a creature you can see within 60 feet, you can use your **Reaction** to psychically lash the source. That creature takes **2d8 Psychic damage** and has **Disadvantage on the next attack roll or saving throw it makes before the end of your next turn**. You can use this Reaction a number of times equal to your **Wisdom modifier** (minimum of once), and you regain all expended uses when you finish a **Long Rest**.
 
 ---
 
@@ -262,14 +277,17 @@ While in **Selak Form**, you gain the following benefits:
 
 ---
 
-## Selaq Mate Ndek — The Undying Selak
+## Kededepan — The Waking Paralysis
 
 *14th-Level Circle of the Selak Feature*
 
-> *"Tuselak never die."*
-> — Amaq Bahar, shaman of Western Lombok
+You command the full terror of the tuselak — the supernatural paralysis that Sasak villagers call *kededepan*, the grip that locks a victim in waking stillness while something terrible draws near.
 
-When you are in **Selak Form** and **drop to 0 hit points**, you can use your **Reaction** to refuse death. Instead of falling Unconscious, you drop to a number of hit points equal to **2 × your Druid level**, and you release a psychic shockwave of pure dread. Each creature of your choice that you can see within **30 feet** must make a **Wisdom saving throw** against your spell save DC. On a failed save, a creature takes **3d10 Psychic damage** and is **Frightened** of you for 1 minute. On a successful save, a creature takes half as much damage and isn't Frightened. A Frightened creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.
+While in **Selak Form**, you can use your **Action** to unleash a wave of paralyzing dread. The emerald light on your forehead flares — a pulse of raw terror that rolls outward like a shockwave. Each creature of your choice that you can see within **30 feet** must make a **Wisdom saving throw** against your spell save DC.
+
+**On a failed save,** a creature is **Paralyzed** until the end of your next turn. While Paralyzed by this feature, the creature is conscious and aware of its surroundings. *Its eyes remain open. It sees everything.*
+
+**On a successful save,** a creature is **Frightened** of you until the end of your next turn.
 
 Once you use this feature, you can't use it again until you finish a **Long Rest**.
 
@@ -279,55 +297,89 @@ Once you use this feature, you can't use it again until you finish a **Long Rest
 
 ## Feature Summary
 
-| Level | Feature                            | Type                     | Action       | Resource            |
-| :---: | ---------------------------------- | ------------------------ | ------------ | ------------------- |
-|   3   | Circle Spells                      | Spells                   | —            | Spell slots         |
-|   3   | Selak Form (Ekek / Cahaya / Leyak) | Alt. Wild Shape          | Bonus Action | Wild Shape use      |
-|   6   | Sentulak: Warded Mind              | Passive                  | —            | —                   |
-|   6   | Sentulak: Reflect the Selak        | Reaction                 | Reaction     | Wis mod / Long Rest |
-|  10   | Ilmu Nengkesur                     | Passive (in Selak Form)  | —            | —                   |
-|  14   | Selaq Mate Ndek                    | Reaction (trigger: 0 HP) | Reaction     | 1 / Long Rest       |
+| Level | Feature                            | Type                     | Action       | Resource               |
+| :---: | ---------------------------------- | ------------------------ | ------------ | ---------------------- |
+|   3   | Circle Spells                      | Spells                   | —            | Spell slots            |
+|   3   | Nocturnal Predator                 | Passive (always-on)      | —            | —                      |
+|   3   | Selak Form (Ekek / Cahaya / Leyak) | Alt. Wild Shape          | Bonus Action | Wild Shape use         |
+|   3   | Waxing Hour (1st entry/combat @ night) | Passive refund       | —            | Refunds Wild Shape use |
+|   3   | Flickering Form (Cahaya)           | Reaction                 | Reaction     | PB / Long Rest         |
+|   6   | Sempoter: Warded Mind              | Passive (always-on)      | —            | —                      |
+|   6   | Sentulak: Reflect the Selak        | Reaction                 | Reaction     | Wis mod / Long Rest    |
+|  10   | Ilmu Nengkesur                     | Passive (in Selak Form)  | —            | —                      |
+|  14   | Kededepan: The Waking Paralysis    | Action (in Selak Form)   | Action       | 1 / Long Rest          |
 
 ## Aspect Comparison
 
-| Aspect       | Role           | On Your Turn                                                         | Your Reaction                      | Temp HP         |
-| ------------ | -------------- | -------------------------------------------------------------------- | ---------------------------------- | --------------- |
-| **Ekek**     | Melee striker  | Predator's Bite (replaces an attack, Poisoned on failed Con save), 10ft prowl | — (Sentulak from L6)               | 3 × Druid level |
-| **Cahaya**   | Spectral infiltrator | BA ranged spell attack (60 ft), move through creatures | Flickering Form (force reroll) or Sentulak (L6) | 2 × Druid level |
-| **Leyak** | Drain controller | Vampiric Tongue (15ft reach, grapple, pull), Constricting Feed | Aura of Dread (Frighten) or Sentulak (L6) | 2 × Druid level |
+| Aspect       | Role                 | On Your Turn                                                                        | Your Reaction                                                | Temp HP         |
+| ------------ | -------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------ | --------------- |
+| **Ekek**     | Melee striker        | Predator's Bite (replaces an attack, Poisoned on failed Con save). Retained Grip: can wield weapons and use tools. | — (Sentulak from L6)                                         | 2 × Druid level |
+| **Cahaya**   | Spectral infiltrator | BA ranged spell attack (60 ft), move through creatures                              | Flickering Form (+die to AC, PB/LR) or Sentulak (L6)         | 2 × Druid level |
+| **Leyak**    | Drain controller     | Vampiric Tongue (15ft reach, grapple, pull), Constricting Feed                      | Aura of Dread (Frighten; 60ft at night) or Sentulak (L6)     | 2 × Druid level |
 
-**Shared (all aspects):** Green Light (10-ft dim light, unhideable), Nocturnal Predator (Darkvision 60 ft, Advantage on Stealth in dim light/darkness).
+**Shared (all aspects):** Green Light (10-ft dim light, unhideable), Waxing Hour (first activation per combat at night is free).
+
+**Always-on (human form and Selak Form):** Nocturnal Predator (Darkvision 60 ft, Advantage on Stealth in dim light/darkness) — note: the Green Light in Selak Form sheds dim light that reveals your position, effectively negating stealth advantage while transformed.
 
 ## Scaling
 
-| Feature | Level 3 | Level 5 | Level 11 | Level 17 |
-|---------|---------|---------|----------|----------|
-| Ekek / Cahaya damage | 1d8 + Wis | 1d10 + Wis | 1d12 + Wis | 2d6 + Wis |
-| Leyak Vampiric Tongue | 1d6 + Wis | 1d8 + Wis | 1d10 + Wis | 1d12 + Wis |
-| Ekek Temp HP | 3 × level | 3 × level | 3 × level | 3 × level |
-| Cahaya / Leyak Temp HP | 2 × level | 2 × level | 2 × level | 2 × level |
-| Leyak Constricting Feed | Wis mod (heal 1 creature) | Wis mod (heal 1 creature) | Wis mod (heal 1 creature) | Wis mod (heal 1 creature) |
+| Feature                   | Level 3   | Level 5   | Level 11  | Level 17  |
+| ------------------------- | --------- | --------- | --------- | --------- |
+| Ekek Predator's Bite      | 2d4 + Wis | 2d6 + Wis | 2d8 + Wis | 2d10 + Wis |
+| Cahaya Ghostfire Bolt     | 1d8 + Wis | 1d10 + Wis| 1d12 + Wis| 2d6 + Wis |
+| Cahaya Flickering Form    | +1d6 AC   | +1d8 AC   | +1d10 AC  | +1d12 AC  |
+| Leyak Vampiric Tongue     | 1d6 + Wis | 1d8 + Wis | 1d10 + Wis| 1d12 + Wis|
+| All aspects — Temp HP     | 2 × level | 2 × level | 2 × level | 2 × level |
+| Leyak Constricting Feed   | Wis mod   | Wis mod   | Wis mod   | Wis mod   |
 
 ---
 
-# Changelog: v1 → Final
+# Changelog: v3-3 → v3-4
+
+| Change | Reason |
+| ------ | ------ |
+| **Nocturnal Predator pulled out of Selak Form → always-on Level 3 passive** | The Green Light (unhideable dim light in Selak Form) contradicted Advantage on Stealth while in Selak Form. Fix: Nocturnal Predator is now a permanent feature — Darkvision + Stealth advantage work in human form. Entering Selak Form activates the Green Light, which reveals your position. This creates a tactical choice (stay human to scout vs transform to fight) and matches the folklore: tuselak stealth operates through animal disguise and nocturnal movement, not through the transformed state. |
+| **Ekek — added Retained Grip ribbon** | Plate 1912 documented that during tuselak animal transformation, the arms and legs remain human. Retained Grip translates this motif mechanically: Ekek can perform somatic components, use tools, and wield weapons. DPR analysis confirmed Predator's Bite is always superior to weapon attacks for pure druids; multiclass Druid 5/Fighter 5 with weapons produces 16.58 DPR (below a pure Fighter 10's 17.33). No damage-budget violation. |
+| **Ekek — added flavor note on the name** | "Selak ekek" is the lowest rank in Plate 1912's tuselak hierarchy. The subclass uses the name as a homage to the selak practice of shifting itself, not as a rank descriptor. Flavor text now clarifies this. |
+| **Leyak — added cross-tradition note** | The aspect carries the Balinese word, not the Sasak word. A one-sentence note in the flavor text now acknowledges this is intentional — honoring the living traditions of both Bali and western Lombok, where the two cultures have shared the strait for centuries. |
+| **Level 6 renamed: "Sentulak and Sempoter — The Counter-Arts"** | In the Sasak *ilmu putih* taxonomy, sentulak (reflective counter-art) and sempoter (defensive counter-art) are distinct disciplines. The Level 6 feature now names both: Sempoter = Warded Mind (passive defense), Sentulak = Reflect the Selak (reactive reflection). Previously both were grouped under the "Sentulak" header alone, which was a terminology mismatch. |
+| **Level 14 replaced: Selaq Mate Ndek → Kededepan — The Waking Paralysis** | The old capstone ("refuse death at 0 HP") was based on "Tuselak never die" — which the source verification revealed actually refers to lineage transmission (the spirit passes to an heir at death), not personal invulnerability. Kededepan is documented by Macintyre as the supernatural paralysis tuselak induce on victims. New capstone: Action while in Selak Form, 30ft radius, Wis save, Paralyzed for 1 round (fail) / Frightened for 1 round (save), 1/LR. Fills the subclass's only missing condition (no prior paralysis/incapacitation effect). Design review confirmed it passes the Dominance Test (#1 in Control at L14 only, not persistent). |
+| **Quick Reference tables updated** | Feature Summary adds Nocturnal Predator as always-on, renames L6 sub-features, replaces L14 capstone. Aspect Comparison adds Retained Grip to Ekek. Shared-feature note clarifies the Green Light / Stealth interaction. |
+
+---
+
+# Changelog: v3-2 → v3-3 (historical)
+
+> **Note:** "Bayangan" was the earlier name for what is now the **Leyak** aspect. The rename occurred during the v3-1 → v3-2 revision cycle. References to "Bayangan" in the v1 → v3-2 historical changelog below refer to the Leyak aspect.
+
+| Change | Reason |
+| ------ | ------ |
+| **Ekek — Predator's Bite: removed 10ft prowl rider** | Feature bloat. Turn resolution is faster without the conditional movement clause. |
+| **Ekek — Predator's Bite: damage 1d8/1d10/1d12/2d6 → 2d4/2d6/2d8/2d10** | DM wanted a meaningful martial-form damage bump to justify Ekek's melee risk. Team flagged DPR+EHP dominance risk. Accepted DM's number for playtest. |
+| **Cahaya — Flickering Form: reroll mechanic → +die to AC, PB uses/LR** | DM's Silvery Barbs comparison landed. The original unlimited reroll was "too free." Replaced with AC-die Reaction with scaling and resource cost. |
+| **Selak Form — added Waxing Hour (base feature)** | Honors the Sasak lore that selak powers flow freely at night. First Selak Form activation per combat at night refunds the Wild Shape use. Resource-oriented, not power-oriented. |
+| **Leyak — Aura of Dread: 30ft → 60ft range at night** | Thematic night signature for the Leyak without locking the aspect behind night. Range extension, not a power boost (~+5% Control Score). |
+
+---
+
+# Changelog: v1 → v3-2 (historical)
 
 | Change                                                                                                                  | Reason                                                                                                                                                                                                                                                                                                                                         |
 | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Ekek Temp HP:** 2× → 3× Druid level                                                                                   | Melee mode needed survivability to justify the risk. Now between Moon (3×) and Spores (4×).                                                                                                                                                                                                                                                    |
+| **Ekek Temp HP:** 2× → 3× → 2× Druid level                                                                              | Originally buffed to 3× for melee survivability. Power audit revealed AC 19 (armor + shield retention) combined with 3× THP exceeded Moon's EHP by 43-57% at every level. Reverted to 2× THP — the shield (AC 19) provides the durability identity, not raw HP. Now tied with Moon on effective HP: fewer hit points, harder to hit.           |
 | **Ekek Predator's Strike:** reworded as "special melee spell attack in place of one of your attacks"                    | Clarifies Wisdom-based attack roll, prevents multiclass stacking, preserves unarmed strike flavor.                                                                                                                                                                                                                                             |
-| **Bayangan:** added Pall of Decay (5-ft aura, subtract 1d4 from attacks)                                                | Bayangan had nothing to do on its own turn. The passive aura gives the controller form active battlefield presence.                                                                                                                                                                                                                            |
-| **Bayangan Aura of Dread:** removed "must choose a different target" clause                                             | The redirect was ambiguous and overengineered. Frightened condition alone (Disadvantage on attacks, can't approach source) is sufficient.                                                                                                                                                                                                      |
+| **Bayangan [now Leyak]:** added Pall of Decay (5-ft aura, subtract 1d4 from attacks)                                                | Bayangan had nothing to do on its own turn. The passive aura gives the controller form active battlefield presence.                                                                                                                                                                                                                            |
+| **Bayangan [now Leyak] Aura of Dread:** removed "must choose a different target" clause                                             | The redirect was ambiguous and overengineered. Frightened condition alone (Disadvantage on attacks, can't approach source) is sufficient.                                                                                                                                                                                                      |
 | **Sentulak:** added Warded Mind (Advantage vs. Charmed/Frightened, always-on)                                           | Level 6 feature was dead weight in encounters without spellcasters. Passive benefit guarantees value. Made always-on (not form-dependent) to give the subclass its first permanent identity feature.                                                                                                                                           |
 | **Sentulak:** broadened Reflect the Selak trigger from "spell or magical effect" to any effect requiring a saving throw | The narrow magical-only trigger left Reflect dead in 40-60% of encounters. The *ilmu putih* counter-arts are anti-supernatural, not just anti-magic. Now fires against dragon breath, gaze attacks, frightful presence, etc. Still gated behind four conditions (in form, targeted, succeed on save, spend Reaction + use).                    |
 | **Spell list:** Darkness → Blindness/Deafness                                                                           | Darkness without Devil's Sight is a trap. Blindness/Deafness is no-Concentration, curse-flavored, and uses a Constitution save (diversifying the save profile).                                                                                                                                                                                |
 | **Capstone HP recovery:** 1× → 2× Druid level                                                                           | 14 HP at level 14 doesn't survive a single follow-up hit. 28 HP delivers on the "tuselak never dies" promise while remaining fragile enough to create tension.                                                                                                                                                                                 |
-| **Ilmu Nengkesur:** Bayangan's Pall of Decay scales to 1d6                                                              | Keeps Bayangan's passive aura relevant at tier 3, consistent with the d8→d10 scaling on other modes.                                                                                                                                                                                                                                           |
+| **Ilmu Nengkesur:** Bayangan's [now Leyak's] Pall of Decay scales to 1d6                                                              | Keeps the controller form's passive aura relevant at tier 3, consistent with the d8→d10 scaling on other modes.                                                                                                                                                                                                                           |
 | **Spell list:** Vampiric Touch → Bestow Curse                                                                           | Vampiric Touch was the weakest spell on the list — 3rd-level Concentration melee spell that always lost to Fear. Bestow Curse is THE definitive curse spell: touch range (Ekek synergy), four versatile options, and critically, no Concentration at 5th-level slots+. Fills the illness/curse-sender gap.                                     |
 | **Added:** Nocturnal Predator ribbon to Selak Form                                                                      | Tuselak are exclusively nocturnal in every source. Two sentences: Darkvision 60 ft + Advantage on Stealth in dim light/darkness. Creates a fun tension with the mandatory Green Light.                                                                                                                                                         |
 | **Predator's Strike & Ghostfire Bolt:** added cantrip-style scaling (d8→d10→d12→2d6 at 5/11/17)                         | Damage was flat from 3–9 with a single bump at 10. Cantrip scaling is a proven, intuitive progression that keeps the features relevant across all tiers.                                                                                                                                                                                       |
-| **Bayangan rework:** Pall of Decay replaced with Draining Presence (Necrotic leech aura, half damage as Temp HP)        | Pall of Decay (-1d4 to attacks at 5ft) was the weakest feature across all three forms — modest debuff requiring dangerous melee positioning on the squishiest form. Draining Presence turns the risk into reward: standing in melee now fuels the Bayangan's survivability. Temp HP capped at half damage to prevent snowballing against mobs. |
-| **Bayangan retheme:** gaunt standing figure → floating detached head with trailing viscera                              | The *selak* root means "to detach/separate." The floating-head-with-entrails is the most iconic image in the Austronesian vampire complex (leyak, penanggalan, krasue). Previous flavor text underused this motif.                                                                                                                             |
+| **Bayangan [now Leyak] rework:** Pall of Decay replaced with Draining Presence (Necrotic leech aura, half damage as Temp HP)        | Pall of Decay (-1d4 to attacks at 5ft) was the weakest feature across all three forms — modest debuff requiring dangerous melee positioning on the squishiest form. Draining Presence turns the risk into reward: standing in melee now fuels survivability. Temp HP capped at half damage to prevent snowballing against mobs. |
+| **Bayangan [now Leyak] retheme:** gaunt standing figure → floating detached head with trailing viscera                              | The *selak* root means "to detach/separate." The floating-head-with-entrails is the most iconic image in the Austronesian vampire complex (leyak, penanggalan, krasue). Previous flavor text underused this motif.                                                                                                                             |
 | **Draining Presence:** damage type set to Necrotic                                                                      | Differentiates from Ekek/Cahaya's Psychic damage. Necrotic fits the vampiric life-drain fantasy and is the standard damage type for HP-draining effects in 5e.                                                                                                                                                                                 |
 | **Ilmu Nengkesur:** removed Deepening Power                                                                             | Damage scaling is now built into each feature via cantrip progression, making the level 10 Deepening Power bullet redundant. Ilmu Nengkesur is cleaner as Flight + Resistance.                                                                                                                                                                 |
 
@@ -380,8 +432,8 @@ The head floats at roughly chest height, tilted slightly back, mouth open, eyes 
 
 The green forehead light is brightest in this form — a vivid, sickly emerald that pulses in time with the slow rhythm of the dangling organs. It illuminates the face from above, casting the eye sockets and open mouth into sharp shadow, turning the weeping fluid into streaks of liquid light on the cheeks.
 
-The stench is overwhelming. It is not the sharp smell of fresh death but the sweet, heavy, cloying smell of *rotting vegetation* — decomposing leaves, waterlogged wood, the methane-and-mulch smell of a rice paddy at the height of the wet season. It is the smell of the tropical earth digesting itself. It fills the air within arm's reach and clings to everything the Bayangan passes. Victims describe a second smell beneath the first: something metallic and warm, like copper coins held in a sweating palm. The smell of blood, but old blood. Blood that has been drunk and partially digested and breathed back out.
+The stench is overwhelming. It is not the sharp smell of fresh death but the sweet, heavy, cloying smell of *rotting vegetation* — decomposing leaves, waterlogged wood, the methane-and-mulch smell of a rice paddy at the height of the wet season. It is the smell of the tropical earth digesting itself. It fills the air within arm's reach and clings to everything the Leyak passes. Victims describe a second smell beneath the first: something metallic and warm, like copper coins held in a sweating palm. The smell of blood, but old blood. Blood that has been drunk and partially digested and breathed back out.
 
-When the Draining Presence triggers, the entrails *reach*. The loops of viscera extend toward nearby creatures with slow, deliberate, seeking motions — not striking but *tasting* the air, brushing against exposed skin with a touch that is wet and feverishly warm. Where they make contact, the victim feels a sudden, lurching weakness, a draining sensation as though something vital is being pulled out through the skin. The Bayangan's eyes roll back, the mouth stretches wider, and for a moment the green light flares bright — then dims, satisfied, as colour returns to the entrails and the head drifts onward.
+When the Constricting Feed triggers, the entrails *reach*. The loops of viscera extend toward nearby creatures with slow, deliberate, seeking motions — not striking but *tasting* the air, brushing against exposed skin with a touch that is wet and feverishly warm. Where they make contact, the victim feels a sudden, lurching weakness, a draining sensation as though something vital is being pulled out through the skin. The Leyak's eyes roll back, the mouth stretches wider, and for a moment the green light flares bright — then dims, satisfied, as colour returns to the entrails and the head drifts onward.
 
 ---
