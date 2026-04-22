@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drunken Master — Level 5 Interactive Sheet</title>
+<style>
+  :root {
+    --accent: #f59e0b;
+    --accent-dim: #92590a;
+    --accent-glow: rgba(245, 158, 11, 0.18);
+
+    --bg: #0e0f12;
+    --bg-panel: #15171c;
+    --bg-card: #1c1f26;
+    --bg-hover: #242832;
+    --border: #2d3139;
+    --text: #e5e7eb;
+    --text-dim: #9ca3af;
+    --text-muted: #6b7280;
+    --danger: #ef4444;
+    --warn: #f59e0b;
+    --info: #60a5fa;
+    --necrotic: #a855f7;
+    --psychic: #ec4899;
+    --radiant: #fbbf24;
+    --concentration: #22d3ee;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
+  h1, h2, h3, h4 { font-weight: 600; }
+  a { color: var(--accent); }
+
+  .top-bar { display: grid; grid-template-columns: 1fr auto auto auto auto auto; gap: 12px; align-items: center; padding: 12px 20px; background: linear-gradient(180deg, #1a1d24 0%, #15171c 100%); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+  .char-name-block h1 { font-size: 22px; color: var(--accent); text-shadow: 0 0 12px var(--accent-glow); letter-spacing: 0.5px; }
+  .char-name-block .sub { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+  .char-name-block input.name-input {
+    background: transparent; border: none; border-bottom: 1px dashed var(--border);
+    color: var(--accent); font-size: 22px; font-weight: 600;
+    text-shadow: 0 0 12px var(--accent-glow); letter-spacing: 0.5px;
+    padding: 0 0 2px; width: 100%; font-family: inherit; outline: none;
+  }
+  .char-name-block input.name-input::placeholder { color: var(--text-muted); font-style: italic; font-weight: 400; }
+  .char-name-block input.name-input:focus { border-bottom-color: var(--accent); }
+
+  .stat-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; text-align: center; min-width: 80px; }
+  .stat-block .label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); }
+  .stat-block .value { font-size: 20px; font-weight: 700; color: var(--text); margin-top: 2px; }
+  .hp-block { min-width: 160px; }
+  .hp-display { display: flex; align-items: center; gap: 6px; justify-content: center; margin-top: 4px; }
+  .hp-display input { width: 50px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 2px 4px; text-align: center; font-size: 16px; font-weight: 700; }
+  .hp-display .sep { color: var(--text-muted); }
+  .btn-icon { background: var(--bg-hover); border: 1px solid var(--border); color: var(--text); width: 22px; height: 22px; border-radius: 4px; cursor: pointer; font-size: 14px; line-height: 1; }
+  .btn-icon:hover { background: var(--accent-dim); color: var(--bg); }
+  .temp-hp { font-size: 11px; color: var(--info); margin-top: 2px; }
+  .temp-hp input { width: 40px; background: transparent; color: var(--info); border: 1px solid var(--border); border-radius: 4px; padding: 0 4px; font-size: 11px; }
+  .inspiration-toggle { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--warn); background: var(--bg-card); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--warn); transition: all 0.2s; }
+  .inspiration-toggle.active { background: var(--warn); color: var(--bg); box-shadow: 0 0 16px rgba(245, 158, 11, 0.5); }
+  .rest-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 10px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.15s; }
+  .rest-btn.short { border-color: var(--info); color: var(--info); }
+  .rest-btn.long { border-color: var(--accent); color: var(--accent); }
+  .rest-btn:hover { background: var(--bg-hover); }
+
+  .main-layout { display: grid; grid-template-columns: 300px 1fr; gap: 16px; padding: 16px 20px; max-width: 1600px; margin: 0 auto; }
+  @media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; } .top-bar { grid-template-columns: 1fr 1fr; } }
+
+  .sidebar-panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+  .sidebar-panel h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  .ability-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .ability-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 6px 4px; text-align: center; }
+  .ability-box .name { font-size: 9px; text-transform: uppercase; color: var(--text-dim); letter-spacing: 1px; }
+  .ability-box .mod { font-size: 20px; font-weight: 700; color: var(--text); margin-top: 2px; }
+  .ability-box .score { font-size: 10px; color: var(--text-muted); }
+  .ability-box .save { font-size: 10px; color: var(--accent); margin-top: 2px; }
+  .ability-box.prof { border-color: var(--accent-dim); }
+  .stat-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; border-bottom: 1px dashed var(--border); }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row .val { color: var(--accent); font-weight: 600; }
+  .skill-row { display: flex; align-items: center; gap: 8px; padding: 3px 4px; font-size: 12px; border-radius: 4px; }
+  .skill-row:hover { background: var(--bg-hover); }
+  .skill-dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--text-muted); flex-shrink: 0; }
+  .skill-dot.prof { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 4px var(--accent-glow); }
+  .skill-dot.expertise { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 4px var(--accent-glow), inset 0 0 0 2px var(--bg-card); }
+  .skill-row .skill-name { flex: 1; }
+  .skill-row .skill-mod { color: var(--accent); font-weight: 600; min-width: 30px; text-align: right; }
+  .skill-row .skill-abil { color: var(--text-muted); font-size: 10px; text-transform: uppercase; min-width: 30px; }
+
+  .main-content { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .tab-bar { display: flex; background: var(--bg-card); border-bottom: 1px solid var(--border); overflow-x: auto; }
+  .tab-btn { padding: 12px 18px; background: transparent; border: none; color: var(--text-dim); cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.15s; }
+  .tab-btn:hover { color: var(--text); background: var(--bg-hover); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--bg-panel); }
+  .tab-content { padding: 18px; display: none; }
+  .tab-content.active { display: block; }
+
+  .filter-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .chip { padding: 6px 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; color: var(--text-dim); cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.15s; }
+  .chip:hover { background: var(--bg-hover); color: var(--text); }
+  .chip.active { background: var(--accent-dim); border-color: var(--accent); color: var(--bg); }
+
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; transition: all 0.15s; }
+  .card:hover { background: var(--bg-hover); border-color: var(--accent-dim); }
+  .card.hidden { display: none; }
+  .card-header { display: flex; justify-content: space-between; align-items: start; gap: 12px; margin-bottom: 6px; }
+  .card-title { font-size: 15px; font-weight: 600; color: var(--text); }
+  .card-title .sub { font-size: 11px; color: var(--text-dim); font-weight: 400; margin-left: 6px; }
+  .card-tags { display: flex; gap: 4px; flex-wrap: wrap; flex-shrink: 0; }
+  .tag { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: var(--bg-hover); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .tag.action { background: #3a1f1f; color: #fca5a5; }
+  .tag.bonus { background: #1f2e3a; color: #93c5fd; }
+  .tag.reaction { background: #2e1f3a; color: #d8b4fe; }
+  .tag.attack { background: #3a2e1f; color: #fcd34d; }
+  .tag.conc { background: #0e2a33; color: var(--concentration); }
+  .tag.free { background: #1a2e1f; color: var(--accent); }
+  .tag.limited { background: #3a1f2e; color: #f9a8d4; }
+  .tag.class { background: #1a2e1f; color: var(--accent); }
+  .tag.subclass { background: #2e1f3a; color: #d8b4fe; }
+  .tag.species { background: #3a2e1f; color: #fcd34d; }
+  .tag.background { background: #1f2e3a; color: #93c5fd; }
+  .tag.feat { background: #3a1f2e; color: #f9a8d4; }
+
+  .card-stats { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+  .card-stats span strong { color: var(--text); }
+  .card-body { font-size: 13px; color: var(--text); line-height: 1.55; }
+  .card-body p { margin-bottom: 6px; }
+  .card-body em { color: var(--text-dim); }
+  .card-body strong { color: var(--accent); }
+  .card-body .damage { color: var(--warn); font-weight: 600; }
+  .card-body .save-effect { color: var(--info); }
+
+  .pip-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px; }
+  .pip-row .pip-label { flex: 1; font-size: 13px; font-weight: 600; }
+  .pip-row .pip-sub { font-size: 11px; color: var(--text-dim); font-weight: 400; display: block; margin-top: 2px; }
+  .pips { display: flex; gap: 6px; flex-shrink: 0; }
+  .pip { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--accent-dim); background: transparent; cursor: pointer; transition: all 0.15s; }
+  .pip.used { background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+  .pip.rage { border-color: #dc2626; }
+  .pip.rage.used { background: #dc2626; box-shadow: 0 0 8px rgba(220, 38, 38, 0.45); }
+  .pip.ki { border-color: var(--accent-dim); }
+  .pip.ki.used { background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: var(--bg-panel); border: 1px solid var(--accent); border-radius: 12px; padding: 24px; max-width: 420px; width: 90%; box-shadow: 0 0 40px var(--accent-glow); }
+  .modal h2 { color: var(--accent); margin-bottom: 12px; font-size: 18px; }
+  .modal p { margin-bottom: 16px; font-size: 13px; color: var(--text-dim); }
+  .modal ul { margin-bottom: 16px; padding-left: 20px; font-size: 13px; }
+  .modal ul li { margin-bottom: 4px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+  .btn { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text); cursor: pointer; font-size: 13px; font-weight: 600; }
+  .btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .btn:hover { filter: brightness(1.15); }
+
+  .stance-block { background: linear-gradient(135deg, #1c1f26 0%, #15171c 100%); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; border-left: 4px solid var(--accent-dim); }
+  .stance-block.active-stance { border-left-color: var(--accent); box-shadow: 0 0 18px var(--accent-glow); }
+  .stance-block h3 { font-size: 16px; margin-bottom: 4px; color: var(--text); }
+  .stance-block .tagline { font-size: 12px; color: var(--text-dim); font-style: italic; margin-bottom: 10px; }
+  .stat-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .stat-pill { background: var(--bg-card); padding: 4px 10px; border-radius: 10px; font-size: 11px; color: var(--text-dim); }
+  .stat-pill strong { color: var(--text); }
+
+  .mode-switch { display: inline-flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 999px; padding: 3px; margin-bottom: 18px; }
+  .mode-switch button { background: transparent; border: none; color: var(--text-dim); padding: 6px 16px; border-radius: 999px; cursor: pointer; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+  .mode-switch button.active { background: var(--accent); color: var(--bg); box-shadow: 0 0 8px var(--accent-glow); }
+
+  .backstory-prose { max-width: 780px; font-size: 14px; line-height: 1.75; color: var(--text); }
+  .backstory-prose h3 { color: var(--accent); margin: 24px 0 10px; font-size: 16px; }
+  .backstory-prose p { margin-bottom: 14px; }
+  .backstory-prose em { color: var(--text-dim); }
+
+  .inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+  .item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; }
+  .item-name { font-weight: 600; font-size: 13px; color: var(--text); margin-bottom: 2px; }
+  .item-desc { font-size: 12px; color: var(--text-dim); }
+
+  .section-head { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin: 16px 0 10px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+  .section-head:first-child { margin-top: 0; }
+
+  .quote { font-style: italic; color: var(--text-dim); border-left: 3px solid var(--accent-dim); padding: 6px 12px; margin: 12px 0; background: var(--bg-card); font-size: 13px; }
+
+  .backstory-area { width: 100%; min-height: 220px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: var(--text); font-family: inherit; font-size: 14px; line-height: 1.7; resize: vertical; outline: none; }
+  .backstory-area:focus { border-color: var(--accent-dim); }
+  .backstory-area::placeholder { color: var(--text-muted); font-style: italic; }
+
+  .placeholder-note { color: var(--text-muted); font-style: italic; font-size: 12px; padding: 10px 12px; border: 1px dashed var(--border); border-radius: 6px; }
+
+  /* ===== CHARACTER IDENTITY (top-bar) ===== */
+  .char-identity { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  .char-thumbnail { width: 56px; height: 56px; flex-shrink: 0; border: 2px solid var(--border); border-radius: 10px; background: var(--bg-card); cursor: pointer; overflow: hidden; position: relative; transition: border-color 0.15s; display: flex; align-items: center; justify-content: center; }
+  .char-thumbnail:hover { border-color: var(--accent); }
+  .char-thumbnail img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .char-thumbnail .thumb-placeholder { font-size: 9px; color: var(--text-muted); text-align: center; line-height: 1.2; padding: 2px; }
+  .char-thumbnail .thumb-placeholder::before { content: '\1F4F7'; display: block; font-size: 18px; margin-bottom: 2px; filter: grayscale(1) opacity(0.5); }
+
+  /* ===== PORTRAIT (Overview tab) ===== */
+  .portrait-wrap { display: flex; flex-direction: column; align-items: center; }
+  .portrait-large { width: 220px; height: 280px; border: 2px dashed var(--border); border-radius: 12px; background: var(--bg-card); cursor: pointer; overflow: hidden; position: relative; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s; }
+  .portrait-large:hover { border-color: var(--accent); border-style: solid; }
+  .portrait-large img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .portrait-large .portrait-placeholder { color: var(--text-muted); font-size: 12px; text-align: center; padding: 20px; line-height: 1.5; }
+  .portrait-large .portrait-placeholder::before { content: '\1F5BC'; display: block; font-size: 48px; margin-bottom: 12px; filter: grayscale(1) opacity(0.4); }
+  .portrait-actions { display: flex; gap: 6px; margin-top: 8px; }
+  .portrait-actions button { font-size: 11px; padding: 4px 8px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-dim); border-radius: 4px; cursor: pointer; }
+  .portrait-actions button:hover { color: var(--text); border-color: var(--accent-dim); }
+
+  /* ===== OVERVIEW TAB LAYOUT ===== */
+  .overview-grid { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: start; }
+  .overview-right { min-width: 0; }
+  .overview-meta-grid { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 13px; margin: 6px 0 14px; }
+  .overview-meta-grid .k { color: var(--text-dim); font-weight: 600; }
+  .overview-meta-grid .v { color: var(--text); }
+  .overview-display-name { font-size: 24px; color: var(--accent); text-shadow: 0 0 12px var(--accent-glow); font-weight: 700; margin-bottom: 4px; }
+  .overview-subtitle { font-size: 13px; color: var(--text-dim); margin-bottom: 14px; font-style: italic; }
+  .overview-section-head { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin: 18px 0 8px; border-bottom: 1px solid var(--border); padding-bottom: 4px; font-weight: 700; }
+  .summary-area { width: 100%; min-height: 120px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: var(--text); font-family: inherit; font-size: 13px; line-height: 1.6; resize: vertical; outline: none; }
+  .summary-area:focus { border-color: var(--accent-dim); }
+  .summary-area::placeholder { color: var(--text-muted); font-style: italic; }
+
+  /* ===== PROVENANCE TABLES ===== */
+  .prov-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 12px; }
+  .prov-table th { text-align: left; padding: 6px 10px; color: var(--text-dim); font-weight: 600; border-bottom: 1px solid var(--border); background: var(--bg-card); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .prov-table td { padding: 6px 10px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+  .prov-table td.num { font-family: monospace; text-align: right; white-space: nowrap; color: var(--accent); font-weight: 600; }
+  .prov-table td.total { font-weight: 700; background: var(--bg-card); color: var(--accent); }
+  .prov-table tr.subtotal td { background: rgba(255,255,255,0.02); font-style: italic; color: var(--text-dim); }
+  .prov-dash { color: var(--text-muted); }
+
+  /* ===== TOOLTIPS CURSOR ===== */
+  .ability-box[title], .skill-row[title] { cursor: help; }
+</style>
+</head>
+<body>
+
+<!-- ===== TOP BAR ===== -->
+<div class="top-bar">
+  <div class="char-identity">
+    <div class="char-thumbnail" id="char-thumbnail" onclick="setThumbnail()" title="Click to set character art (paste image URL)"></div>
+    <div class="char-name-block">
+      <input class="name-input" id="char-name" type="text" placeholder="— your character's name —" onchange="saveName()" />
+      <div class="sub">Aasimar • Monk 5 • Way of the Drunken Master • Acolyte</div>
+    </div>
+  </div>
+  <div class="stat-block hp-block">
+    <div class="label">Hit Points</div>
+    <div class="hp-display">
+      <button class="btn-icon" onclick="adjustHP(-1)">&minus;</button>
+      <input type="number" id="hp-current" value="38" onchange="saveState()">
+      <span class="sep">/</span>
+      <input type="number" id="hp-max" value="38" onchange="saveState()">
+      <button class="btn-icon" onclick="adjustHP(1)">+</button>
+    </div>
+    <div class="temp-hp">Temp: <input type="number" id="hp-temp" value="0" onchange="saveState()"></div>
+  </div>
+  <div class="stat-block">
+    <div class="label">AC</div>
+    <div class="value" id="ac-value">17</div>
+    <div class="sub" style="font-size:10px;color:var(--text-muted);" id="ac-source">Unarmored Defense (DEX + WIS)</div>
+  </div>
+  <div class="stat-block">
+    <div class="label">Initiative</div>
+    <div class="value">+4</div>
+  </div>
+  <div class="inspiration-toggle" id="inspiration-toggle" onclick="toggleInspiration()" title="Inspiration (DM-granted)">&starf;</div>
+  <div style="display:flex;gap:8px;">
+    <button class="rest-btn short" onclick="openRest('short')">Short Rest</button>
+    <button class="rest-btn long" onclick="openRest('long')">Long Rest</button>
+  </div>
+</div>
+
+<div id="tasha-banner" style="position: relative; margin: 8px 16px 0; padding: 10px 38px 10px 14px; border: 1px solid #b45309; border-left: 4px solid #f59e0b; background: rgba(245, 158, 11, 0.08); border-radius: 6px; font-size: 12.5px; color: var(--text-dim); line-height: 1.5;">
+  <button id="tasha-banner-close" onclick="dismissTashaBanner()" title="Dismiss" aria-label="Dismiss"
+          style="position: absolute; top: 4px; right: 6px; width: 22px; height: 22px; border: none; background: transparent; color: #fbbf24; font-size: 18px; line-height: 1; cursor: pointer; padding: 0; border-radius: 4px;">&times;</button>
+  <strong style="color: #fbbf24;">Uses one Tasha's optional rule &mdash; parked, confirm DM approval before invoking.</strong>
+  <strong>Dedicated Weapon</strong> (Monk 2 optional class feature from <em>Tasha's Cauldron of Everything</em>) lets a weapon you're proficient with (non-heavy, non-special) count as a monk weapon between rests. <strong>Currently eligible targets</strong> the character is proficient with but which are <em>not</em> monk weapons by default: simple ranged (darts, sling, light crossbow, shortbow) and simple two-handed (greatclub). Declaring darts enables the Martial Arts bonus strike after throwing. If the DM denies the Tasha's rule, nothing in the current sheet changes.
+</div>
+<div id="tasha-banner-reopen" style="display:none; margin: 4px 16px 0; text-align: right;">
+  <button onclick="showTashaBanner()" title="Show Tasha's rules notice"
+          style="background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-size: 11px; padding: 3px 8px; border-radius: 4px; cursor: pointer;">Show Tasha's notice</button>
+</div>
+
+<div class="main-layout">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside>
+    <div class="sidebar-panel">
+      <h3>Ability Scores</h3>
+      <div class="ability-grid">
+        <div class="ability-box prof" title="STR 12 = 12 rolled (no ASI applied)&#10;Save +4 = +1 mod + 3 prof (Monk save proficiency)"><div class="name">STR</div><div class="mod">+1</div><div class="score">12</div><div class="save">save +4 &starf;</div></div>
+        <div class="ability-box prof" title="DEX 18 = 16 rolled + 2 Monk 4 ASI (no racial bonus)&#10;Save +7 = +4 mod + 3 prof (Monk save proficiency)"><div class="name">DEX</div><div class="mod">+4</div><div class="score">18</div><div class="save">save +7 &starf;</div></div>
+        <div class="ability-box" title="CON 14 = 13 rolled + 1 Aasimar&#10;Save +2 = +2 mod"><div class="name">CON</div><div class="mod">+2</div><div class="score">14</div><div class="save">save +2</div></div>
+        <div class="ability-box" title="INT 14 = 14 rolled (no bonuses applied)&#10;Save +2 = +2 mod"><div class="name">INT</div><div class="mod">+2</div><div class="score">14</div><div class="save">save +2</div></div>
+        <div class="ability-box" title="WIS 17 = 16 rolled + 1 Aasimar&#10;Save +3 = +3 mod"><div class="name">WIS</div><div class="mod">+3</div><div class="score">17</div><div class="save">save +3</div></div>
+        <div class="ability-box" title="CHA 10 = 9 rolled + 1 Aasimar&#10;Save +0 = +0 mod"><div class="name">CHA</div><div class="mod">+0</div><div class="score">10</div><div class="save">save +0</div></div>
+      </div>
+    </div>
+
+    <div class="sidebar-panel">
+      <h3>Combat</h3>
+      <div class="stat-row"><span>Proficiency</span><span class="val">+3</span></div>
+      <div class="stat-row"><span>Speed</span><span class="val" id="sidebar-speed">40 ft</span></div>
+      <div class="stat-row"><span>Unarmored Movement</span><span class="val">+10 ft</span></div>
+      <div class="stat-row"><span>Hit Dice</span><span class="val">5d8</span></div>
+      <div class="stat-row"><span>Passive Perception</span><span class="val">13</span></div>
+      <div class="stat-row"><span>Passive Insight</span><span class="val">16</span></div>
+      <div class="stat-row"><span>Passive Investigation</span><span class="val">12</span></div>
+      <div class="stat-row"><span>Ki Save DC</span><span class="val">14</span></div>
+    </div>
+
+    <div class="sidebar-panel">
+      <h3>Skills</h3>
+      <div class="skill-row" title="Proficient from Monk class (one of two class skill picks).&#10;+7 = +4 DEX mod + 3 prof."><div class="skill-dot prof"></div><span class="skill-abil">DEX</span><span class="skill-name">Acrobatics</span><span class="skill-mod">+7</span></div>
+      <div class="skill-row" title="Not proficient. +3 = WIS mod only."><div class="skill-dot"></div><span class="skill-abil">WIS</span><span class="skill-name">Animal Handling</span><span class="skill-mod">+3</span></div>
+      <div class="skill-row" title="Not proficient. +2 = INT mod only."><div class="skill-dot"></div><span class="skill-abil">INT</span><span class="skill-name">Arcana</span><span class="skill-mod">+2</span></div>
+      <div class="skill-row" title="Not proficient. +1 = STR mod only."><div class="skill-dot"></div><span class="skill-abil">STR</span><span class="skill-name">Athletics</span><span class="skill-mod">+1</span></div>
+      <div class="skill-row" title="Not proficient. +0 = CHA mod only."><div class="skill-dot"></div><span class="skill-abil">CHA</span><span class="skill-name">Deception</span><span class="skill-mod">+0</span></div>
+      <div class="skill-row" title="Not proficient. +2 = INT mod only."><div class="skill-dot"></div><span class="skill-abil">INT</span><span class="skill-name">History</span><span class="skill-mod">+2</span></div>
+      <div class="skill-row" title="Proficient from Acolyte background.&#10;+6 = +3 WIS mod + 3 prof."><div class="skill-dot prof"></div><span class="skill-abil">WIS</span><span class="skill-name">Insight</span><span class="skill-mod">+6</span></div>
+      <div class="skill-row" title="Not proficient. +0 = CHA mod only."><div class="skill-dot"></div><span class="skill-abil">CHA</span><span class="skill-name">Intimidation</span><span class="skill-mod">+0</span></div>
+      <div class="skill-row" title="Not proficient. +2 = INT mod only."><div class="skill-dot"></div><span class="skill-abil">INT</span><span class="skill-name">Investigation</span><span class="skill-mod">+2</span></div>
+      <div class="skill-row" title="Not proficient. +3 = WIS mod only."><div class="skill-dot"></div><span class="skill-abil">WIS</span><span class="skill-name">Medicine</span><span class="skill-mod">+3</span></div>
+      <div class="skill-row" title="Not proficient. +2 = INT mod only."><div class="skill-dot"></div><span class="skill-abil">INT</span><span class="skill-name">Nature</span><span class="skill-mod">+2</span></div>
+      <div class="skill-row" title="Not proficient. +3 = WIS mod only."><div class="skill-dot"></div><span class="skill-abil">WIS</span><span class="skill-name">Perception</span><span class="skill-mod">+3</span></div>
+      <div class="skill-row" title="Proficient from Drunken Master subclass bonus proficiency (L3).&#10;+3 = +0 CHA mod + 3 prof."><div class="skill-dot prof"></div><span class="skill-abil">CHA</span><span class="skill-name">Performance</span><span class="skill-mod">+3</span></div>
+      <div class="skill-row" title="Not proficient. +0 = CHA mod only."><div class="skill-dot"></div><span class="skill-abil">CHA</span><span class="skill-name">Persuasion</span><span class="skill-mod">+0</span></div>
+      <div class="skill-row" title="Proficient from Acolyte background.&#10;+5 = +2 INT mod + 3 prof."><div class="skill-dot prof"></div><span class="skill-abil">INT</span><span class="skill-name">Religion</span><span class="skill-mod">+5</span></div>
+      <div class="skill-row" title="Not proficient. +4 = DEX mod only."><div class="skill-dot"></div><span class="skill-abil">DEX</span><span class="skill-name">Sleight of Hand</span><span class="skill-mod">+4</span></div>
+      <div class="skill-row" title="Proficient from Monk class (second of two class skill picks).&#10;+7 = +4 DEX mod + 3 prof."><div class="skill-dot prof"></div><span class="skill-abil">DEX</span><span class="skill-name">Stealth</span><span class="skill-mod">+7</span></div>
+      <div class="skill-row" title="Not proficient. +3 = WIS mod only."><div class="skill-dot"></div><span class="skill-abil">WIS</span><span class="skill-name">Survival</span><span class="skill-mod">+3</span></div>
+    </div>
+
+    <div class="sidebar-panel">
+      <h3>Proficiencies</h3>
+      <div class="stat-row"><span>Armor</span><span style="text-align:right;font-size:11px;color:var(--text);">None</span></div>
+      <div class="stat-row"><span>Weapons</span><span style="font-size:11px;color:var(--text);">Simple, Shortswords</span></div>
+      <div class="stat-row"><span>Tools</span><span style="font-size:11px;color:var(--text);">Brewer's Supplies (Drunken Master L3); Monk L1: TBD</span></div>
+    </div>
+
+    <div class="sidebar-panel">
+      <h3>Languages</h3>
+      <div class="stat-row"><span>Common</span></div>
+      <div class="stat-row"><span>Celestial</span></div>
+      <div class="stat-row"><span>Abyssal</span></div>
+      <div class="stat-row"><span>Infernal</span></div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-content">
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="overview">Overview</button>
+      <button class="tab-btn" data-tab="actions">Actions</button>
+      <button class="tab-btn" data-tab="modes">Playstyle</button>
+      <button class="tab-btn" data-tab="resources">Resources</button>
+      <button class="tab-btn" data-tab="features">Features</button>
+      <button class="tab-btn" data-tab="inventory">Inventory</button>
+      <button class="tab-btn" data-tab="background">Background</button>
+      <button class="tab-btn" data-tab="usernotes">Notes</button>
+    </div>
+
+    <!-- ====== OVERVIEW TAB ====== -->
+    <div class="tab-content active" id="tab-overview">
+      <div class="overview-grid">
+        <div class="portrait-wrap">
+          <div class="portrait-large" id="portrait-large" onclick="setPortrait()" title="Click to set character portrait (paste image URL)">
+            <div class="portrait-placeholder">Click to add<br/>character portrait</div>
+          </div>
+          <div class="portrait-actions">
+            <button onclick="setPortrait()">Set URL</button>
+            <button onclick="clearPortrait()">Clear</button>
+          </div>
+        </div>
+        <div class="overview-right">
+          <div class="overview-display-name" id="overview-display-name">&mdash; unnamed &mdash;</div>
+          <div class="overview-subtitle">Aasimar &middot; Monk 5 &middot; Way of the Drunken Master &middot; Acolyte</div>
+          <div class="overview-meta-grid">
+            <div class="k">Class / Level</div><div class="v">Monk 5</div>
+            <div class="k">Subclass</div><div class="v">Way of the Drunken Master (XGtE)</div>
+            <div class="k">Species</div><div class="v">Aasimar (MPMM, 2022)</div>
+            <div class="k">Background</div><div class="v">Acolyte (PHB 2014)</div>
+            <div class="k">Alignment</div><div class="v">&mdash;</div>
+            <div class="k">Deity / Patron</div><div class="v">&mdash;</div>
+            <div class="k">Proficiency Bonus</div><div class="v">+3</div>
+            <div class="k">Initiative</div><div class="v">+4</div>
+            <div class="k">Speed</div><div class="v">40 ft (30 + Unarmored Movement +10 ft)</div>
+          </div>
+
+          <div class="overview-section-head">Backstory &amp; Personality</div>
+          <textarea class="summary-area" id="overview-summary" placeholder="A brief summary of backstory and personality&#8230;" oninput="saveOverviewSummary()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== ACTIONS TAB ====== -->
+    <div class="tab-content" id="tab-actions">
+      <div class="filter-chips" data-filter-group="actions">
+        <div class="chip active" data-filter="all">All</div>
+        <div class="chip" data-filter="action">Action</div>
+        <div class="chip" data-filter="bonus">Bonus Action</div>
+        <div class="chip" data-filter="reaction">Reaction</div>
+        <div class="chip" data-filter="attack">Attack</div>
+        <div class="chip" data-filter="free">Free / Passive</div>
+        <div class="chip" data-filter="limited">Limited Use</div>
+      </div>
+
+      <div class="section-head">Attacks</div>
+
+      <div class="card" data-categories="action attack">
+        <div class="card-header">
+          <div class="card-title">Unarmed Strike <span class="sub">Martial Arts d6 &middot; Extra Attack at Monk 5</span></div>
+          <div class="card-tags">
+            <span class="tag attack">Attack</span>
+            <span class="tag action">Action</span>
+          </div>
+        </div>
+        <div class="card-stats">
+          <span><strong>To Hit:</strong> +7</span>
+          <span><strong>Reach:</strong> 5 ft</span>
+          <span><strong>Ability:</strong> DEX (Martial Arts)</span>
+        </div>
+        <div class="card-body">
+          <p><span class="damage">1d6 + 4 bludgeoning</span>. While unarmored and holding no non-monk weapons, you may use DEX for unarmed strikes and monk weapons.</p>
+          <p><em>Extra Attack (Monk 5): attacking with an unarmed strike or monk weapon, you may make two attacks on the Attack action. Add a bonus-action strike (free) or Flurry (1 ki, 2 strikes) for a three- or four-hit turn.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="bonus attack">
+        <div class="card-header">
+          <div class="card-title">Bonus Unarmed Strike <span class="sub">after Attack action</span></div>
+          <div class="card-tags">
+            <span class="tag attack">Attack</span>
+            <span class="tag bonus">Bonus</span>
+          </div>
+        </div>
+        <div class="card-stats">
+          <span><strong>To Hit:</strong> +7</span>
+          <span><strong>Reach:</strong> 5 ft</span>
+        </div>
+        <div class="card-body">
+          <p><span class="damage">1d6 + 4 bludgeoning</span>. After you take the Attack action with an unarmed strike or monk weapon, you may make one unarmed strike as a bonus action.</p>
+          <p><em>Free; requires no ki. Not usable while holding a shield or non-monk weapon.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action attack">
+        <div class="card-header">
+          <div class="card-title">Short Sword <span class="sub">monk weapon</span></div>
+          <div class="card-tags">
+            <span class="tag attack">Attack</span>
+            <span class="tag action">Action</span>
+          </div>
+        </div>
+        <div class="card-stats">
+          <span><strong>To Hit:</strong> +7</span>
+          <span><strong>Reach:</strong> 5 ft</span>
+          <span><strong>Properties:</strong> Finesse, Light</span>
+        </div>
+        <div class="card-body">
+          <p><span class="damage">1d6 + 4 piercing</span>. Counts as a monk weapon &mdash; Martial Arts bonus strike still triggers. Works with Extra Attack.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action attack">
+        <div class="card-header">
+          <div class="card-title">Dart <span class="sub">ranged thrown</span></div>
+          <div class="card-tags">
+            <span class="tag attack">Attack</span>
+            <span class="tag action">Action</span>
+          </div>
+        </div>
+        <div class="card-stats">
+          <span><strong>To Hit:</strong> +7</span>
+          <span><strong>Range:</strong> 20 / 60 ft</span>
+          <span><strong>Properties:</strong> Finesse, Thrown</span>
+        </div>
+        <div class="card-body">
+          <p><span class="damage">1d4 + 4 piercing</span>. Simple <strong>ranged</strong> weapon, finesse, thrown &mdash; uses DEX. <strong>Not a monk weapon by default</strong> (PHB p.78 restricts monk weapons to simple <em>melee</em>), so the Martial Arts bonus-action strike won't trigger after throwing unless darts are declared the <strong>Dedicated Weapon</strong> at a rest. 10 carried; can be reclaimed after combat.</p>
+        </div>
+      </div>
+
+      <div class="section-head">Monk Ki Features</div>
+
+      <div class="card" data-categories="bonus attack limited">
+        <div class="card-header">
+          <div class="card-title">Flurry of Blows</div>
+          <div class="card-tags">
+            <span class="tag attack">Attack</span>
+            <span class="tag bonus">Bonus</span>
+            <span class="tag limited">1 Ki</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>After you take the Attack action, make <strong>two</strong> unarmed strikes as a bonus action. Each is +7 to hit, <span class="damage">1d6 + 4 bludgeoning</span>.</p>
+          <p><em>With Extra Attack, the standard combo is: Attack (2 strikes) &rarr; Flurry (2 more strikes) = four attacks per turn. Drunken Technique also triggers: you gain the benefit of <strong>Disengage</strong> and +10 ft speed this turn.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action limited">
+        <div class="card-header">
+          <div class="card-title">Stunning Strike <span class="sub">Monk 5</span></div>
+          <div class="card-tags">
+            <span class="tag attack">Attack</span>
+            <span class="tag action">Action</span>
+            <span class="tag limited">1 Ki</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>When you hit another creature with a melee weapon attack, spend <strong>1 ki</strong> to force the target to make a <strong>CON save DC 14</strong> or be <strong>stunned until the end of your next turn</strong>.</p>
+          <p><em>Stunned = incapacitated, can't move, auto-fails STR/DEX saves, attacks against it have advantage. The single highest-impact ki spend in the book &mdash; save it for bosses or casters. Can be triggered on <strong>any</strong> melee hit, not limited to unarmed strikes.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="bonus limited">
+        <div class="card-header">
+          <div class="card-title">Patient Defense</div>
+          <div class="card-tags">
+            <span class="tag bonus">Bonus</span>
+            <span class="tag limited">1 Ki</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>Take the <strong>Dodge</strong> action as a bonus action: attacks against you have disadvantage, you make DEX saves with advantage.</p>
+          <p><em>Pair with Stunning Strike turns where you want to lock a target down without attacking again, or as a panic button when low HP.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="bonus limited">
+        <div class="card-header">
+          <div class="card-title">Step of the Wind</div>
+          <div class="card-tags">
+            <span class="tag bonus">Bonus</span>
+            <span class="tag limited">1 Ki</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>As a bonus action, take the <strong>Dash</strong> or <strong>Disengage</strong> action. Jump distance is doubled this turn.</p>
+          <p><em>Long jump = 24 ft. High jump = 8 ft (clears most Medium creatures).</em></p>
+        </div>
+      </div>
+
+      <div class="section-head">Aasimar (Celestial)</div>
+
+      <div class="card" data-categories="action limited">
+        <div class="card-header">
+          <div class="card-title">Healing Hands <span class="sub">PB &times; d4 &middot; 1/LR</span></div>
+          <div class="card-tags">
+            <span class="tag action">Action</span>
+            <span class="tag limited">1 / LR</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>As an action, touch a creature to restore <span class="damage">3d4</span> HP (PB &times; d4). Once per long rest.</p>
+          <p><em>Cheap emergency heal &mdash; most useful to stabilize a downed ally at 0 HP or patch up between fights. Doesn't cost ki.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="bonus limited">
+        <div class="card-header">
+          <div class="card-title">Celestial Revelation &mdash; Radiant Soul <span class="sub">Aasimar 3 &middot; 1/LR</span></div>
+          <div class="card-tags">
+            <span class="tag bonus">Bonus</span>
+            <span class="tag limited">1 / LR</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>Bonus action to transform for <strong>1 minute</strong>. While transformed:</p>
+          <p>&bull; Sprout <strong>wings</strong> &mdash; fly speed equals walking speed = <strong>40 ft</strong> (50 ft on Flurry turns via Drunken Technique)<br>
+             &bull; Once on each of your turns, add <strong>+3 radiant damage</strong> (= proficiency bonus) to one attack or damaging spell.</p>
+          <p><em>The build's defining move. At Monk 5 with Extra Attack + Flurry, a typical transformed turn is: bonus action to transform (turn 1 only) &rarr; Attack &times; 2 &rarr; Flurry &times; 2. One of those four strikes adds +3 radiant. Plus 40 ft of flight to reach anything.</em></p>
+          <p><em>Once per long rest. Can end early as a bonus action on a later turn.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action">
+        <div class="card-header">
+          <div class="card-title">Light <span class="sub">cantrip &middot; at-will</span></div>
+          <div class="card-tags">
+            <span class="tag action">Action</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>Touch an object no larger than 10 ft in any dimension to make it shed <strong>bright light in a 20-ft radius</strong> and dim light 20 ft beyond for 1 hour. Dismissible as an action. Aasimar innate spellcasting (no components needed).</p>
+        </div>
+      </div>
+
+      <div class="section-head">Monk Defense</div>
+
+      <div class="card" data-categories="reaction limited">
+        <div class="card-header">
+          <div class="card-title">Deflect Missiles</div>
+          <div class="card-tags">
+            <span class="tag reaction">Reaction</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>When hit by a ranged weapon attack, reduce damage by <span class="damage">1d10 + 9</span> (1d10 + DEX + Monk level).</p>
+          <p>If reduced to 0 and the missile is small enough to hold one-handed (with a hand free), you catch it. Spend <strong>1 ki</strong> as part of the same reaction to throw it back: ranged attack +7, 20/60 ft.</p>
+          <p><strong>Throwback damage = the caught missile's own damage die + DEX mod</strong> (arrow / crossbow bolt = 1d8 + 4, sling bullet = 1d4 + 4, dart = 1d4 + 4). <em>Not</em> a flat 1d10.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="reaction">
+        <div class="card-header">
+          <div class="card-title">Slow Fall</div>
+          <div class="card-tags">
+            <span class="tag reaction">Reaction</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>When you fall, reduce falling damage by <span class="damage">25</span> (5 &times; Monk level).</p>
+          <p><em>With Radiant Soul's flight, also an escape hatch if the transformation drops mid-air.</em></p>
+        </div>
+      </div>
+
+      <div class="section-head">Universal Actions</div>
+
+      <div class="card" data-categories="action">
+        <div class="card-header">
+          <div class="card-title">Grapple <span class="sub">Athletics +1</span></div>
+          <div class="card-tags">
+            <span class="tag attack">Attack</span>
+            <span class="tag action">Action</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>Replace one attack with a Grapple: contested Athletics (<strong>+1</strong>, STR mod only, not proficient) vs. target's Athletics or Acrobatics. Target's speed becomes 0; you drag them with you at half speed.</p>
+          <p><em>Low STR and no Athletics proficiency make this a niche option now &mdash; prefer Stunning Strike for lockdown, or just Attack &times; 2 + Flurry for damage.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action">
+        <div class="card-header">
+          <div class="card-title">Shove <span class="sub">prone or push 5 ft</span></div>
+          <div class="card-tags">
+            <span class="tag attack">Attack</span>
+            <span class="tag action">Action</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>Replace one attack: Athletics (+1) vs. target's Athletics or Acrobatics. On success, either knock target <strong>prone</strong> or push 5 ft.</p>
+          <p><em>Weak on raw numbers, but situationally useful against Small targets or enemies standing near a ledge (Slow Fall makes you immune to the drop).</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="action">
+        <div class="card-header">
+          <div class="card-title">Dodge / Dash / Disengage / Hide</div>
+          <div class="card-tags"><span class="tag action">Action</span></div>
+        </div>
+        <div class="card-body">
+          <p>Standard actions. Stealth +7 makes Hide a real option mid-combat. Step of the Wind (1 ki) gives Dash/Disengage as a bonus action.</p>
+        </div>
+      </div>
+
+      <div class="section-head">Passive / Free</div>
+
+      <div class="card" data-categories="free">
+        <div class="card-header">
+          <div class="card-title">Drunken Technique</div>
+          <div class="card-tags"><span class="tag free">Free</span></div>
+        </div>
+        <div class="card-body">
+          <p>Whenever you use <strong>Flurry of Blows</strong>, you also gain the benefit of the Disengage action, and your walking speed increases by <strong>+10 ft</strong> until the end of the turn.</p>
+          <p><em>Attack &times; 2 &rarr; Flurry &rarr; walk 50 ft away with no opportunity attacks.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="free">
+        <div class="card-header">
+          <div class="card-title">Unarmored Defense (Monk)</div>
+          <div class="card-tags"><span class="tag free">Passive</span></div>
+        </div>
+        <div class="card-body">
+          <p>While not wearing armor and not wielding a shield: <strong>AC = 10 + DEX + WIS = 17</strong>. The build's base defense.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="free">
+        <div class="card-header">
+          <div class="card-title">Celestial Resistance <span class="sub">Aasimar</span></div>
+          <div class="card-tags"><span class="tag free">Passive</span></div>
+        </div>
+        <div class="card-body">
+          <p>You have <strong>resistance to necrotic and radiant damage</strong>. Half damage taken from either.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="free">
+        <div class="card-header">
+          <div class="card-title">Darkvision 60 ft <span class="sub">Aasimar</span></div>
+          <div class="card-tags"><span class="tag free">Passive</span></div>
+        </div>
+        <div class="card-body">
+          <p>See in dim light as bright light, and darkness as dim light (shades of grey) out to 60 ft.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== PLAYSTYLE TAB ====== -->
+    <div class="tab-content" id="tab-modes">
+      <p style="font-size:13px;color:var(--text-dim);margin-bottom:14px;">
+        A pure monk drunken brawler with a celestial twist. No shield, no heavy weapons &mdash; just fists, feet, and Radiant Soul. Operates in two gears: <strong>normal</strong> (the default stance) and <strong>transformed</strong> (Radiant Soul active for a minute, 1/LR).
+      </p>
+
+      <div class="stance-block active-stance">
+        <h3>Normal Stance</h3>
+        <div class="tagline">Unarmored monk &mdash; Martial Arts, Flurry, Stunning Strike, Drunken Technique.</div>
+        <div class="stat-pills">
+          <div class="stat-pill"><strong>AC</strong> 17</div>
+          <div class="stat-pill"><strong>Speed</strong> 40 ft</div>
+          <div class="stat-pill"><strong>Flurry Speed</strong> 50 ft</div>
+          <div class="stat-pill"><strong>Unarmed</strong> 1d6 + 4</div>
+          <div class="stat-pill"><strong>Hands</strong> Both free</div>
+        </div>
+        <div class="card-body">
+          <p><strong>Standard damage turn:</strong> Attack (2 strikes via Extra Attack) &rarr; Flurry of Blows (2 more) &rarr; Disengage &amp; walk 50 ft via Drunken Technique. Four attacks at +7 for 1d6+4 each, with <strong>Disengage</strong> and a move baked in.</p>
+          <p><strong>Lockdown turn:</strong> Attack &rarr; on hit, spend 1 ki for <strong>Stunning Strike</strong> (CON save DC 14). Can attempt on every melee hit this turn &mdash; keep trying until it lands or ki runs out. A stunned boss loses its next turn and all attackers get advantage.</p>
+          <p><strong>Best when:</strong> most fights. This is your default &mdash; don't burn Radiant Soul on random bandits.</p>
+        </div>
+      </div>
+
+      <div class="stance-block">
+        <h3>Transformed Stance &mdash; Radiant Soul</h3>
+        <div class="tagline">Wings unfurl. Golden light flickers around the knuckles. 1 minute, bonus action to enter.</div>
+        <div class="stat-pills">
+          <div class="stat-pill"><strong>AC</strong> 17</div>
+          <div class="stat-pill"><strong>Fly Speed</strong> 40 ft</div>
+          <div class="stat-pill"><strong>Walk Speed</strong> 40 ft</div>
+          <div class="stat-pill"><strong>Unarmed</strong> 1d6 + 4 (+3 rad once/turn)</div>
+          <div class="stat-pill"><strong>Duration</strong> 1 min</div>
+        </div>
+        <div class="card-body">
+          <p><strong>Opener:</strong> Bonus action to transform (turn 1 only) &rarr; Attack &times; 2 &rarr; Flurry &times; 2. One of those four strikes adds <strong>+3 radiant damage</strong> (= proficiency bonus).</p>
+          <p><strong>Mobility:</strong> 40 ft of flight (fly speed matches walking speed). Reach flying enemies, cross chasms, drop on casters from above (with Slow Fall as insurance if the duration lapses mid-air).</p>
+          <p><strong>Best when:</strong> boss fight, undead or fiends (radiant is doubly nasty against both), or you need to get somewhere fast and the terrain says no. <strong>Once per long rest</strong> &mdash; save it for the fight that matters.</p>
+        </div>
+      </div>
+
+      <div class="quote">The celestial nature is usually quiet &mdash; the drunken style reads as a normal, shabby brawler. Radiant Soul is the reveal: when the wings come out, the illusion is done.</div>
+    </div>
+
+    <!-- ====== RESOURCES TAB ====== -->
+    <div class="tab-content" id="tab-resources">
+      <div class="section-head">Ki Points</div>
+      <div class="pip-row">
+        <div class="pip-label">
+          Ki Points
+          <span class="pip-sub">5 total &middot; refreshes on <strong>Short Rest</strong> &middot; Save DC 14</span>
+        </div>
+        <div class="pips" data-resource="ki">
+          <div class="pip ki" data-idx="0"></div>
+          <div class="pip ki" data-idx="1"></div>
+          <div class="pip ki" data-idx="2"></div>
+          <div class="pip ki" data-idx="3"></div>
+          <div class="pip ki" data-idx="4"></div>
+        </div>
+      </div>
+      <div class="placeholder-note" style="margin-bottom:14px;">
+        Spent on: Flurry of Blows &middot; Patient Defense &middot; Step of the Wind &middot; <strong>Stunning Strike</strong> &middot; Deflect &amp; Throw.
+      </div>
+
+      <div class="section-head">Radiant Soul (Celestial Revelation)</div>
+      <div class="pip-row">
+        <div class="pip-label">
+          Uses
+          <span class="pip-sub">1 total &middot; refreshes on <strong>Long Rest</strong> &middot; 1 minute each</span>
+        </div>
+        <div class="pips" data-resource="radiant">
+          <div class="pip rage" data-idx="0"></div>
+        </div>
+      </div>
+      <div class="placeholder-note" style="margin-bottom:14px;">
+        Bonus action to transform. Wings (fly speed = walking speed, 40 ft) + once/turn +3 radiant damage (= PB) on one attack. Can end early as a bonus action.
+      </div>
+
+      <div class="section-head">Healing Hands</div>
+      <div class="pip-row">
+        <div class="pip-label">
+          Uses
+          <span class="pip-sub">1 total &middot; refreshes on <strong>Long Rest</strong></span>
+        </div>
+        <div class="pips" data-resource="healingHands">
+          <div class="pip" data-idx="0"></div>
+        </div>
+      </div>
+      <div class="placeholder-note">
+        Action &middot; touch a creature to heal 3d4 (PB &times; d4). Good stabilize tool at 0 HP.
+      </div>
+
+      <div class="section-head">Hit Dice</div>
+      <div class="pip-row">
+        <div class="pip-label">
+          d8 &times; 5 (Monk)
+          <span class="pip-sub">Spend on Short Rest to heal 1d8 + 2 each</span>
+        </div>
+        <div class="pips" data-resource="hd8">
+          <div class="pip" data-idx="0"></div>
+          <div class="pip" data-idx="1"></div>
+          <div class="pip" data-idx="2"></div>
+          <div class="pip" data-idx="3"></div>
+          <div class="pip" data-idx="4"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== FEATURES TAB ====== -->
+    <div class="tab-content" id="tab-features">
+      <div class="filter-chips" data-filter-group="features">
+        <div class="chip active" data-filter="all">All</div>
+        <div class="chip" data-filter="class">Class</div>
+        <div class="chip" data-filter="subclass">Subclass</div>
+        <div class="chip" data-filter="species">Species</div>
+        <div class="chip" data-filter="background">Background</div>
+      </div>
+
+      <div class="section-head">Monk</div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header">
+          <div class="card-title">Martial Arts <span class="sub">Monk 1 &middot; d6 at Monk 5</span></div>
+          <div class="card-tags"><span class="tag class">Class</span></div>
+        </div>
+        <div class="card-body">
+          <p>When unarmored and not wielding a shield or non-monk weapons:</p>
+          <p>&bull; Use DEX for attack &amp; damage with unarmed strikes and monk weapons<br>
+             &bull; Martial Arts die is <strong>d6</strong> (upgraded from d4 at Monk 5) &mdash; replaces a smaller damage die for unarmed strikes and monk weapons<br>
+             &bull; Bonus-action unarmed strike after the Attack action</p>
+          <p><em>Progression: d4 (L1&ndash;4), d6 (L5&ndash;10), d8 (L11&ndash;16), d10 (L17+).</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header">
+          <div class="card-title">Ki <span class="sub">Monk 2 &middot; 5 points</span></div>
+          <div class="card-tags"><span class="tag class">Class</span></div>
+        </div>
+        <div class="card-body">
+          <p>Ki Save DC = 8 + Prof (+3) + WIS (+3) = <strong>14</strong>. Refreshes on short or long rest.</p>
+          <p>Currently spent on: Flurry of Blows, Patient Defense, Step of the Wind, <strong>Stunning Strike</strong>, Deflect &amp; Throw.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header">
+          <div class="card-title">Unarmored Defense (Monk) <span class="sub">Monk 1</span></div>
+          <div class="card-tags"><span class="tag class">Class</span></div>
+        </div>
+        <div class="card-body">
+          <p>While not wearing armor and not wielding a shield: <strong>AC = 10 + DEX + WIS = 17</strong>. The build's base defense.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header">
+          <div class="card-title">Unarmored Movement <span class="sub">Monk 2 &middot; +10 ft</span></div>
+          <div class="card-tags"><span class="tag class">Class</span></div>
+        </div>
+        <div class="card-body">
+          <p>Speed increases by 10 ft while not wearing armor and not wielding a shield. Total speed: <strong>40 ft</strong>.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header">
+          <div class="card-title">Dedicated Weapon (Tasha's) <span class="sub">Monk 2 optional &middot; parked</span></div>
+          <div class="card-tags"><span class="tag class">Class</span></div>
+        </div>
+        <div class="card-body">
+          <p>At the end of a short or long rest, touch one weapon you're proficient with (non-heavy, non-special) &mdash; it becomes a monk weapon until the next rest.</p>
+          <p><em>Monk weapons by default are shortswords + simple <strong>melee</strong> weapons that aren't heavy or two-handed (PHB p.78). The character's eligible Dedicated Weapon targets right now are therefore: <strong>simple ranged</strong> (darts, sling, light crossbow, shortbow) and <strong>simple two-handed</strong> (greatclub). Natural pick: <strong>darts</strong> &mdash; makes thrown darts monk weapons, enabling the Martial Arts bonus strike after throwing. Bigger payoff unlocks at L8 if the plan adds martial-weapon proficiency via a Fighter dip.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header">
+          <div class="card-title">Deflect Missiles <span class="sub">Monk 3</span></div>
+          <div class="card-tags"><span class="tag class">Class</span></div>
+        </div>
+        <div class="card-body">
+          <p>Reaction when hit by a ranged weapon attack: reduce damage by 1d10 + DEX mod + Monk level = <span class="damage">1d10 + 9</span>.</p>
+          <p>If reduced to 0 and the missile is catchable (one-handed, with a hand free), spend 1 ki as part of the same reaction to throw it back (+7 to hit, 20/60 ft). <strong>Throwback damage = the missile's own damage die + DEX mod</strong> (e.g., arrow/bolt = 1d8 + 4, dart = 1d4 + 4), not a flat 1d10.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header">
+          <div class="card-title">Slow Fall <span class="sub">Monk 4</span></div>
+          <div class="card-tags"><span class="tag class">Class</span></div>
+        </div>
+        <div class="card-body">
+          <p>Reaction when you fall: reduce falling damage by 5 &times; Monk level = <span class="damage">25</span>.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header">
+          <div class="card-title">Ability Score Improvement <span class="sub">Monk 4 &middot; +2 DEX</span></div>
+          <div class="card-tags"><span class="tag class">Class</span></div>
+        </div>
+        <div class="card-body">
+          <p>DEX raised from 16 to <strong>18</strong> (+4 mod). Bumped initiative, AC, attack rolls, Acrobatics, Sleight of Hand, and Stealth by +1.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header">
+          <div class="card-title">Extra Attack <span class="sub">Monk 5</span></div>
+          <div class="card-tags"><span class="tag class">Class</span></div>
+        </div>
+        <div class="card-body">
+          <p>When you take the Attack action on your turn, you can <strong>attack twice</strong> instead of once.</p>
+          <p><em>Combined with the bonus-action strike (free) and Flurry (1 ki, 2 strikes), the standard combo is 4 attacks per turn.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="class">
+        <div class="card-header">
+          <div class="card-title">Stunning Strike <span class="sub">Monk 5 &middot; 1 Ki</span></div>
+          <div class="card-tags"><span class="tag class">Class</span></div>
+        </div>
+        <div class="card-body">
+          <p>When you hit a creature with a melee weapon attack, spend <strong>1 ki</strong> to force a CON save (DC <strong>14</strong>). On a fail: target is <strong>stunned</strong> until the end of your next turn.</p>
+          <p><em>Stunned: incapacitated, can't move or speak, auto-fails STR/DEX saves, attacks against the target have advantage. Can try on any melee hit &mdash; spam it until it lands or ki runs out.</em></p>
+        </div>
+      </div>
+
+      <div class="section-head">Subclass &mdash; Way of the Drunken Master</div>
+
+      <div class="card" data-categories="subclass">
+        <div class="card-header">
+          <div class="card-title">Bonus Proficiencies <span class="sub">Monk 3</span></div>
+          <div class="card-tags"><span class="tag subclass">Subclass</span></div>
+        </div>
+        <div class="card-body">
+          <p>Gain proficiency in the <strong>Performance</strong> skill (+3) and <strong>Brewer's Supplies</strong> (flavor).</p>
+          <p><em>Performance here is about the act &mdash; the wobble, the stagger, the rope-a-dope that masks the celestial power underneath.</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="subclass">
+        <div class="card-header">
+          <div class="card-title">Drunken Technique <span class="sub">Monk 3</span></div>
+          <div class="card-tags"><span class="tag subclass">Subclass</span></div>
+        </div>
+        <div class="card-body">
+          <p>Whenever you use Flurry of Blows, you also gain the benefit of the Disengage action, and your walking speed increases by <strong>+10 ft</strong> until end of turn.</p>
+          <p><em>The core engine of the hit-and-run game. Attack &times; 2 + Flurry = 50 ft of speed, no opportunity attacks.</em></p>
+        </div>
+      </div>
+
+      <div class="section-head">Species &mdash; Aasimar (MPMM, 2022)</div>
+
+      <div class="card" data-categories="species">
+        <div class="card-header">
+          <div class="card-title">Aasimar Traits</div>
+          <div class="card-tags"><span class="tag species">Species</span></div>
+        </div>
+        <div class="card-body">
+          <p>&bull; <strong>Creature Type:</strong> Humanoid<br>
+             &bull; <strong>Size:</strong> Medium &middot; <strong>Speed:</strong> 30 ft (base, before Unarmored Movement)<br>
+             &bull; <strong>Darkvision 60 ft</strong><br>
+             &bull; <strong>Celestial Resistance</strong> &mdash; resistance to necrotic and radiant damage<br>
+             &bull; <strong>Light cantrip</strong> &mdash; you know the <em>light</em> cantrip innately (no components required)<br>
+             &bull; <strong>Languages:</strong> Common, Celestial (native)</p>
+          <p><em>MPMM flexible ASI: three +1s (or +2/+1). Applied as +1 CON, +1 WIS, +1 CHA &mdash; shapes HP, ki save DC, and keeps CHA out of penalty range (9 &rarr; 10).</em></p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="species">
+        <div class="card-header">
+          <div class="card-title">Healing Hands <span class="sub">Aasimar &middot; 1/LR</span></div>
+          <div class="card-tags"><span class="tag species">Species</span></div>
+        </div>
+        <div class="card-body">
+          <p>Action, touch a creature to heal <span class="damage">3d4</span> HP (PB &times; d4). Once per long rest.</p>
+        </div>
+      </div>
+
+      <div class="card" data-categories="species">
+        <div class="card-header">
+          <div class="card-title">Celestial Revelation &mdash; Radiant Soul <span class="sub">Aasimar 3 &middot; 1/LR</span></div>
+          <div class="card-tags"><span class="tag species">Species</span></div>
+        </div>
+        <div class="card-body">
+          <p>Starting at 3rd level, choose one of three revelations the first time you transform (Necrotic Shroud, Radiant Soul, or Radiant Consumption). <strong>Radiant Soul</strong> chosen &mdash; cannot be changed.</p>
+          <p>Bonus action to transform for <strong>1 minute</strong>. <strong>Once per long rest</strong>.</p>
+          <p>&bull; Sprout <strong>radiant wings</strong>: fly speed equals walking speed (40 ft; 50 ft on Flurry turns via Drunken Technique).<br>
+             &bull; Once on each of your turns, add <strong>+3 radiant damage</strong> (= proficiency bonus) to one attack or damaging spell.</p>
+          <p><em>The build's defining ability. Keep it for encounters that matter.</em></p>
+        </div>
+      </div>
+
+      <div class="section-head">Background &mdash; Acolyte (PHB 2014)</div>
+
+      <div class="card" data-categories="background">
+        <div class="card-header">
+          <div class="card-title">Acolyte</div>
+          <div class="card-tags"><span class="tag background">Background</span></div>
+        </div>
+        <div class="card-body">
+          <p>&bull; <strong>Skill proficiencies:</strong> Insight, Religion<br>
+             &bull; <strong>Languages:</strong> two of your choice (Abyssal and Infernal &mdash; reflecting study of celestial opposites)<br>
+             &bull; <strong>Equipment:</strong> holy symbol, prayer book, 5 sticks of incense, vestments, common clothes, 15 gp</p>
+          <p><strong>Feature: Shelter of the Faithful.</strong> You and your adventuring companions can expect to receive free healing and care at a temple, shrine, or other established presence of your faith (you still provide any material components needed for spells). Your priestly contacts may also provide lodging and food, though you're expected to assist the temple when called upon.</p>
+          <p><em>The monastery that raised them was a place of quiet devotion &mdash; the drunken style came after, when they left to learn that holy power could wear a different face.</em></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== INVENTORY TAB ====== -->
+    <div class="tab-content" id="tab-inventory">
+      <div class="section-head">Weapons</div>
+      <div class="inventory-grid">
+        <div class="item">
+          <div class="item-name">Shortsword</div>
+          <div class="item-desc">1d6 piercing &middot; Finesse, Light. Monk weapon &mdash; works with Martial Arts and Extra Attack. Starting Monk weapon.</div>
+        </div>
+        <div class="item">
+          <div class="item-name">Darts &times; 10</div>
+          <div class="item-desc">1d4 piercing &middot; Finesse, Thrown (20/60 ft). Simple <strong>ranged</strong> &mdash; uses DEX, but <em>not a monk weapon by default</em> (PHB p.78 is melee-only). Can be declared the <strong>Dedicated Weapon</strong> at a rest to count as a monk weapon (enables the Martial Arts bonus strike after throwing).</div>
+        </div>
+        <div class="item">
+          <div class="item-name">Unarmed Strike</div>
+          <div class="item-desc">1d6 + 4 bludgeoning. Martial Arts die (d6 at Monk 5). Always available while hands are free.</div>
+        </div>
+      </div>
+
+      <div class="section-head">Holy Symbol &amp; Vestments</div>
+      <div class="inventory-grid">
+        <div class="item">
+          <div class="item-name">Holy Symbol</div>
+          <div class="item-desc">A small token of your faith (amulet, pendant, or prayer beads). Worn openly or tucked under the robes.</div>
+        </div>
+        <div class="item">
+          <div class="item-name">Prayer Book</div>
+          <div class="item-desc">Personal collection of prayers, meditations, and rites from the monastery that trained you.</div>
+        </div>
+        <div class="item">
+          <div class="item-name">Incense &times; 5 sticks</div>
+          <div class="item-desc">Used in daily rites. Consumable.</div>
+        </div>
+        <div class="item">
+          <div class="item-name">Vestments</div>
+          <div class="item-desc">The formal robes of your order. Worn for ceremonies and temple visits.</div>
+        </div>
+        <div class="item">
+          <div class="item-name">Common Clothes</div>
+          <div class="item-desc">A set of everyday clothes for travel. The drunken-monk look: simple, worn, slightly stained.</div>
+        </div>
+      </div>
+
+      <div class="section-head">Tools</div>
+      <div class="inventory-grid">
+        <div class="item">
+          <div class="item-name">Brewer's Supplies</div>
+          <div class="item-desc">+3 on brewing/judging drinks (Prof +3, stat varies). Flavor from the Drunken Master subclass &mdash; sometimes the "drunken" act starts with having something to drink first.</div>
+        </div>
+      </div>
+
+      <div class="section-head">Pack &amp; Gear</div>
+      <div class="inventory-grid">
+        <div class="item">
+          <div class="item-name">Dungeoneer's Pack</div>
+          <div class="item-desc">Backpack, crowbar, hammer, 10 pitons, 10 torches, tinderbox, 10 days rations, waterskin, 50 ft hempen rope. Monk starting equipment.</div>
+        </div>
+        <div class="item">
+          <div class="item-name">Coin Purse</div>
+          <div class="item-desc">15 gp (Acolyte starting funds)</div>
+        </div>
+      </div>
+
+      <div class="section-head">Upgrade Wishlist</div>
+      <div class="inventory-grid">
+        <div class="item">
+          <div class="item-name">Bracers of Defense</div>
+          <div class="item-desc">+2 AC while unarmored and no shield &mdash; pushes AC to 19. Directly compatible with Unarmored Defense.</div>
+        </div>
+        <div class="item">
+          <div class="item-name">Cloak of Protection</div>
+          <div class="item-desc">+1 AC and +1 to all saves. Stacks with the monastic robes thematically.</div>
+        </div>
+        <div class="item">
+          <div class="item-name">Boots of Striding &amp; Springing</div>
+          <div class="item-desc">Jumps &times;3 + min 10 ft. Pairs with Step of the Wind. Also useful for non-Radiant-Soul mobility.</div>
+        </div>
+        <div class="item">
+          <div class="item-name">+1 Shortsword (or any monk-weapon magical)</div>
+          <div class="item-desc">+1 to hit and damage on a monk weapon is pure upgrade. For a magical <em>longsword or scimitar</em>, the character first needs martial-weapon proficiency (planned Fighter 1 dip at L8); after that, <strong>Dedicated Weapon</strong> converts it to a monk weapon for DEX-based swings.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== BACKGROUND TAB ====== -->
+    <div class="tab-content" id="tab-background">
+      <div class="section-head">Identity</div>
+      <div class="card"><div class="card-body">
+        <p><strong>Name:</strong> <em style="color:var(--text-muted);">&mdash; add character name &mdash;</em></p>
+        <p><strong>Species / Age / Height:</strong> Aasimar &middot; <em style="color:var(--text-muted);">age &middot; height</em></p>
+        <p><strong>Alignment:</strong> <em style="color:var(--text-muted);">&mdash;</em></p>
+      </div></div>
+
+      <div class="section-head">Flavor &mdash; the concept in one line</div>
+      <div class="card"><div class="card-body">
+        <p><em>"A celestial monk whose drunken style masks the radiant power within."</em></p>
+        <p class="placeholder-note">The outside: shabby robes, slurred speech, wobbling stance. The inside: a descendant of a celestial being, bound by an oath to hide what they are until it matters. When it does, the wings come out.</p>
+      </div></div>
+
+      <div class="section-head">Personality Traits</div>
+      <div class="card"><div class="card-body">
+        <p class="placeholder-note">&mdash; Two traits. The Acolyte background suggests: "I idolize a particular hero of my faith and constantly refer to that person's deeds and example." and "I've enjoyed fine food, drink, and high society among my temple's elite. Rough living grates on me." (The second plays well with the drunken-master conceit.)</p>
+      </div></div>
+
+      <div class="section-head">Ideals</div>
+      <div class="card"><div class="card-body">
+        <p class="placeholder-note">&mdash; One ideal. Acolyte suggests <em>Faith:</em> "I trust that my deity will guide my actions. I have faith that if I work hard, things will go well." Or <em>Humility:</em> "I seek to prove myself worthy of my god's favor by matching my actions against their teachings."</p>
+      </div></div>
+
+      <div class="section-head">Bonds</div>
+      <div class="card"><div class="card-body">
+        <p class="placeholder-note">&mdash; One bond. Who was the master at the monastery? Is the celestial lineage known, or was it hidden even from them until it manifested? Is there a temple they still answer to?</p>
+      </div></div>
+
+      <div class="section-head">Flaws</div>
+      <div class="card"><div class="card-body">
+        <p class="placeholder-note">&mdash; One flaw. Drunken Master options: drinks too much to keep the cover convincing, picks fights to test themselves, over-commits to the bit even when it stops being funny.</p>
+      </div></div>
+
+      <div class="section-head">Physical Description</div>
+      <div class="card"><div class="card-body">
+        <p class="placeholder-note">&mdash; Describe appearance. Aasimar markers can be subtle (faintly luminous eyes, skin that takes light oddly) or hidden entirely until Radiant Soul activates. Monastic clothing, worn but clean. Any scars or tells from training.</p>
+      </div></div>
+
+      <div class="section-head">Full Backstory</div>
+      <div class="card"><div class="card-body">
+        <div class="backstory-prose">
+          <div class="quote"><em>&mdash; opening line of your character's story &mdash;</em></div>
+          <textarea class="backstory-area" id="backstory" onchange="saveBackstory()" placeholder="— background story goes here —
+
+Who trained them? Was the Aasimar lineage known at the monastery, or did it manifest later? Why the drunken style specifically — a deliberate choice to hide the celestial inheritance, a teacher's peculiar curriculum, or something embraced only after leaving the temple?
+
+Use this space to capture origin, motivations, allies, enemies, formative incidents, and anything that will matter at the table."></textarea>
+          <p style="font-size:11px;color:var(--text-muted);font-style:italic;margin-top:8px;">
+            Tip: Shelter of the Faithful (Acolyte) means there's a temple somewhere that still considers them one of their own. That temple is a location, an NPC roster, and a set of obligations.
+          </p>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- ====== NOTES TAB ====== -->
+    <div class="tab-content" id="tab-usernotes">
+      <div class="section-head">Session Notes</div>
+      <div class="card"><div class="card-body">
+        <p style="font-size:11px;color:var(--text-muted);font-style:italic;margin:0 0 6px;">
+          Free-form notes. Saved automatically to this browser.
+        </p>
+        <textarea class="backstory-area" id="user-notes" oninput="saveUserNotes()"
+                  placeholder="Combat log, DM rulings, NPC names, loot, session recap, questions to ask at the table, things to try next time..."
+                  style="min-height: 360px;"></textarea>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:11px; color:var(--text-muted);">
+          <span id="user-notes-status">Saved</span>
+          <button onclick="clearUserNotes()"
+                  style="background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-size: 11px; padding: 3px 8px; border-radius: 4px; cursor: pointer;">Clear notes</button>
+        </div>
+      </div></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ===== REST MODAL ===== -->
+<div class="modal-overlay" id="rest-modal">
+  <div class="modal">
+    <h2 id="rest-title">Take a Rest?</h2>
+    <p id="rest-desc"></p>
+    <div id="rest-list"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeRest()">Cancel</button>
+      <button class="btn btn-primary" id="rest-confirm" onclick="confirmRest()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'drunken_master_lvl5_sheet_v2';
+
+const defaultState = () => ({
+  hp: { current: 38, max: 38, temp: 0 },
+  inspiration: false,
+  mode: 'light',
+  charName: '',
+  backstory: '',
+  userNotes: '',
+  thumbnailUrl: 'kev_cp_th.png',
+  portraitUrl: '../../Portraits/kev_cp_sm.png',
+  overviewSummary: '',
+  tashaBannerDismissed: false,
+  resources: {
+    ki:           [false, false, false, false, false],
+    radiant:      [false],
+    healingHands: [false],
+    hd8:          [false, false, false, false, false]
+  }
+});
+
+let state = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultState();
+    const saved = JSON.parse(raw);
+    const d = defaultState();
+    return {
+      hp: { ...d.hp, ...(saved.hp || {}) },
+      inspiration: saved.inspiration || false,
+      mode: saved.mode || 'light',
+      charName: saved.charName || '',
+      backstory: saved.backstory || '',
+      userNotes: saved.userNotes || '',
+      thumbnailUrl: saved.thumbnailUrl || d.thumbnailUrl,
+      portraitUrl: saved.portraitUrl || d.portraitUrl,
+      overviewSummary: saved.overviewSummary || '',
+      tashaBannerDismissed: saved.tashaBannerDismissed || false,
+      resources: { ...d.resources, ...(saved.resources || {}) }
+    };
+  } catch (e) {
+    return defaultState();
+  }
+}
+
+function saveState() {
+  state.hp.current = parseInt(document.getElementById('hp-current').value) || 0;
+  state.hp.max = parseInt(document.getElementById('hp-max').value) || 1;
+  state.hp.temp = parseInt(document.getElementById('hp-temp').value) || 0;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function saveName() {
+  state.charName = document.getElementById('char-name').value;
+  renderOverviewDisplayName();
+  saveState();
+}
+
+function saveBackstory() {
+  state.backstory = document.getElementById('backstory').value;
+  saveState();
+}
+
+/* ===== OVERVIEW SUMMARY (debounced save) ===== */
+let overviewSummarySaveTimer = null;
+function saveOverviewSummary() {
+  const el = document.getElementById('overview-summary');
+  if (!el) return;
+  state.overviewSummary = el.value;
+  if (overviewSummarySaveTimer) clearTimeout(overviewSummarySaveTimer);
+  overviewSummarySaveTimer = setTimeout(saveState, 300);
+}
+
+/* ===== CHARACTER THUMBNAIL (top-bar) ===== */
+function setThumbnail() {
+  const current = state.thumbnailUrl || '';
+  const url = window.prompt('Paste an image URL for the character thumbnail (leave blank to clear):', current);
+  if (url === null) return;
+  state.thumbnailUrl = url.trim();
+  saveState();
+  renderThumbnail();
+}
+function renderThumbnail() {
+  const el = document.getElementById('char-thumbnail');
+  if (!el) return;
+  if (state.thumbnailUrl) {
+    el.innerHTML = '<img src="' + state.thumbnailUrl.replace(/"/g, '&quot;') + '" alt="thumb" onerror="this.parentNode.innerHTML=\'<div class=&quot;thumb-placeholder&quot;>image<br/>failed</div>\'">';
+  } else {
+    el.innerHTML = '<div class="thumb-placeholder">add<br/>art</div>';
+  }
+}
+
+/* ===== CHARACTER PORTRAIT (Overview tab) ===== */
+function setPortrait() {
+  const current = state.portraitUrl || '';
+  const url = window.prompt('Paste an image URL for the character portrait (leave blank to clear):', current);
+  if (url === null) return;
+  state.portraitUrl = url.trim();
+  saveState();
+  renderPortrait();
+}
+function clearPortrait() {
+  if (!state.portraitUrl) return;
+  if (!window.confirm('Clear the character portrait?')) return;
+  state.portraitUrl = '';
+  saveState();
+  renderPortrait();
+}
+function renderPortrait() {
+  const el = document.getElementById('portrait-large');
+  if (!el) return;
+  if (state.portraitUrl) {
+    el.innerHTML = '<img src="' + state.portraitUrl.replace(/"/g, '&quot;') + '" alt="portrait" onerror="this.parentNode.innerHTML=\'<div class=&quot;portrait-placeholder&quot;>image failed to load<br/>click to try another URL</div>\'">';
+  } else {
+    el.innerHTML = '<div class="portrait-placeholder">Click to add<br/>character portrait</div>';
+  }
+}
+
+/* ===== OVERVIEW DISPLAY NAME (mirrors top-bar name) ===== */
+function renderOverviewDisplayName() {
+  const el = document.getElementById('overview-display-name');
+  if (!el) return;
+  const n = (state.charName || '').trim();
+  el.textContent = n || '— unnamed —';
+  el.style.color = n ? '' : 'var(--text-muted)';
+}
+
+function adjustHP(delta) {
+  const curInput = document.getElementById('hp-current');
+  let cur = parseInt(curInput.value) || 0;
+  const max = parseInt(document.getElementById('hp-max').value) || 1;
+  cur = Math.max(0, Math.min(max + (parseInt(document.getElementById('hp-temp').value)||0), cur + delta));
+  curInput.value = cur;
+  saveState();
+}
+
+function toggleInspiration() {
+  state.inspiration = !state.inspiration;
+  renderInspiration();
+  saveState();
+}
+function renderInspiration() {
+  document.getElementById('inspiration-toggle').classList.toggle('active', state.inspiration);
+}
+
+function renderPips() {
+  document.querySelectorAll('.pips').forEach(container => {
+    const key = container.dataset.resource;
+    const arr = state.resources[key] || [];
+    container.querySelectorAll('.pip').forEach(pip => {
+      const idx = parseInt(pip.dataset.idx);
+      pip.classList.toggle('used', !!arr[idx]);
+    });
+  });
+}
+
+function togglePip(container, pip) {
+  const key = container.dataset.resource;
+  const idx = parseInt(pip.dataset.idx);
+  if (!state.resources[key]) return;
+  state.resources[key][idx] = !state.resources[key][idx];
+  document.querySelectorAll(`.pips[data-resource="${key}"]`).forEach(c => {
+    c.querySelectorAll('.pip').forEach(p => {
+      const i = parseInt(p.dataset.idx);
+      p.classList.toggle('used', !!state.resources[key][i]);
+    });
+  });
+  saveState();
+}
+
+document.addEventListener('click', (e) => {
+  const pip = e.target.closest('.pip');
+  if (pip) {
+    const container = pip.closest('.pips');
+    if (container) togglePip(container, pip);
+  }
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${tab}`));
+  });
+});
+
+document.querySelectorAll('.filter-chips').forEach(group => {
+  group.addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    group.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c === chip));
+    const filter = chip.dataset.filter;
+    const tab = group.closest('.tab-content');
+    tab.querySelectorAll('.card[data-categories]').forEach(card => {
+      const cats = card.dataset.categories.split(/\s+/);
+      const show = filter === 'all' || cats.includes(filter);
+      card.classList.toggle('hidden', !show);
+    });
+    tab.querySelectorAll('.section-head').forEach(h => {
+      let next = h.nextElementSibling;
+      let anyVisible = false;
+      while (next && !next.classList.contains('section-head')) {
+        if (next.classList.contains('card') && !next.classList.contains('hidden')) anyVisible = true;
+        next = next.nextElementSibling;
+      }
+      h.style.display = anyVisible ? '' : 'none';
+    });
+  });
+});
+
+/* ===== MODE (legacy, retained so old saved state doesn't break) ===== */
+function setMode(mode) {
+  state.mode = mode || 'light';
+  /* No-op visually: this build no longer has a heavy-mode shield toggle.
+     AC stays at 17 (Monk Unarmored Defense) and speed stays at 40 ft. */
+  saveState();
+}
+
+/* ===== TASHA BANNER DISMISS ===== */
+function dismissTashaBanner() {
+  state.tashaBannerDismissed = true;
+  renderTashaBanner();
+  saveState();
+}
+function showTashaBanner() {
+  state.tashaBannerDismissed = false;
+  renderTashaBanner();
+  saveState();
+}
+function renderTashaBanner() {
+  const banner = document.getElementById('tasha-banner');
+  const reopen = document.getElementById('tasha-banner-reopen');
+  if (!banner || !reopen) return;
+  if (state.tashaBannerDismissed) {
+    banner.style.display = 'none';
+    reopen.style.display = 'block';
+  } else {
+    banner.style.display = '';
+    reopen.style.display = 'none';
+  }
+}
+
+/* ===== USER NOTES ===== */
+let userNotesSaveTimer = null;
+function saveUserNotes() {
+  const ta = document.getElementById('user-notes');
+  if (!ta) return;
+  state.userNotes = ta.value;
+  const status = document.getElementById('user-notes-status');
+  if (status) status.textContent = 'Saving\u2026';
+  clearTimeout(userNotesSaveTimer);
+  userNotesSaveTimer = setTimeout(() => {
+    saveState();
+    if (status) status.textContent = 'Saved';
+  }, 300);
+}
+function clearUserNotes() {
+  if (!confirm('Clear all notes? This cannot be undone.')) return;
+  state.userNotes = '';
+  const ta = document.getElementById('user-notes');
+  if (ta) ta.value = '';
+  saveState();
+  const status = document.getElementById('user-notes-status');
+  if (status) status.textContent = 'Saved';
+}
+
+/* ===== REST MODALS ===== */
+let pendingRest = null;
+
+function openRest(type) {
+  pendingRest = type;
+  const modal = document.getElementById('rest-modal');
+  const title = document.getElementById('rest-title');
+  const desc = document.getElementById('rest-desc');
+  const list = document.getElementById('rest-list');
+  const confirmBtn = document.getElementById('rest-confirm');
+
+  if (type === 'short') {
+    title.textContent = 'Take a Short Rest?';
+    desc.textContent = 'A short rest is at least 1 hour of light activity. This will refresh:';
+    list.innerHTML = `
+      <ul style="padding-left:20px;margin-bottom:16px;font-size:13px;">
+        <li><strong>Ki</strong> \u2014 all 5 points restored</li>
+        <li><strong>Dedicated Weapon</strong> (Tasha's, parked) \u2014 may re-select if used</li>
+        <li>You may spend Hit Dice to heal (click used pips in Resources to mark HD spent). HD are not auto-restored on short rest.</li>
+      </ul>
+      <p style="font-size:12px;color:var(--text-muted);">Radiant Soul and Healing Hands are <em>not</em> regained on short rest \u2014 both reset only on long rest.</p>
+    `;
+    if (confirmBtn) confirmBtn.textContent = 'Take Short Rest';
+  } else {
+    title.textContent = 'Take a Long Rest?';
+    desc.textContent = 'A long rest is 8 hours. This will restore:';
+    list.innerHTML = `
+      <ul style="padding-left:20px;margin-bottom:16px;font-size:13px;">
+        <li>HP restored to <strong>maximum</strong>, Temp HP cleared</li>
+        <li><strong>Ki</strong> \u2014 all 5 points restored</li>
+        <li><strong>Radiant Soul</strong> \u2014 1 use restored</li>
+        <li><strong>Healing Hands</strong> \u2014 1 use restored</li>
+        <li><strong>Hit Dice</strong> \u2014 regain half your total (round down), min 1. (2 HD back at level 5.)</li>
+      </ul>
+    `;
+    if (confirmBtn) confirmBtn.textContent = 'Take Long Rest';
+  }
+  if (modal) modal.classList.add('active');
+}
+
+function closeRest() {
+  const modal = document.getElementById('rest-modal');
+  if (modal) modal.classList.remove('active');
+  pendingRest = null;
+}
+
+function confirmRest() {
+  if (pendingRest === 'short') {
+    state.resources.ki = [false, false, false, false, false];
+  } else if (pendingRest === 'long') {
+    state.hp.current = state.hp.max;
+    state.hp.temp = 0;
+    state.resources.ki = [false, false, false, false, false];
+    state.resources.radiant = [false];
+    state.resources.healingHands = [false];
+    state.resources.hd8 = [false, false, false, false, false];
+    const hpCur = document.getElementById('hp-current');
+    const hpTemp = document.getElementById('hp-temp');
+    if (hpCur) hpCur.value = state.hp.current;
+    if (hpTemp) hpTemp.value = state.hp.temp;
+  }
+  renderAll();
+  saveState();
+  closeRest();
+}
+
+/* Close modal on background click */
+const restModal = document.getElementById('rest-modal');
+if (restModal) {
+  restModal.addEventListener('click', (e) => {
+    if (e.target.id === 'rest-modal') closeRest();
+  });
+}
+
+/* ===== INITIAL RENDER ===== */
+function renderAll() {
+  const hpCur = document.getElementById('hp-current');
+  const hpMax = document.getElementById('hp-max');
+  const hpTemp = document.getElementById('hp-temp');
+  if (hpCur) hpCur.value = state.hp.current;
+  if (hpMax) hpMax.value = state.hp.max;
+  if (hpTemp) hpTemp.value = state.hp.temp;
+  const nameEl = document.getElementById('char-name');
+  if (nameEl) nameEl.value = state.charName || '';
+  const backEl = document.getElementById('backstory');
+  if (backEl) backEl.value = state.backstory || '';
+  const notesEl = document.getElementById('user-notes');
+  if (notesEl) notesEl.value = state.userNotes || '';
+  const summaryEl = document.getElementById('overview-summary');
+  if (summaryEl) summaryEl.value = state.overviewSummary || '';
+  renderThumbnail();
+  renderPortrait();
+  renderOverviewDisplayName();
+  renderInspiration();
+  renderPips();
+  renderTashaBanner();
+  setMode(state.mode || 'light');
+}
+
+renderAll();
+</script>
+</body>
+</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
