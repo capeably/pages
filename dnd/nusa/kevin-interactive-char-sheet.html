@@ -236,7 +236,7 @@
   <div class="char-identity">
     <div class="char-thumbnail" id="char-thumbnail" onclick="setThumbnail()" title="Click to set character art (paste image URL)"></div>
     <div class="char-name-block">
-      <input class="name-input" id="char-name" type="text" placeholder="— your character's name —" onchange="saveName()" />
+      <input class="name-input" id="char-name" type="text" value="Ren" placeholder="— your character's name —" onchange="saveName()" />
       <div class="sub">Aasimar • Monk 5 • Way of the Drunken Master • Acolyte</div>
     </div>
   </div>
@@ -271,7 +271,7 @@
   <button id="tasha-banner-close" onclick="dismissTashaBanner()" title="Dismiss" aria-label="Dismiss"
           style="position: absolute; top: 4px; right: 6px; width: 22px; height: 22px; border: none; background: transparent; color: #fbbf24; font-size: 18px; line-height: 1; cursor: pointer; padding: 0; border-radius: 4px;">&times;</button>
   <strong style="color: #fbbf24;">Uses one Tasha's optional rule &mdash; parked, confirm DM approval before invoking.</strong>
-  <strong>Dedicated Weapon</strong> (Monk 2 optional class feature from <em>Tasha's Cauldron of Everything</em>) lets a weapon you're proficient with (non-heavy, non-special) count as a monk weapon between rests. <strong>Currently eligible targets</strong> the character is proficient with but which are <em>not</em> monk weapons by default: simple ranged (darts, sling, light crossbow, shortbow) and simple two-handed (greatclub). Declaring darts enables the Martial Arts bonus strike after throwing. If the DM denies the Tasha's rule, nothing in the current sheet changes.
+  <strong>Dedicated Weapon</strong> (Monk 2 optional class feature from <em>Tasha's Cauldron of Everything</em>) lets a non-monk weapon count as a monk weapon. Not currently used by the build &mdash; kept parked for future flexibility (e.g. a magical longsword found in play). If the DM denies it, nothing in the current sheet changes.
 </div>
 <div id="tasha-banner-reopen" style="display:none; margin: 4px 16px 0; text-align: right;">
   <button onclick="showTashaBanner()" title="Show Tasha's rules notice"
@@ -286,11 +286,11 @@
       <h3>Ability Scores</h3>
       <div class="ability-grid">
         <div class="ability-box prof" title="STR 12 = 12 rolled (no ASI applied)&#10;Save +4 = +1 mod + 3 prof (Monk save proficiency)"><div class="name">STR</div><div class="mod">+1</div><div class="score">12</div><div class="save">save +4 &starf;</div></div>
-        <div class="ability-box prof" title="DEX 18 = 16 rolled + 2 Monk 4 ASI (no racial bonus)&#10;Save +7 = +4 mod + 3 prof (Monk save proficiency)"><div class="name">DEX</div><div class="mod">+4</div><div class="score">18</div><div class="save">save +7 &starf;</div></div>
+        <div class="ability-box prof" title="DEX 18 = 15 rolled + 1 Aasimar + 2 Monk 4 ASI&#10;Save +7 = +4 mod + 3 prof (Monk save proficiency)"><div class="name">DEX</div><div class="mod">+4</div><div class="score">18</div><div class="save">save +7 &starf;</div></div>
         <div class="ability-box" title="CON 14 = 13 rolled + 1 Aasimar&#10;Save +2 = +2 mod"><div class="name">CON</div><div class="mod">+2</div><div class="score">14</div><div class="save">save +2</div></div>
         <div class="ability-box" title="INT 14 = 14 rolled (no bonuses applied)&#10;Save +2 = +2 mod"><div class="name">INT</div><div class="mod">+2</div><div class="score">14</div><div class="save">save +2</div></div>
         <div class="ability-box" title="WIS 17 = 16 rolled + 1 Aasimar&#10;Save +3 = +3 mod"><div class="name">WIS</div><div class="mod">+3</div><div class="score">17</div><div class="save">save +3</div></div>
-        <div class="ability-box" title="CHA 10 = 9 rolled + 1 Aasimar&#10;Save +0 = +0 mod"><div class="name">CHA</div><div class="mod">+0</div><div class="score">10</div><div class="save">save +0</div></div>
+        <div class="ability-box" title="CHA 10 = 10 rolled (no bonuses applied)&#10;Save +0 = +0 mod"><div class="name">CHA</div><div class="mod">+0</div><div class="score">10</div><div class="save">save +0</div></div>
       </div>
     </div>
 
@@ -322,7 +322,7 @@
       <div class="skill-row" title="Not proficient. +3 = WIS mod only."><div class="skill-dot"></div><span class="skill-abil">WIS</span><span class="skill-name">Perception</span><span class="skill-mod">+3</span></div>
       <div class="skill-row" title="Proficient from Drunken Master subclass bonus proficiency (L3).&#10;+3 = +0 CHA mod + 3 prof."><div class="skill-dot prof"></div><span class="skill-abil">CHA</span><span class="skill-name">Performance</span><span class="skill-mod">+3</span></div>
       <div class="skill-row" title="Not proficient. +0 = CHA mod only."><div class="skill-dot"></div><span class="skill-abil">CHA</span><span class="skill-name">Persuasion</span><span class="skill-mod">+0</span></div>
-      <div class="skill-row" title="Proficient from Acolyte background.&#10;+5 = +2 INT mod + 3 prof."><div class="skill-dot prof"></div><span class="skill-abil">INT</span><span class="skill-name">Religion</span><span class="skill-mod">+5</span></div>
+      <div class="skill-row" title="Proficient from Acolyte background.&#10;+6 = +3 WIS mod + 3 prof."><div class="skill-dot prof"></div><span class="skill-abil">WIS</span><span class="skill-name">Religion</span><span class="skill-mod">+6</span></div>
       <div class="skill-row" title="Not proficient. +4 = DEX mod only."><div class="skill-dot"></div><span class="skill-abil">DEX</span><span class="skill-name">Sleight of Hand</span><span class="skill-mod">+4</span></div>
       <div class="skill-row" title="Proficient from Monk class (second of two class skill picks).&#10;+7 = +4 DEX mod + 3 prof."><div class="skill-dot prof"></div><span class="skill-abil">DEX</span><span class="skill-name">Stealth</span><span class="skill-mod">+7</span></div>
       <div class="skill-row" title="Not proficient. +3 = WIS mod only."><div class="skill-dot"></div><span class="skill-abil">WIS</span><span class="skill-name">Survival</span><span class="skill-mod">+3</span></div>
@@ -332,7 +332,7 @@
       <h3>Proficiencies</h3>
       <div class="stat-row"><span>Armor</span><span style="text-align:right;font-size:11px;color:var(--text);">None</span></div>
       <div class="stat-row"><span>Weapons</span><span style="font-size:11px;color:var(--text);">Simple, Shortswords</span></div>
-      <div class="stat-row"><span>Tools</span><span style="font-size:11px;color:var(--text);">Brewer's Supplies (Drunken Master L3); Monk L1: TBD</span></div>
+      <div class="stat-row"><span>Tools</span><span style="font-size:11px;color:var(--text);">Brewer's Supplies</span></div>
     </div>
 
     <div class="sidebar-panel">
@@ -473,7 +473,7 @@
           <span><strong>Properties:</strong> Finesse, Thrown</span>
         </div>
         <div class="card-body">
-          <p><span class="damage">1d4 + 4 piercing</span>. Simple <strong>ranged</strong> weapon, finesse, thrown &mdash; uses DEX. <strong>Not a monk weapon by default</strong> (PHB p.78 restricts monk weapons to simple <em>melee</em>), so the Martial Arts bonus-action strike won't trigger after throwing unless darts are declared the <strong>Dedicated Weapon</strong> at a rest. 10 carried; can be reclaimed after combat.</p>
+          <p><span class="damage">1d4 + 4 piercing</span>. Simple weapon, finesse, thrown &mdash; uses DEX. Ranged backup when melee isn't an option. 10 carried; can be reclaimed after combat.</p>
         </div>
       </div>
 
@@ -555,18 +555,18 @@
 
       <div class="card" data-categories="bonus limited">
         <div class="card-header">
-          <div class="card-title">Celestial Revelation &mdash; Radiant Soul <span class="sub">Aasimar 3 &middot; 1/LR</span></div>
+          <div class="card-title">Celestial Revelation &mdash; Radiant Soul <span class="sub">Aasimar 3 &middot; PB / LR</span></div>
           <div class="card-tags">
             <span class="tag bonus">Bonus</span>
-            <span class="tag limited">1 / LR</span>
+            <span class="tag limited">3 / LR</span>
           </div>
         </div>
         <div class="card-body">
           <p>Bonus action to transform for <strong>1 minute</strong>. While transformed:</p>
-          <p>&bull; Sprout <strong>wings</strong> &mdash; fly speed equals walking speed = <strong>40 ft</strong> (50 ft on Flurry turns via Drunken Technique)<br>
-             &bull; Once on each of your turns, add <strong>+3 radiant damage</strong> (= proficiency bonus) to one attack or damaging spell.</p>
-          <p><em>The build's defining move. At Monk 5 with Extra Attack + Flurry, a typical transformed turn is: bonus action to transform (turn 1 only) &rarr; Attack &times; 2 &rarr; Flurry &times; 2. One of those four strikes adds +3 radiant. Plus 40 ft of flight to reach anything.</em></p>
-          <p><em>Once per long rest. Can end early as a bonus action on a later turn.</em></p>
+          <p>&bull; Sprout <strong>wings</strong> &mdash; fly speed <strong>30 ft</strong><br>
+             &bull; Once on each of your turns, add <strong>+5 radiant damage</strong> (your level) to one attack or damaging spell.</p>
+          <p><em>The build's defining move. At Monk 5 with Extra Attack + Flurry, a typical transformed turn is: bonus action to transform (turn 1 only) &rarr; Attack &times; 2 &rarr; Flurry &times; 2. One of those four strikes adds +5 radiant. Plus 30 ft of flight to reach anything.</em></p>
+          <p><em>3 uses per long rest. Can end early as a bonus action on a later turn.</em></p>
         </div>
       </div>
 
@@ -698,7 +698,7 @@
     <!-- ====== PLAYSTYLE TAB ====== -->
     <div class="tab-content" id="tab-modes">
       <p style="font-size:13px;color:var(--text-dim);margin-bottom:14px;">
-        A pure monk drunken brawler with a celestial twist. No shield, no heavy weapons &mdash; just fists, feet, and Radiant Soul. Operates in two gears: <strong>normal</strong> (the default stance) and <strong>transformed</strong> (Radiant Soul active for a minute, 1/LR).
+        A pure monk drunken brawler with a celestial twist. No shield, no heavy weapons &mdash; just fists, feet, and Radiant Soul. Operates in two gears: <strong>normal</strong> (the default stance) and <strong>transformed</strong> (Radiant Soul active for a minute, 3&times;/LR).
       </p>
 
       <div class="stance-block active-stance">
@@ -723,15 +723,15 @@
         <div class="tagline">Wings unfurl. Golden light flickers around the knuckles. 1 minute, bonus action to enter.</div>
         <div class="stat-pills">
           <div class="stat-pill"><strong>AC</strong> 17</div>
-          <div class="stat-pill"><strong>Fly Speed</strong> 40 ft</div>
+          <div class="stat-pill"><strong>Fly Speed</strong> 30 ft</div>
           <div class="stat-pill"><strong>Walk Speed</strong> 40 ft</div>
-          <div class="stat-pill"><strong>Unarmed</strong> 1d6 + 4 (+3 rad once/turn)</div>
+          <div class="stat-pill"><strong>Unarmed</strong> 1d6 + 4 (+5 rad once/turn)</div>
           <div class="stat-pill"><strong>Duration</strong> 1 min</div>
         </div>
         <div class="card-body">
-          <p><strong>Opener:</strong> Bonus action to transform (turn 1 only) &rarr; Attack &times; 2 &rarr; Flurry &times; 2. One of those four strikes adds <strong>+3 radiant damage</strong> (= proficiency bonus).</p>
-          <p><strong>Mobility:</strong> 40 ft of flight (fly speed matches walking speed). Reach flying enemies, cross chasms, drop on casters from above (with Slow Fall as insurance if the duration lapses mid-air).</p>
-          <p><strong>Best when:</strong> boss fight, undead or fiends (radiant is doubly nasty against both), or you need to get somewhere fast and the terrain says no. <strong>Once per long rest</strong> &mdash; save it for the fight that matters.</p>
+          <p><strong>Opener:</strong> Bonus action to transform (turn 1 only) &rarr; Attack &times; 2 &rarr; Flurry &times; 2. One of those four strikes adds <strong>+5 radiant damage</strong> (your Monk level).</p>
+          <p><strong>Mobility:</strong> 30 ft of flight. Reach flying enemies, cross chasms, drop on casters from above (with Slow Fall as insurance if the duration lapses mid-air).</p>
+          <p><strong>Best when:</strong> boss fight, undead or fiends (radiant is doubly nasty against both), or you need to get somewhere fast and the terrain says no. 3 uses per long rest &mdash; so roughly one per encounter you care about.</p>
         </div>
       </div>
 
@@ -762,14 +762,16 @@
       <div class="pip-row">
         <div class="pip-label">
           Uses
-          <span class="pip-sub">1 total &middot; refreshes on <strong>Long Rest</strong> &middot; 1 minute each</span>
+          <span class="pip-sub">3 total (PB) &middot; refreshes on <strong>Long Rest</strong> &middot; 1 minute each</span>
         </div>
         <div class="pips" data-resource="radiant">
           <div class="pip rage" data-idx="0"></div>
+          <div class="pip rage" data-idx="1"></div>
+          <div class="pip rage" data-idx="2"></div>
         </div>
       </div>
       <div class="placeholder-note" style="margin-bottom:14px;">
-        Bonus action to transform. Wings (fly speed = walking speed, 40 ft) + once/turn +3 radiant damage (= PB) on one attack. Can end early as a bonus action.
+        Bonus action to transform. Wings (fly 30 ft) + once/turn +5 radiant damage on one attack. Can end early as a bonus action.
       </div>
 
       <div class="section-head">Healing Hands</div>
@@ -865,8 +867,8 @@
           <div class="card-tags"><span class="tag class">Class</span></div>
         </div>
         <div class="card-body">
-          <p>At the end of a short or long rest, touch one weapon you're proficient with (non-heavy, non-special) &mdash; it becomes a monk weapon until the next rest.</p>
-          <p><em>Monk weapons by default are shortswords + simple <strong>melee</strong> weapons that aren't heavy or two-handed (PHB p.78). The character's eligible Dedicated Weapon targets right now are therefore: <strong>simple ranged</strong> (darts, sling, light crossbow, shortbow) and <strong>simple two-handed</strong> (greatclub). Natural pick: <strong>darts</strong> &mdash; makes thrown darts monk weapons, enabling the Martial Arts bonus strike after throwing. Bigger payoff unlocks at L8 if the plan adds martial-weapon proficiency via a Fighter dip.</em></p>
+          <p>After each short or long rest, touch one simple or martial weapon (not heavy, not special) you're proficient with &mdash; it becomes a monk weapon until you use this feature again.</p>
+          <p><em>Not currently used (no martial-weapon proficiency outside shortsword, which is already a monk weapon). Kept parked in case a magical weapon shows up in play.</em></p>
         </div>
       </div>
 
@@ -961,7 +963,7 @@
              &bull; <strong>Celestial Resistance</strong> &mdash; resistance to necrotic and radiant damage<br>
              &bull; <strong>Light cantrip</strong> &mdash; you know the <em>light</em> cantrip innately (no components required)<br>
              &bull; <strong>Languages:</strong> Common, Celestial (native)</p>
-          <p><em>MPMM flexible ASI: three +1s (or +2/+1). Applied as +1 CON, +1 WIS, +1 CHA &mdash; shapes HP, ki save DC, and keeps CHA out of penalty range (9 &rarr; 10).</em></p>
+          <p><em>MPMM flexible ASI: three +1s (or +2/+1). Applied as +1 DEX, +1 CON, +1 WIS to shape the build toward monk AC, HP, and ki save DC.</em></p>
         </div>
       </div>
 
@@ -977,14 +979,14 @@
 
       <div class="card" data-categories="species">
         <div class="card-header">
-          <div class="card-title">Celestial Revelation &mdash; Radiant Soul <span class="sub">Aasimar 3 &middot; 1/LR</span></div>
+          <div class="card-title">Celestial Revelation &mdash; Radiant Soul <span class="sub">Aasimar 3 &middot; PB/LR</span></div>
           <div class="card-tags"><span class="tag species">Species</span></div>
         </div>
         <div class="card-body">
           <p>Starting at 3rd level, choose one of three revelations the first time you transform (Necrotic Shroud, Radiant Soul, or Radiant Consumption). <strong>Radiant Soul</strong> chosen &mdash; cannot be changed.</p>
-          <p>Bonus action to transform for <strong>1 minute</strong>. <strong>Once per long rest</strong>.</p>
-          <p>&bull; Sprout <strong>radiant wings</strong>: fly speed equals walking speed (40 ft; 50 ft on Flurry turns via Drunken Technique).<br>
-             &bull; Once on each of your turns, add <strong>+3 radiant damage</strong> (= proficiency bonus) to one attack or damaging spell.</p>
+          <p>Bonus action to transform for <strong>1 minute</strong>. <strong>3 uses per long rest</strong> (equal to proficiency bonus).</p>
+          <p>&bull; Sprout <strong>radiant wings</strong>: fly speed 30 ft.<br>
+             &bull; Once on each of your turns, add <strong>+5 radiant damage</strong> (your character level) to one attack or damaging spell.</p>
           <p><em>The build's defining ability. Keep it for encounters that matter.</em></p>
         </div>
       </div>
@@ -1016,7 +1018,7 @@
         </div>
         <div class="item">
           <div class="item-name">Darts &times; 10</div>
-          <div class="item-desc">1d4 piercing &middot; Finesse, Thrown (20/60 ft). Simple <strong>ranged</strong> &mdash; uses DEX, but <em>not a monk weapon by default</em> (PHB p.78 is melee-only). Can be declared the <strong>Dedicated Weapon</strong> at a rest to count as a monk weapon (enables the Martial Arts bonus strike after throwing).</div>
+          <div class="item-desc">1d4 piercing &middot; Finesse, Thrown (20/60 ft). Simple weapon &mdash; uses DEX. Ranged backup; can be reclaimed after combat.</div>
         </div>
         <div class="item">
           <div class="item-name">Unarmed Strike</div>
@@ -1084,7 +1086,7 @@
         </div>
         <div class="item">
           <div class="item-name">+1 Shortsword (or any monk-weapon magical)</div>
-          <div class="item-desc">+1 to hit and damage on a monk weapon is pure upgrade. For a magical <em>longsword or scimitar</em>, the character first needs martial-weapon proficiency (planned Fighter 1 dip at L8); after that, <strong>Dedicated Weapon</strong> converts it to a monk weapon for DEX-based swings.</div>
+          <div class="item-desc">+1 to hit and damage on a monk weapon is pure upgrade. A magical longsword or scimitar would trigger <strong>Dedicated Weapon</strong> (currently parked) to make it a monk weapon.</div>
         </div>
       </div>
     </div>
@@ -1093,53 +1095,62 @@
     <div class="tab-content" id="tab-background">
       <div class="section-head">Identity</div>
       <div class="card"><div class="card-body">
-        <p><strong>Name:</strong> <em style="color:var(--text-muted);">&mdash; add character name &mdash;</em></p>
+        <p><strong>Name:</strong> <strong>Ren</strong> <span style="color:var(--text-muted);">(birth name: <em>Liraz</em>)</span></p>
         <p><strong>Species / Age / Height:</strong> Aasimar &middot; <em style="color:var(--text-muted);">age &middot; height</em></p>
         <p><strong>Alignment:</strong> <em style="color:var(--text-muted);">&mdash;</em></p>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Liraz left the monastery. The town gave him a new name, Ren, and stopped asking about the old one.</p>
+      </div></div>
+
+      <div class="section-head">Known As &mdash; the town's chant</div>
+      <div class="card"><div class="card-body">
+        <div class="quote" style="font-size:16px;"><em>"Ren won't drink without friend."</em></div>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:8px;">Half a rule, half a joke, half an invitation. The townsfolk started it, and it stuck &mdash; he really won't drink alone, and the regulars know it. Call it out in any tavern he's been in and someone will finish the line for you.</p>
       </div></div>
 
       <div class="section-head">Flavor &mdash; the concept in one line</div>
       <div class="card"><div class="card-body">
         <p><em>"A celestial monk whose drunken style masks the radiant power within."</em></p>
-        <p class="placeholder-note">The outside: shabby robes, slurred speech, wobbling stance. The inside: a descendant of a celestial being, bound by an oath to hide what they are until it matters. When it does, the wings come out.</p>
+        <p class="placeholder-note">The outside: shabby robes, unsteady gait, a smile that says he's on his third cup. The inside: trained harder than most of you have ever trained, carries a celestial lineage he doesn't talk about, and walked out on the order that wanted to forge him into something sharper.</p>
       </div></div>
 
       <div class="section-head">Personality Traits</div>
       <div class="card"><div class="card-body">
-        <p class="placeholder-note">&mdash; Two traits. The Acolyte background suggests: "I idolize a particular hero of my faith and constantly refer to that person's deeds and example." and "I've enjoyed fine food, drink, and high society among my temple's elite. Rough living grates on me." (The second plays well with the drunken-master conceit.)</p>
+        <p>&bull; <strong>Shows up for the underdog.</strong> If someone smaller is getting worked over, his whole posture changes. The drunk act falls away fast when it needs to.</p>
+        <p>&bull; <strong>Won't drink alone.</strong> Solitude reminds him too much of the monastery. A cup by himself is just meditation with extra steps.</p>
       </div></div>
 
       <div class="section-head">Ideals</div>
       <div class="card"><div class="card-body">
-        <p class="placeholder-note">&mdash; One ideal. Acolyte suggests <em>Faith:</em> "I trust that my deity will guide my actions. I have faith that if I work hard, things will go well." Or <em>Humility:</em> "I seek to prove myself worthy of my god's favor by matching my actions against their teachings."</p>
+        <p>&bull; <strong>Protection.</strong> "Discipline that breaks children isn't discipline. I won't stand by for that again."</p>
+        <p>&bull; <strong>Freedom.</strong> "I spent years inside walls that decided what I was allowed to want. No more."</p>
       </div></div>
 
       <div class="section-head">Bonds</div>
       <div class="card"><div class="card-body">
-        <p class="placeholder-note">&mdash; One bond. Who was the master at the monastery? Is the celestial lineage known, or was it hidden even from them until it manifested? Is there a temple they still answer to?</p>
+        <p>&bull; <strong>The boy at the monastery.</strong> The initiate he mentored, left behind when he fled. Thinks of him most days. Tells himself he left to get strong enough to come back for him.</p>
+        <p>&bull; <strong>The townsfolk who took him in.</strong> The first people in his adult life who wanted nothing from him except his company. He'd burn a lot down before he let harm come to them.</p>
+        <p>&bull; <strong>A former friend at the order.</strong> <em style="color:var(--text-muted);">&mdash; TBD; one of the fellow senior students he was close to, still inside. Does that friend understand why he left?</em></p>
       </div></div>
 
       <div class="section-head">Flaws</div>
       <div class="card"><div class="card-body">
-        <p class="placeholder-note">&mdash; One flaw. Drunken Master options: drinks too much to keep the cover convincing, picks fights to test themselves, over-commits to the bit even when it stops being funny.</p>
+        <p>&bull; <strong>Regret he won't admit to.</strong> He left people behind &mdash; a kid especially &mdash; and he tells himself a story about why that doesn't quite hold up when he's sober.</p>
+        <p>&bull; <strong>The drunk act can stop being an act.</strong> One cup for cover becomes four because four cups make the regret go quieter.</p>
+        <p>&bull; <strong>Avoidance of the monastery.</strong> Won't go near it. Won't speak its name. If the plot drags him toward it, expect him to push back.</p>
       </div></div>
 
       <div class="section-head">Physical Description</div>
       <div class="card"><div class="card-body">
-        <p class="placeholder-note">&mdash; Describe appearance. Aasimar markers can be subtle (faintly luminous eyes, skin that takes light oddly) or hidden entirely until Radiant Soul activates. Monastic clothing, worn but clean. Any scars or tells from training.</p>
+        <p class="placeholder-note">&mdash; Common clothes that have seen a lot of spilled arak. Hair that hasn't been cut by a monk's razor in a while. The Aasimar tell is subtle most of the time &mdash; faintly luminous at the eyes in low light, or a warmth to the skin a hair past what's natural. Only obvious when Radiant Soul fires and the wings unfold.</p>
       </div></div>
 
       <div class="section-head">Full Backstory</div>
       <div class="card"><div class="card-body">
         <div class="backstory-prose">
-          <div class="quote"><em>&mdash; opening line of your character's story &mdash;</em></div>
-          <textarea class="backstory-area" id="backstory" onchange="saveBackstory()" placeholder="— background story goes here —
-
-Who trained them? Was the Aasimar lineage known at the monastery, or did it manifest later? Why the drunken style specifically — a deliberate choice to hide the celestial inheritance, a teacher's peculiar curriculum, or something embraced only after leaving the temple?
-
-Use this space to capture origin, motivations, allies, enemies, formative incidents, and anything that will matter at the table."></textarea>
+          <div class="quote"><em>&mdash; "Ren won't drink without friend." &mdash;</em></div>
+          <textarea class="backstory-area" id="backstory" onchange="saveBackstory()" placeholder="— background story goes here —"></textarea>
           <p style="font-size:11px;color:var(--text-muted);font-style:italic;margin-top:8px;">
-            Tip: Shelter of the Faithful (Acolyte) means there's a temple somewhere that still considers them one of their own. That temple is a location, an NPC roster, and a set of obligations.
+            Shelter of the Faithful (Acolyte): there's still a temple that considers him one of their own, even if he won't admit it's the same monastery he walked out of. Open plot thread: what happens when the order sends someone to bring him back &mdash; or sends the kid to bring him back?
           </p>
         </div>
       </div></div>
@@ -1180,22 +1191,46 @@ Use this space to capture origin, motivations, allies, enemies, formative incide
 </div>
 
 <script>
-const STORAGE_KEY = 'drunken_master_lvl5_sheet_v2';
+const STORAGE_KEY = 'drunken_master_lvl5_sheet_v3';
+
+const DEFAULT_BACKSTORY = `Liraz was a model student. He took to the monastery's teachings quickly — the forms, the meditations, the discipline. He was told he'd go far. And he did, for a while. But somewhere along the way, the lessons stopped revealing new things, and he found himself looking past the walls more than in front of his own hands.
+
+Then he noticed the children.
+
+The initiates. Some of them were six, seven years old. The older monks drilled them hard enough that bruises were the default state, and the "corrections" went beyond what any of them deserved. Liraz took one of them — a stubborn kid he still thinks about — under his wing. He'd patch the boy up after beatings, teach him forms slowly, show him it was possible to train without cruelty. The kid started calling him big brother.
+
+Liraz protested to the elders. He was told to mind his own path. He wasn't strong enough yet — in the order, in the argument, in anything — to force change. The monastery walls began to feel like a cage.
+
+He wasn't allowed to leave, but he could see the roof tiles of the nearest town from the practice yard. One evening, a group of locals wandered up to deliver rice and thanked him with a cup of arak. He drank it. It was the first thing in years that didn't taste like discipline. He went down the hill with them, and they taught him how to drink, and how to laugh with people who had nothing to prove.
+
+He kept going back. And then one night, he didn't go back to the monastery.
+
+He lives among the locals now, under a name they gave him: Ren. He brawls when he has to, drinks when he wants to, and keeps the wings tucked unless a fight truly demands them. The townfolk have a chant for him — "Ren won't drink without friend" — and it's the closest thing to a prayer he's comfortable saying out loud.
+
+He thinks about the kid he left behind. Not every day. Most days. He tells himself that leaving was the only way he'd ever be strong enough to come back.`;
+
+const DEFAULT_OVERVIEW_SUMMARY = `Birth name Liraz. Known locally as Ren — "Ren won't drink without friend" is the chant you'll hear if the town's had a few.
+
+Was a model student at a strict monastery until he couldn't stomach how the elders treated the child initiates. Became big brother to one of them; tried to protest; wasn't strong enough to force change. Walls got too close.
+
+A night drinking with villagers became many nights, and eventually he didn't go back up the hill. He left friends there. He left the kid there. He drinks with people now because solitude still feels too much like the monastery.
+
+The celestial heritage is real but quiet. He doesn't advertise it — the drunken brawler act is more comfortable, and when the wings come out, the audience tends to stop cheering.`;
 
 const defaultState = () => ({
   hp: { current: 38, max: 38, temp: 0 },
   inspiration: false,
   mode: 'light',
-  charName: '',
-  backstory: '',
+  charName: 'Ren',
+  backstory: DEFAULT_BACKSTORY,
   userNotes: '',
-  thumbnailUrl: 'https://capeably.github.io/pages/dnd/nusa/files/kev_cp_th.png',
-  portraitUrl: 'https://capeably.github.io/pages/dnd/nusa/files/kev_cp.png',
-  overviewSummary: '',
+  thumbnailUrl: '',
+  portraitUrl: '',
+  overviewSummary: DEFAULT_OVERVIEW_SUMMARY,
   tashaBannerDismissed: false,
   resources: {
     ki:           [false, false, false, false, false],
-    radiant:      [false],
+    radiant:      [false, false, false],
     healingHands: [false],
     hd8:          [false, false, false, false, false]
   }
@@ -1216,8 +1251,8 @@ function loadState() {
       charName: saved.charName || '',
       backstory: saved.backstory || '',
       userNotes: saved.userNotes || '',
-      thumbnailUrl: saved.thumbnailUrl || d.thumbnailUrl,
-      portraitUrl: saved.portraitUrl || d.portraitUrl,
+      thumbnailUrl: saved.thumbnailUrl || '',
+      portraitUrl: saved.portraitUrl || '',
       overviewSummary: saved.overviewSummary || '',
       tashaBannerDismissed: saved.tashaBannerDismissed || false,
       resources: { ...d.resources, ...(saved.resources || {}) }
@@ -1550,4 +1585,4 @@ function renderAll() {
 renderAll();
 </script>
 </body>
-</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
