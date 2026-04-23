@@ -186,35 +186,32 @@
 
   /* ===== CHARACTER IDENTITY (top-bar) ===== */
   .char-identity { display: flex; align-items: center; gap: 14px; min-width: 0; }
-  .char-thumbnail { width: 56px; height: 56px; flex-shrink: 0; border: 2px solid var(--border); border-radius: 10px; background: var(--bg-card); cursor: pointer; overflow: hidden; position: relative; transition: border-color 0.15s; display: flex; align-items: center; justify-content: center; }
-  .char-thumbnail:hover { border-color: var(--accent); }
+  .char-thumbnail { width: 56px; height: 56px; flex-shrink: 0; border: 2px solid var(--border); border-radius: 10px; background: var(--bg-card); overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
   .char-thumbnail img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .char-thumbnail .thumb-placeholder { font-size: 9px; color: var(--text-muted); text-align: center; line-height: 1.2; padding: 2px; }
-  .char-thumbnail .thumb-placeholder::before { content: '\1F4F7'; display: block; font-size: 18px; margin-bottom: 2px; filter: grayscale(1) opacity(0.5); }
 
   /* ===== PORTRAIT (Overview tab) ===== */
-  .portrait-wrap { display: flex; flex-direction: column; align-items: center; }
-  .portrait-large { width: 220px; height: 280px; border: 2px dashed var(--border); border-radius: 12px; background: var(--bg-card); cursor: pointer; overflow: hidden; position: relative; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s; }
-  .portrait-large:hover { border-color: var(--accent); border-style: solid; }
-  .portrait-large img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .portrait-large .portrait-placeholder { color: var(--text-muted); font-size: 12px; text-align: center; padding: 20px; line-height: 1.5; }
-  .portrait-large .portrait-placeholder::before { content: '\1F5BC'; display: block; font-size: 48px; margin-bottom: 12px; filter: grayscale(1) opacity(0.4); }
-  .portrait-actions { display: flex; gap: 6px; margin-top: 8px; }
-  .portrait-actions button { font-size: 11px; padding: 4px 8px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-dim); border-radius: 4px; cursor: pointer; }
-  .portrait-actions button:hover { color: var(--text); border-color: var(--accent-dim); }
+  .overview-simple { font-size: 14.5px; line-height: 1.7; color: var(--text); }
+  .overview-simple::after { content: ''; display: block; clear: both; }
+  .overview-portrait { float: right; width: 340px; max-width: 46%; height: auto; margin: 4px 0 20px 32px; border: 1px solid var(--border); border-radius: 12px; display: block; box-shadow: 0 10px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(251, 191, 36, 0.06); cursor: zoom-in; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .overview-portrait:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(251, 191, 36, 0.18); }
+
+  /* ===== LIGHTBOX ===== */
+  .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 32px; box-sizing: border-box; cursor: zoom-out; }
+  .lightbox.active { display: flex; animation: lightboxFade 0.18s ease; }
+  .lightbox-image { max-width: 100%; max-height: 100%; width: auto; height: auto; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,0.7); display: block; }
+  .lightbox-close { position: absolute; top: 18px; right: 22px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.25); color: #fff; font-size: 24px; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; line-height: 1; padding: 0; display: flex; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; font-family: inherit; }
+  .lightbox-close:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); }
+  @keyframes lightboxFade { from { opacity: 0; } to { opacity: 1; } }
+  .overview-body p { margin: 0 0 14px; }
+  .overview-body p:last-child { margin-bottom: 0; }
+  .overview-body p:first-of-type::first-letter { font-size: 3em; line-height: 0.85; float: left; padding: 4px 10px 0 0; color: var(--accent); font-weight: 700; }
+  .overview-body em { color: var(--text); font-style: italic; }
 
   /* ===== OVERVIEW TAB LAYOUT ===== */
-  .overview-grid { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: start; }
-  .overview-right { min-width: 0; }
-  .overview-meta-grid { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 13px; margin: 6px 0 14px; }
-  .overview-meta-grid .k { color: var(--text-dim); font-weight: 600; }
-  .overview-meta-grid .v { color: var(--text); }
-  .overview-display-name { font-size: 24px; color: var(--accent); text-shadow: 0 0 12px var(--accent-glow); font-weight: 700; margin-bottom: 4px; }
-  .overview-subtitle { font-size: 13px; color: var(--text-dim); margin-bottom: 14px; font-style: italic; }
-  .overview-section-head { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin: 18px 0 8px; border-bottom: 1px solid var(--border); padding-bottom: 4px; font-weight: 700; }
-  .summary-area { width: 100%; min-height: 120px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: var(--text); font-family: inherit; font-size: 13px; line-height: 1.6; resize: vertical; outline: none; }
-  .summary-area:focus { border-color: var(--accent-dim); }
-  .summary-area::placeholder { color: var(--text-muted); font-style: italic; }
+  .overview-display-name { font-size: 34px; color: var(--accent); text-shadow: 0 0 14px var(--accent-glow); font-weight: 700; margin: 0 0 4px; line-height: 1.1; letter-spacing: 0.3px; }
+  .overview-subtitle { font-size: 14px; color: var(--text-dim); margin-bottom: 28px; font-style: italic; }
+  .overview-section-head { font-size: 11px; text-transform: uppercase; letter-spacing: 1.8px; color: var(--accent); margin: 0 0 18px; border-bottom: 1px solid var(--border); padding-bottom: 8px; font-weight: 700; }
+  @media (max-width: 640px) { .overview-portrait { float: none; width: 100%; max-width: 360px; margin: 0 auto 24px; } .overview-body p:first-of-type::first-letter { font-size: 2.6em; } }
 
   /* ===== PROVENANCE TABLES ===== */
   .prov-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 12px; }
@@ -234,7 +231,7 @@
 <!-- ===== TOP BAR ===== -->
 <div class="top-bar">
   <div class="char-identity">
-    <div class="char-thumbnail" id="char-thumbnail" onclick="setThumbnail()" title="Click to set character art (paste image URL)"></div>
+    <div class="char-thumbnail"><img src="files/kev_cp_th.png" alt="character thumbnail"></div>
     <div class="char-name-block">
       <input class="name-input" id="char-name" type="text" value="Ren" placeholder="— your character's name —" onchange="saveName()" />
       <div class="sub">Aasimar • Monk 5 • Way of the Drunken Master • Acolyte</div>
@@ -359,33 +356,16 @@
 
     <!-- ====== OVERVIEW TAB ====== -->
     <div class="tab-content active" id="tab-overview">
-      <div class="overview-grid">
-        <div class="portrait-wrap">
-          <div class="portrait-large" id="portrait-large" onclick="setPortrait()" title="Click to set character portrait (paste image URL)">
-            <div class="portrait-placeholder">Click to add<br/>character portrait</div>
-          </div>
-          <div class="portrait-actions">
-            <button onclick="setPortrait()">Set URL</button>
-            <button onclick="clearPortrait()">Clear</button>
-          </div>
-        </div>
-        <div class="overview-right">
-          <div class="overview-display-name" id="overview-display-name">&mdash; unnamed &mdash;</div>
-          <div class="overview-subtitle">Aasimar &middot; Monk 5 &middot; Way of the Drunken Master &middot; Acolyte</div>
-          <div class="overview-meta-grid">
-            <div class="k">Class / Level</div><div class="v">Monk 5</div>
-            <div class="k">Subclass</div><div class="v">Way of the Drunken Master (XGtE)</div>
-            <div class="k">Species</div><div class="v">Aasimar (MPMM, 2022)</div>
-            <div class="k">Background</div><div class="v">Acolyte (PHB 2014)</div>
-            <div class="k">Alignment</div><div class="v">&mdash;</div>
-            <div class="k">Deity / Patron</div><div class="v">&mdash;</div>
-            <div class="k">Proficiency Bonus</div><div class="v">+3</div>
-            <div class="k">Initiative</div><div class="v">+4</div>
-            <div class="k">Speed</div><div class="v">40 ft (30 + Unarmored Movement +10 ft)</div>
-          </div>
-
-          <div class="overview-section-head">Backstory &amp; Personality</div>
-          <textarea class="summary-area" id="overview-summary" placeholder="A brief summary of backstory and personality&#8230;" oninput="saveOverviewSummary()"></textarea>
+      <div class="overview-simple">
+        <img class="overview-portrait" src="files/kev_cp.png" alt="Ren &mdash; character portrait" onclick="openLightbox(this.src, this.alt)" title="Click to view full size">
+        <div class="overview-display-name" id="overview-display-name">&mdash; unnamed &mdash;</div>
+        <div class="overview-subtitle">Aasimar &middot; Monk 5 &middot; Way of the Drunken Master &middot; Acolyte</div>
+        <div class="overview-section-head">Backstory &amp; Personality</div>
+        <div class="overview-body">
+          <p>Birth name <em>Liraz</em>. Known locally as Ren &mdash; &ldquo;Ren won't drink without friend&rdquo; is the chant you'll hear if the town's had a few.</p>
+          <p>Was a model student at a strict monastery until he couldn't stomach how the elders treated the child initiates. Became big brother to one of them; tried to protest; wasn't strong enough to force change. Walls got too close.</p>
+          <p>A night drinking with villagers became many nights, and eventually he didn't go back up the hill. He left friends there. He left the kid there. He drinks with people now because solitude still feels too much like the monastery.</p>
+          <p>The celestial heritage is real but quiet. He doesn't advertise it &mdash; the drunken brawler act is more comfortable, and when the wings come out, the audience tends to stop cheering.</p>
         </div>
       </div>
     </div>
@@ -1573,8 +1553,6 @@ function renderAll() {
   if (notesEl) notesEl.value = state.userNotes || '';
   const summaryEl = document.getElementById('overview-summary');
   if (summaryEl) summaryEl.value = state.overviewSummary || '';
-  renderThumbnail();
-  renderPortrait();
   renderOverviewDisplayName();
   renderInspiration();
   renderPips();
@@ -1583,6 +1561,35 @@ function renderAll() {
 }
 
 renderAll();
+
+// ===== LIGHTBOX =====
+function openLightbox(src, alt) {
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-image');
+  if (!lb || !img) return;
+  img.src = src;
+  img.alt = alt || '';
+  lb.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  document.addEventListener('keydown', lightboxKeyHandler);
+}
+function closeLightbox() {
+  const lb = document.getElementById('lightbox');
+  if (!lb) return;
+  lb.classList.remove('active');
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', lightboxKeyHandler);
+}
+function lightboxKeyHandler(event) {
+  if (event.key === 'Escape') closeLightbox();
+}
 </script>
+
+<!-- ===== LIGHTBOX OVERLAY ===== -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()" role="dialog" aria-modal="true" aria-label="Full-size character portrait">
+  <button class="lightbox-close" onclick="closeLightbox(); event.stopPropagation();" aria-label="Close full-size image" type="button">&times;</button>
+  <img class="lightbox-image" id="lightbox-image" src="" alt="">
+</div>
+
 </body>
 </html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
