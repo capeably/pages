@@ -1,0 +1,2371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vanitas — Character Sheet</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHBvbHlnb24gcG9pbnRzPSIxNiwzIDI5LDI3IDMsMjciCiAgICAgICAgICAgZmlsbD0iI2Y1OWUwYiIKICAgICAgICAgICBzdHJva2U9IiMxYzFmMjYiCiAgICAgICAgICAgc3Ryb2tlLXdpZHRoPSIyIgogICAgICAgICAgIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICA8cG9seWdvbiBwb2ludHM9IjE2LDMgMTYsMjIgMywyNyIKICAgICAgICAgICBmaWxsPSIjZDk3NzA2IgogICAgICAgICAgIG9wYWNpdHk9IjAuNTUiLz4KICA8dGV4dCB4PSIxNiIgeT0iMjMuNSIKICAgICAgICBmb250LWZhbWlseT0iR2VvcmdpYSwgJ1RpbWVzIE5ldyBSb21hbicsIHNlcmlmIgogICAgICAgIGZvbnQtc2l6ZT0iMTMiCiAgICAgICAgZm9udC13ZWlnaHQ9IjcwMCIKICAgICAgICB0ZXh0LWFuY2hvcj0ibWlkZGxlIgogICAgICAgIGZpbGw9IiMwZTBmMTIiPjQ8L3RleHQ+Cjwvc3ZnPgo=">
+<style id="app-styles">
+
+:root {
+  --accent: #f59e0b;
+  --accent-dim: #92590a;
+  --accent-glow: rgba(245, 158, 11, 0.18);
+
+  --bg: #0e0f12;
+  --bg-panel: #15171c;
+  --bg-card: #1c1f26;
+  --bg-hover: #242832;
+  --border: #2d3139;
+  --text: #e5e7eb;
+  --text-dim: #9ca3af;
+  --text-muted: #6b7280;
+  --danger: #ef4444;
+  --warn: #f59e0b;
+  --info: #60a5fa;
+  --necrotic: #a855f7;
+  --psychic: #ec4899;
+  --radiant: #fbbf24;
+  --concentration: #22d3ee;
+}
+
+/* Per-character theme overrides — set on <body data-theme="..."> */
+body[data-theme="green-leaf"] {
+  --accent: #7ce38b;
+  --accent-dim: #3f7a4a;
+  --accent-glow: rgba(124, 227, 139, 0.18);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
+h1, h2, h3, h4 { font-weight: 600; }
+a { color: var(--accent); }
+.hidden { display: none !important; }
+
+/* ============ LOADER ============ */
+.loader-overlay { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: var(--bg); }
+.loader-box { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 40px; text-align: center; max-width: 480px; width: 90%; }
+.loader-box h1 { color: var(--accent); text-shadow: 0 0 12px var(--accent-glow); margin-bottom: 12px; }
+.loader-box p { color: var(--text-dim); margin-bottom: 18px; font-size: 14px; }
+.loader-actions { margin: 20px 0; }
+.loader-hint { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 12px; }
+
+/* ============ TOP BAR ============ */
+.top-bar { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; padding: 12px 20px; background: linear-gradient(180deg, #1a1d24 0%, #15171c 100%); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.char-identity { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1 1 260px; }
+.char-thumbnail { width: 56px; height: 56px; border-radius: 50%; overflow: hidden; flex-shrink: 0; border: 2px solid var(--accent-dim); background: var(--bg-card); }
+.char-thumbnail img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+.thumb-fallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: var(--accent); background: var(--bg-card); user-select: none; }
+.char-name-block { min-width: 0; flex: 1 1 auto; overflow: hidden; }
+.char-name { font-size: 22px; color: var(--accent); text-shadow: 0 0 12px var(--accent-glow); letter-spacing: 0.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.char-name-block .sub { font-size: 12px; color: var(--text-dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.top-stats { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.stat-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; text-align: center; min-width: 80px; }
+.stat-block .label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); }
+.stat-block .value { font-size: 20px; font-weight: 700; color: var(--text); margin-top: 2px; }
+.stat-block .sub { font-size: 10px; color: var(--text-muted); }
+.hp-block { min-width: 160px; }
+.hp-display { display: flex; align-items: center; gap: 6px; justify-content: center; margin-top: 4px; }
+.hp-display input { width: 50px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 2px 4px; text-align: center; font-size: 16px; font-weight: 700; }
+.hp-display #hp-max { font-size: 16px; font-weight: 700; padding: 0 6px; }
+.hp-display .sep { color: var(--text-muted); }
+.btn-icon { background: var(--bg-hover); border: 1px solid var(--border); color: var(--text); width: 22px; height: 22px; border-radius: 4px; cursor: pointer; font-size: 14px; line-height: 1; }
+.btn-icon:hover { background: var(--accent-dim); color: var(--bg); }
+.temp-hp { font-size: 11px; color: var(--info); margin-top: 2px; }
+.temp-hp input { width: 40px; background: transparent; color: var(--info); border: 1px solid var(--border); border-radius: 4px; padding: 0 4px; font-size: 11px; }
+.inspiration-toggle { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--warn); background: var(--bg-card); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--warn); transition: all 0.2s; }
+.inspiration-toggle.active { background: var(--warn); color: var(--bg); box-shadow: 0 0 16px rgba(245, 158, 11, 0.5); }
+.rest-buttons { display: flex; gap: 8px; }
+.rest-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 10px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.15s; }
+.rest-btn.short { border-color: var(--info); color: var(--info); }
+.rest-btn.long { border-color: var(--accent); color: var(--accent); }
+.rest-btn:hover { background: var(--bg-hover); }
+.btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 8px 10px; border-radius: 8px; cursor: pointer; font-size: 16px; }
+.btn-ghost:hover { color: var(--accent); border-color: var(--accent-dim); }
+
+/* ============ ADVISORY BANNER ============ */
+.advisory-banner { position: relative; margin: 8px 16px 0; padding: 10px 38px 10px 14px; border: 1px solid #b45309; border-left: 4px solid #f59e0b; background: rgba(245, 158, 11, 0.08); border-radius: 6px; font-size: 12.5px; color: var(--text-dim); line-height: 1.5; }
+.advisory-banner strong { color: #fbbf24; }
+.advisory-banner .advisory-close { position: absolute; top: 4px; right: 6px; width: 22px; height: 22px; border: none; background: transparent; color: #fbbf24; font-size: 18px; line-height: 1; cursor: pointer; padding: 0; border-radius: 4px; }
+
+/* ============ MAIN LAYOUT ============ */
+.main-layout { display: grid; grid-template-columns: 300px 1fr; gap: 16px; padding: 16px; }
+@media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; } }
+
+.sidebar-panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 12px; }
+.sidebar-panel h3 { color: var(--accent); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+
+.ability-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.ability-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 6px; text-align: center; position: relative; }
+.ability-box.prof { border-color: var(--accent-dim); }
+.ability-box .name { font-size: 10px; color: var(--text-dim); text-transform: uppercase; }
+.ability-box .mod { font-size: 18px; font-weight: 700; color: var(--accent); margin-top: 2px; }
+.ability-box .score { font-size: 11px; color: var(--text-muted); }
+.ability-box .save { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+.ability-box.prof .save { color: var(--warn); }
+
+.stat-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 12px; border-bottom: 1px dotted rgba(255,255,255,0.05); }
+.stat-row:last-child { border-bottom: none; }
+.stat-row .val { color: var(--accent); font-weight: 600; }
+
+.skill-row { display: grid; grid-template-columns: 14px 32px 1fr auto; gap: 6px; align-items: center; padding: 3px 0; font-size: 12px; }
+.skill-dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--text-muted); margin: 0 auto; }
+.skill-dot.prof { background: var(--accent); border-color: var(--accent); }
+.skill-dot.expertise { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 2px var(--bg-panel), 0 0 0 3px var(--accent); }
+.skill-abil { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+.skill-name { color: var(--text-dim); }
+.skill-mod { color: var(--accent); font-weight: 600; }
+
+/* ============ MAIN CONTENT ============ */
+.main-content { min-width: 0; }
+.tab-bar { display: flex; flex-wrap: wrap; gap: 4px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; padding: 4px; margin-bottom: 12px; }
+.tab-btn { background: transparent; border: none; color: var(--text-dim); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.15s; }
+.tab-btn:hover { color: var(--text); background: var(--bg-hover); }
+.tab-btn.active { background: var(--accent-dim); color: var(--text); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.filter-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.chip { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-dim); padding: 4px 12px; border-radius: 999px; font-size: 11px; cursor: pointer; transition: all 0.15s; }
+.chip:hover { border-color: var(--accent-dim); color: var(--text); }
+.chip.active { background: var(--accent-dim); color: var(--text); border-color: var(--accent); }
+
+.section-head { color: var(--accent); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; margin: 16px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; transition: border-color 0.15s; }
+.card:hover { border-color: var(--accent-dim); }
+.card.hidden { display: none; }
+
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+.card-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.card-title .sub { font-size: 11px; color: var(--text-muted); font-weight: 400; margin-left: 4px; }
+.card-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.tag { font-size: 10px; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; border: 1px solid transparent; }
+.tag.action     { background: rgba(239, 68, 68, 0.15);  color: #fca5a5; border-color: rgba(239, 68, 68, 0.3); }
+.tag.bonus      { background: rgba(96, 165, 250, 0.15); color: #93c5fd; border-color: rgba(96, 165, 250, 0.3); }
+.tag.reaction   { background: rgba(168, 85, 247, 0.15); color: #c4b5fd; border-color: rgba(168, 85, 247, 0.3); }
+.tag.attack     { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border-color: rgba(245, 158, 11, 0.3); }
+.tag.free       { background: rgba(107, 114, 128, 0.15); color: var(--text-dim); border-color: rgba(107, 114, 128, 0.3); }
+.tag.limited    { background: rgba(239, 68, 68, 0.12);  color: #fca5a5; border-color: rgba(239, 68, 68, 0.25); }
+.tag.class      { background: rgba(245, 158, 11, 0.15); color: #fcd34d; }
+.tag.subclass   { background: rgba(34, 211, 238, 0.15); color: #67e8f9; }
+.tag.species    { background: rgba(168, 85, 247, 0.15); color: #c4b5fd; }
+.tag.background { background: rgba(124, 227, 139, 0.15); color: #86efac; }
+.tag.feat       { background: rgba(236, 72, 153, 0.15); color: #f9a8d4; }
+.tag.cantrip    { background: rgba(99, 102, 241, 0.15);  color: #a5b4fc; border-color: rgba(99,102,241,0.3); }
+.tag.lvl1       { background: rgba(34, 211, 238, 0.12);  color: #67e8f9; border-color: rgba(34,211,238,0.25); }
+.tag.lvl2       { background: rgba(124, 58, 237, 0.15);  color: #c4b5fd; border-color: rgba(124,58,237,0.3); }
+.tag.lvl3       { background: rgba(236, 72, 153, 0.15);  color: #f9a8d4; border-color: rgba(236,72,153,0.3); }
+.tag.conc       { background: rgba(34, 211, 238, 0.15);  color: var(--concentration); border-color: rgba(34,211,238,0.4); }
+.tag.ritual     { background: rgba(168, 85, 247, 0.12);  color: #c4b5fd; border-color: rgba(168,85,247,0.3); }
+.tag.circle     { background: rgba(124, 227, 139, 0.15); color: #86efac; border-color: rgba(124,227,139,0.3); }
+
+.card-stats { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--text-dim); padding: 6px 0; border-bottom: 1px dotted rgba(255,255,255,0.05); margin-bottom: 8px; }
+.card-stats strong { color: var(--text); }
+.card-body { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+.card-body p { margin-bottom: 6px; }
+.card-body em { color: var(--text-muted); font-style: italic; }
+.card-body strong { color: var(--text); }
+.damage { color: var(--warn); font-weight: 600; }
+
+.section-head.empty { display: none; }
+
+/* Inline resource pips on action cards */
+.card-resource { display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-top: 8px; border-top: 1px dotted rgba(255,255,255,0.05); font-size: 11px; color: var(--text-dim); flex-wrap: wrap; }
+.card-resource-label { font-weight: 600; color: var(--text); }
+.card-resource-count { color: var(--accent); font-weight: 700; }
+.card-resource .pips { gap: 4px; }
+.pip.pip-sm { width: 15px; height: 15px; border-width: 2px; }
+
+/* ============ OVERVIEW ============ */
+.overview-simple { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+.overview-portrait { float: right; width: 420px; max-width: 50%; margin: 0 0 14px 20px; border-radius: 8px; border: 2px solid var(--accent-dim); cursor: pointer; }
+@media (max-width: 700px) { .overview-portrait { float: none; display: block; margin: 0 auto 14px; max-width: 85%; width: auto; } }
+.overview-display-name { font-size: 26px; color: var(--accent); text-shadow: 0 0 12px var(--accent-glow); margin-bottom: 4px; }
+.overview-subtitle { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; }
+.overview-section-head { color: var(--accent); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; margin: 14px 0 8px; }
+.overview-body p { margin-bottom: 10px; color: var(--text-dim); font-size: 14px; line-height: 1.7; }
+.overview-body p:first-of-type::first-letter { color: var(--accent); font-size: 1.5em; font-weight: 700; }
+
+/* ============ RESOURCES / PIPS ============ */
+.pip-row { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
+.pip-label { font-size: 14px; font-weight: 600; color: var(--text); }
+.pip-sub { display: block; font-size: 11px; color: var(--text-muted); font-weight: 400; margin-top: 2px; }
+.pips { display: flex; flex-wrap: wrap; gap: 6px; }
+.pip { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--accent-dim); background: transparent; cursor: pointer; transition: all 0.15s; }
+.pip:hover { border-color: var(--accent); }
+.pip.used { background: var(--accent-dim); }
+.pip.ki { border-color: var(--warn); }
+.pip.ki.used { background: var(--warn); }
+.pip.radiant { border-color: var(--danger); }
+.pip.radiant.used { background: var(--danger); }
+.pip.slot { border-color: var(--info); }
+.pip.slot.used { background: var(--info); }
+.pip.luck { border-color: var(--warn); }
+.pip.luck.used { background: var(--warn); }
+.pip.witch { border-color: var(--necrotic); }
+.pip.witch.used { background: var(--necrotic); }
+.placeholder-note { font-size: 12px; color: var(--text-muted); font-style: italic; padding: 6px 14px 0; margin-bottom: 8px; }
+
+/* ============ FORM CARDS ============ */
+.card.form-card { border-left: 4px solid var(--radiant); }
+
+/* ============ SELAK FORMS (custom tab) ============ */
+.selak-intro { background: var(--bg-card); border: 1px solid var(--accent-dim); border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+.selak-intro strong { color: var(--accent); }
+.selak-form { background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 16px; margin-bottom: 14px; }
+.selak-form.ekek   { border-left-color: var(--danger); }
+.selak-form.cahaya { border-left-color: var(--info); }
+.selak-form.leyak  { border-left-color: var(--necrotic); }
+.selak-form h3 { color: var(--accent); font-size: 15px; margin-bottom: 4px; }
+.selak-form h3 .marker { margin-right: 6px; color: var(--warn); }
+.selak-form h3 .subtitle { font-size: 12px; color: var(--text-dim); font-weight: 400; margin-left: 6px; }
+.selak-form .tagline { font-size: 12px; color: var(--text-dim); font-style: italic; margin-bottom: 10px; }
+.selak-form p { margin-bottom: 6px; font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+.selak-form p strong { color: var(--text); }
+
+/* ============ PLAYSTYLE STANCES ============ */
+.stance-block { background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 16px; margin-bottom: 14px; background-image: linear-gradient(135deg, rgba(245, 158, 11, 0.04) 0%, transparent 40%); }
+.stance-block.inactive { border-left-color: var(--border); }
+.stance-block h3 { color: var(--accent); font-size: 15px; margin-bottom: 4px; }
+.stance-block .tagline { font-size: 12px; color: var(--text-dim); font-style: italic; margin-bottom: 10px; }
+.stat-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.stat-pill { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; font-size: 11px; color: var(--text-dim); }
+.stat-pill strong { color: var(--accent); margin-right: 4px; }
+.quote { background: rgba(245, 158, 11, 0.05); border-left: 3px solid var(--accent-dim); padding: 10px 14px; margin: 10px 0; font-style: italic; color: var(--text-dim); font-size: 13px; border-radius: 4px; }
+
+/* ============ INVENTORY ============ */
+.inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; }
+.item-name { font-weight: 600; color: var(--text); margin-bottom: 4px; font-size: 13px; }
+.item-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+
+/* ============ BACKGROUND / NOTES ============ */
+.bg-section { margin-bottom: 14px; }
+.backstory-area { width: 100%; min-height: 200px; background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 6px; font-family: inherit; font-size: 13px; line-height: 1.6; resize: vertical; }
+.notes-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 11px; color: var(--text-muted); }
+.backstory-prose { font-size: 14px; line-height: 1.75; color: var(--text-dim); max-width: 72ch; }
+.backstory-prose p { margin-bottom: 12px; }
+.backstory-prose p:first-of-type::first-letter { color: var(--accent); font-size: 1.5em; font-weight: 700; }
+
+/* ============ NOTES (markdown) ============ */
+.notes-mode-toggle { display: flex; gap: 6px; margin-bottom: 10px; align-items: center; }
+.notes-preview { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 14px 18px; min-height: 240px; font-size: 13px; color: var(--text-dim); line-height: 1.65; }
+.notes-preview h1, .notes-preview h2, .notes-preview h3, .notes-preview h4, .notes-preview h5, .notes-preview h6 { color: var(--accent); margin: 12px 0 6px; font-weight: 700; }
+.notes-preview h1 { font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+.notes-preview h2 { font-size: 16px; }
+.notes-preview h3 { font-size: 14px; }
+.notes-preview h4, .notes-preview h5, .notes-preview h6 { font-size: 13px; }
+.notes-preview p { margin-bottom: 8px; }
+.notes-preview ul, .notes-preview ol { margin: 4px 0 10px 22px; }
+.notes-preview li { margin-bottom: 3px; }
+.notes-preview code { background: var(--bg-panel); padding: 1px 5px; border-radius: 3px; font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 12px; color: var(--info); }
+.notes-preview pre { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 4px; padding: 10px 14px; overflow-x: auto; margin: 8px 0; font-size: 12px; }
+.notes-preview pre code { background: transparent; padding: 0; color: var(--text); font-size: 12px; }
+.notes-preview blockquote { border-left: 3px solid var(--accent-dim); padding: 4px 12px; margin: 8px 0; color: var(--text-muted); font-style: italic; }
+.notes-preview hr { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+.notes-preview a { color: var(--accent); text-decoration: underline; }
+.notes-preview strong { color: var(--text); font-weight: 700; }
+.notes-preview em { color: var(--text-dim); font-style: italic; }
+
+/* ============ MODALS ============ */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
+.modal-overlay.active { display: flex; }
+.modal { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; padding: 20px; max-width: 420px; width: 90%; }
+.modal h2 { color: var(--accent); margin-bottom: 12px; font-size: 16px; }
+.modal p { color: var(--text-dim); margin-bottom: 14px; font-size: 13px; }
+.modal ul { list-style: none; padding: 0; margin-bottom: 14px; }
+.modal li { padding: 4px 0; font-size: 12px; color: var(--text-dim); border-bottom: 1px dotted rgba(255,255,255,0.05); }
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+.btn:hover { background: var(--bg-hover); }
+.btn-primary { background: var(--accent-dim); border-color: var(--accent); color: var(--text); }
+.btn-primary:hover { background: var(--accent); color: var(--bg); }
+
+/* ============ SPELL UPCAST + CAST BUTTONS ============ */
+.spell-upcast { margin-top: 4px; padding: 6px 10px; background: rgba(96, 165, 250, 0.06); border-left: 3px solid var(--info); font-size: 12px; color: var(--text-dim); border-radius: 3px; line-height: 1.5; }
+.spell-upcast strong { color: var(--info); margin-right: 4px; }
+.cast-row { display: flex; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dotted rgba(255,255,255,0.05); flex-wrap: wrap; align-items: center; }
+.cast-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin-right: 4px; }
+.btn-cast { background: transparent; border: 1px solid var(--accent-dim); color: var(--accent); padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer; letter-spacing: 0.3px; transition: all 0.15s; }
+.btn-cast:hover:not(:disabled) { background: var(--accent-dim); color: var(--text); }
+.btn-cast.base { background: var(--accent-dim); color: var(--text); }
+.btn-cast.base:hover:not(:disabled) { background: var(--accent); color: var(--bg); }
+.btn-cast:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ============ LIGHTBOX ============ */
+.lightbox-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+.lightbox-overlay.active { display: flex; }
+.lightbox-overlay img { max-width: 100%; max-height: 100%; border-radius: 8px; }
+
+/* ============ DRAG-DROP PORTRAIT TARGETS ============ */
+[data-portrait-target] { position: relative; transition: box-shadow 0.15s, outline 0.15s; }
+[data-portrait-target].drag-over { outline: 3px dashed var(--accent); outline-offset: 3px; box-shadow: 0 0 20px var(--accent-glow); }
+[data-portrait-target].drag-over::after { content: "Drop to replace"; position: absolute; inset: 0; background: rgba(0,0,0,0.55); color: var(--accent); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; border-radius: inherit; text-align: center; padding: 4px; letter-spacing: 0.5px; pointer-events: none; z-index: 4; }
+.portrait-replace-btn { background: rgba(0,0,0,0.72); color: var(--accent); border: 1px solid var(--accent-dim); border-radius: 4px; font-weight: 700; cursor: pointer; transition: opacity 0.15s, background 0.15s; letter-spacing: 0.3px; }
+.portrait-replace-btn:hover { background: var(--accent-dim); color: var(--text); }
+/* Thumbnail (top bar): tiny overlay at the corner, only visible on hover */
+.char-thumbnail .portrait-replace-btn { position: absolute; bottom: -4px; right: -4px; padding: 2px 6px; font-size: 9px; text-transform: uppercase; opacity: 0; z-index: 5; }
+.char-thumbnail:hover .portrait-replace-btn { opacity: 1; }
+/* Overview: small centered button sitting directly below the portrait, inside the same float */
+.overview-portrait-wrap { float: right; width: 420px; max-width: 50%; margin: 0 0 14px 20px; text-align: center; }
+@media (max-width: 700px) { .overview-portrait-wrap { float: none; margin: 0 auto 14px; width: auto; max-width: 85%; } }
+.overview-portrait-wrap .overview-portrait { width: 100%; max-width: 100%; margin: 0; float: none; display: block; }
+.overview-portrait-wrap .portrait-replace-btn { position: static; display: inline-block; margin-top: 6px; padding: 3px 12px; font-size: 10px; text-transform: uppercase; opacity: 0.5; }
+.overview-portrait-wrap:hover .portrait-replace-btn { opacity: 1; }
+
+/* ============ TOAST ============ */
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--bg-panel); border: 1px solid var(--accent-dim); color: var(--text); padding: 10px 16px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity 0.3s, transform 0.3s; z-index: 3000; box-shadow: 0 4px 16px rgba(0,0,0,0.5); pointer-events: none; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { border-color: var(--danger); }
+
+/* ============ PLAY-STATE BAR ============ */
+#play-state-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 10px 20px; background: linear-gradient(180deg, rgba(245,158,11,0.04) 0%, transparent 100%); border-bottom: 1px solid var(--border); font-size: 12px; }
+.play-section { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.play-label { color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-size: 10px; font-weight: 700; }
+.btn-xs { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-dim); padding: 3px 8px; border-radius: 999px; font-size: 10px; cursor: pointer; font-weight: 600; }
+.btn-xs:hover { border-color: var(--accent-dim); color: var(--text); }
+.btn-xs.disabled, .btn-xs:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Conditions */
+.conditions-list { display: flex; flex-wrap: wrap; gap: 4px; }
+.condition-pill { background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.4); color: #c4b5fd; padding: 2px 4px 2px 9px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; }
+.condition-pill button { background: none; border: none; color: inherit; cursor: pointer; padding: 0 4px; font-size: 13px; line-height: 1; opacity: 0.7; }
+.condition-pill button:hover { opacity: 1; }
+.condition-pill em { font-style: italic; opacity: 0.85; font-weight: 400; margin-left: 2px; }
+.conditions-list:empty::before { content: "— none —"; color: var(--text-muted); font-style: italic; font-size: 11px; }
+
+/* Condition menu */
+.condition-menu { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); padding: 6px; z-index: 2500; min-width: 220px; max-height: 70vh; overflow-y: auto; }
+.condition-menu-header { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 6px 10px; font-weight: 700; }
+.condition-option { padding: 6px 10px; font-size: 13px; cursor: pointer; border-radius: 4px; color: var(--text); }
+.condition-option:hover { background: var(--bg-hover); color: var(--accent); }
+.condition-option.selected { background: var(--accent-dim); color: var(--text); }
+.condition-menu-divider { height: 1px; background: var(--border); margin: 4px 0; }
+.condition-custom { display: flex; gap: 4px; padding: 6px 10px; }
+.condition-custom input { flex: 1; background: var(--bg-card); border: 1px solid var(--border); color: var(--text); padding: 4px 8px; border-radius: 4px; font-size: 12px; font-family: inherit; }
+.condition-custom button { background: var(--accent-dim); border: 1px solid var(--accent); color: var(--text); padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+
+/* Concentration */
+.concentration-pill { background: rgba(34, 211, 238, 0.15); border: 1px solid rgba(34, 211, 238, 0.4); color: var(--concentration); padding: 2px 4px 2px 9px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; }
+.concentration-pill button { background: none; border: none; color: inherit; cursor: pointer; padding: 0 4px; font-size: 13px; line-height: 1; opacity: 0.7; }
+.concentration-pill button:hover { opacity: 1; }
+.card-conc-toggle { margin-top: 8px; padding-top: 6px; border-top: 1px dotted rgba(255,255,255,0.05); }
+.card-conc-toggle .btn-xs.active { background: rgba(34, 211, 238, 0.15); border-color: var(--concentration); color: var(--concentration); }
+.card.spell-card.is-concentrating { border-color: var(--concentration); box-shadow: 0 0 0 1px var(--concentration), 0 0 12px rgba(34, 211, 238, 0.12); }
+
+/* Death saves */
+.death-saves-section { padding: 2px 10px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; }
+.ds-pips { display: inline-flex; gap: 4px; align-items: center; }
+.ds-pip { width: 14px; height: 14px; border-radius: 50%; border: 2px solid; display: inline-block; cursor: pointer; box-sizing: border-box; transition: all 0.15s; }
+.ds-pip.success { border-color: #22c55e; }
+.ds-pip.success.used { background: #22c55e; }
+.ds-pip.failure { border-color: var(--danger); }
+.ds-pip.failure.used { background: var(--danger); }
+.ds-pip:hover { transform: scale(1.1); }
+.ds-sep { color: var(--text-muted); padding: 0 4px; }
+.ds-status { font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.5px; }
+.ds-status.stable { background: rgba(34, 197, 94, 0.15); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.4); }
+.ds-status.dead   { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.5); }
+
+/* Exhaustion */
+.exhaustion-section .ex-stepper { display: inline-flex; align-items: center; gap: 4px; }
+.ex-stepper button { width: 22px; height: 22px; background: var(--bg-hover); border: 1px solid var(--border); color: var(--text); border-radius: 4px; cursor: pointer; font-size: 14px; line-height: 1; padding: 0; }
+.ex-stepper button:disabled { opacity: 0.3; cursor: not-allowed; }
+.ex-value { font-weight: 700; min-width: 16px; text-align: center; color: var(--text); }
+.ex-penalty { color: var(--text-dim); font-size: 11px; font-style: italic; }
+.exhaustion-section.warn .ex-value { color: var(--warn); }
+.exhaustion-section.warn .ex-penalty { color: var(--warn); }
+.exhaustion-section.danger .ex-value,
+.exhaustion-section.danger .ex-penalty { color: var(--danger); }
+.exhaustion-section.critical { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 8px; padding: 2px 10px; }
+.exhaustion-section.critical .ex-value,
+.exhaustion-section.critical .ex-penalty { color: var(--danger); font-weight: 700; }
+
+</style>
+</head>
+<body>
+
+<div id="app" class="hidden">
+  <div class="top-bar">
+    <div class="char-identity">
+      <div class="char-thumbnail" id="char-thumbnail-wrap" data-portrait-target="thumbnail" title="Drag an image here to replace the thumbnail"></div>
+      <div class="char-name-block">
+        <div class="char-name" id="char-name"></div>
+        <div class="sub" id="char-subtitle"></div>
+      </div>
+    </div>
+    <div class="top-stats">
+      <div class="stat-block hp-block">
+        <div class="label">Hit Points</div>
+        <div class="hp-display">
+          <button class="btn-icon" onclick="adjustHP(-1)">&minus;</button>
+          <input type="number" id="hp-current">
+          <span class="sep">/</span>
+          <span id="hp-max"></span>
+          <button class="btn-icon" onclick="adjustHP(1)">+</button>
+        </div>
+        <div class="temp-hp">Temp: <input type="number" id="hp-temp"></div>
+      </div>
+      <div class="stat-block"><div class="label">AC</div><div class="value" id="ac-value"></div><div class="sub" id="ac-source"></div></div>
+      <div class="stat-block"><div class="label">Initiative</div><div class="value" id="initiative-value"></div></div>
+      <div class="inspiration-toggle" id="inspiration-toggle" onclick="toggleInspiration()" title="Inspiration">&starf;</div>
+    </div>
+    <div class="top-actions">
+      <div class="rest-buttons">
+        <button class="rest-btn short" onclick="openRest('short')">Short Rest</button>
+        <button class="rest-btn long" onclick="openRest('long')">Long Rest</button>
+      </div>
+      <button class="btn-ghost" onclick="saveSessionState()" title="Save session backup (character + state) to a JSON file">&#x1F4BE;</button>
+      <button class="btn-ghost" onclick="openSessionImportPicker()" title="Import a saved session backup">&#x1F4E4;</button>
+    </div>
+  </div>
+  <div id="advisory-banners"></div>
+  <div id="play-state-bar" class="hidden"></div>
+  <div id="play-state-bar" class="hidden"></div>
+  <div class="main-layout">
+    <aside>
+      <div class="sidebar-panel"><h3>Ability Scores</h3><div class="ability-grid" id="ability-grid"></div></div>
+      <div class="sidebar-panel"><h3>Combat</h3><div id="combat-stats"></div></div>
+      <div class="sidebar-panel"><h3>Skills</h3><div id="skills-list"></div></div>
+      <div class="sidebar-panel"><h3>Proficiencies</h3><div id="proficiencies-list"></div></div>
+      <div class="sidebar-panel"><h3>Languages</h3><div id="languages-list"></div></div>
+    </aside>
+    <main class="main-content"><div class="tab-bar" id="tab-bar"></div><div id="tab-contents"></div></main>
+  </div>
+</div>
+<div class="modal-overlay" id="rest-modal">
+  <div class="modal">
+    <h2 id="rest-title">Take a Rest?</h2>
+    <p id="rest-desc"></p>
+    <div id="rest-list"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeRest()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmRest()">Confirm</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="hit-die-modal">
+  <div class="modal">
+    <h2>Spend Hit Die</h2>
+    <p id="hit-die-desc"></p>
+    <div style="margin-bottom:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <label style="font-size:13px;color:var(--text-dim);">Rolled:</label>
+      <input type="number" id="hit-die-roll" min="1" style="width:70px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:4px;font-size:14px;text-align:center;">
+      <span id="hit-die-total" style="color:var(--accent);font-weight:700;"></span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeHitDieModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmHitDieSpend()">Spend</button>
+    </div>
+  </div>
+</div>
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
+  <img id="lightbox-img" alt="">
+</div>
+
+<script id="app-js">
+window.EMBEDDED_CHARACTER = {"schemaVersion":2,"storageKey":"vanitas_v1","identity":{"name":"Vanitas","subtitle":"Variant Human · Cleric 1 (Peace) / Wizard 4 (Chronurgy) · Haunted One","pronouns":"he/him","age":null,"height":null,"alignment":"True Neutral","epithet":"He Who Conquers Time","deity":"The Chronarch"},"portrait":{"src":"characters/vanitas/portraits/full.png","alt":"Vanitas — character portrait"},"thumbnail":{"src":"characters/vanitas/portraits/thumb.png","alt":"Vanitas — thumbnail"},"theme":"violet-chronos","classes":[{"name":"Cleric","subclass":"Peace Domain","subclassSource":"Tasha's Cauldron of Everything","level":1,"isFirstClass":true,"casterType":"full"},{"name":"Wizard","subclass":"Chronurgy Magic","subclassSource":"Explorer's Guide to Wildemount","level":4,"isFirstClass":false,"casterType":"full"}],"species":{"name":"Human","variant":"Variant Human (PHB 2014)","source":"PHB 2014"},"background":{"name":"Haunted One","source":"Van Richten's Guide to Ravenloft","feature":"Heart of Darkness","originFeat":null},"abilities":{"STR":7,"DEX":14,"CON":16,"INT":20,"WIS":14,"CHA":12},"abilityBumps":[{"source":"species:Variant Human","ability":"INT","bonus":1,"note":"Variant Human +1/+1 — first +1 placed in INT"},{"source":"species:Variant Human","ability":"CON","bonus":1,"note":"Variant Human +1/+1 — second +1 placement not specified in source MD; assumed CON. Confirm with player."},{"source":"feat:Skill Expert","ability":"INT","bonus":1,"note":"Skill Expert (Variant Human bonus feat, Tasha's) — +1 INT"},{"source":"class-asi:Wizard-4","ability":"INT","bonus":2,"note":"Wizard 4 ASI — +2 INT (18 → 20)"}],"feats":[{"name":"Skill Expert","source":"species:Variant Human (bonus feat)"}],"proficiencies":{"saves":["WIS","CHA"],"skills":[{"skill":"Insight","source":"class:Cleric"},{"skill":"Religion","source":"class:Cleric"},{"skill":"Persuasion","source":"subclass:Peace Domain (Implement of Peace)"},{"skill":"Perception","source":"species:Variant Human"},{"skill":"Arcana","source":"background:Haunted One"},{"skill":"Investigation","source":"background:Haunted One","expertise":true},{"skill":"History","source":"feat:Skill Expert"}],"tools":[],"weapons":[{"category":"Simple","source":"class:Cleric"},{"category":"Simple","source":"class:Wizard"}],"armor":[{"category":"Light","source":"class:Cleric"},{"category":"Medium","source":"class:Cleric"},{"category":"Shields","source":"class:Cleric"}]},"languages":[{"language":"Common","source":"starting"},{"language":"+1 of choice (TBD)","source":"species:Variant Human"},{"language":"+1 of choice (TBD)","source":"background:Haunted One"},{"language":"+1 of choice (TBD)","source":"background:Haunted One"}],"speeds":{"walk":30},"hp":{"hitDie":"d8","max":39},"ac":{"value":15,"source":"Chain Shirt (medium, AC 13) + DEX +2 (capped at +2) = 15. No shield equipped."},"spellcasting":{"ability":"INT","preparedLimit":9,"preparedLimitNote":"Wizard prepared = INT mod (+5) + Wizard level (4) = 9. Also prepares 3 Cleric spells (WIS +2 + Cleric 1) using DC 13 / +5 attack — not derivable from this block. Always-prepared: Heroism, Sanctuary (Peace Domain)."},"resources":[{"id":"spell.slots.1","display":"1st Level Spell Slots","max":4,"refresh":"longRest","poolType":"pips","pipClass":"slot"},{"id":"spell.slots.2","display":"2nd Level Spell Slots","max":3,"refresh":"longRest","poolType":"pips","pipClass":"slot"},{"id":"spell.slots.3","display":"3rd Level Spell Slots","max":2,"refresh":"longRest","poolType":"pips","pipClass":"slot","note":"Multiclass slots: Cleric 1 + Wizard 4 = caster level 5. 3rd-level slots exist by multiclass rule, but Wizard 4 cannot normally prepare 3rd-level wizard spells from spellbook — confirm DM allowance for Hypnotic Pattern / Counterspell."},{"id":"chronurgy.chronalShift","display":"Chronal Shift","max":2,"refresh":"longRest","poolType":"pips","note":"Chronurgy Magic L2. Reaction within 30 ft to force a reroll on an attack roll, ability check, or saving throw — choose which result is used."},{"id":"wizard.arcaneRecovery","display":"Arcane Recovery","max":1,"refresh":"longRest","poolType":"pips","note":"Once per Long Rest, on a Short Rest, recover wizard slots whose combined level ≤ ⌈Wizard level / 2⌉ = 2. No 6th+ level slots."},{"id":"peace.embolderingBond","display":"Emboldening Bond","max":"=pb","refresh":"longRest","poolType":"pips","note":"Peace Domain L1. Action: bond up to PB (3) creatures within 30 ft for 10 min. While within 30 ft of another bonded creature, a bonded creature can add 1d4 to one attack/check/save (1/turn each)."},{"id":"cleric.hitDice","display":"Hit Dice (d8)","max":"=clericLevel","refresh":"longRestHalf","poolType":"pips","hitDie":"d8","note":"Cleric Hit Die. Spend on Short Rest: heals 1d8 + CON mod (+3)."},{"id":"wizard.hitDice","display":"Hit Dice (d6)","max":"=wizardLevel","refresh":"longRestHalf","poolType":"pips","hitDie":"d6","note":"Wizard Hit Die. Spend on Short Rest: heals 1d6 + CON mod (+3)."}],"abilities_list":[{"kind":"feature","id":"cleric.spellcasting","name":"Spellcasting (Cleric)","subtitle":"Cleric 1 · WIS-based","source":{"type":"class","name":"Cleric","level":1},"categories":[],"text":"Wisdom is your Cleric spellcasting ability. Cleric Spell Save DC 13, Cleric Spell Attack +5. Prepare WIS mod + Cleric level = 3 cleric spells (plus always-prepared Domain spells: Heroism, Sanctuary). Prepared list swaps on a Long Rest. Holy Symbol is the spellcasting focus."},{"kind":"feature","id":"peace.implementOfPeace","name":"Implement of Peace","subtitle":"Peace Domain L1","source":{"type":"subclass","name":"Peace Domain","level":1},"categories":[],"text":"Granted proficiency in Insight, Performance, or Persuasion (chose Persuasion)."},{"kind":"feature","id":"peace.domainSpells","name":"Domain Spells","subtitle":"Peace Domain · Always Prepared","source":{"type":"subclass","name":"Peace Domain","level":1},"categories":[],"tags":["Always Prepared"],"text":"1st: Heroism, Sanctuary (always prepared, do not count against the prepared limit). Higher-tier domain spells unlock at Cleric 3/5/7/9."},{"kind":"action","id":"peace.embolderingBond","name":"Emboldening Bond","subtitle":"Peace Domain L1 · PB/LR · Action","source":{"type":"subclass","name":"Peace Domain","level":1},"categories":["action","limited"],"actionType":"action","tags":["PB/LR","10 min"],"uses":{"consumes":{"resourceId":"peace.embolderingBond","amount":1}},"text":"Choose up to PB (3) creatures you can see within 30 ft of you (you may include yourself). Bond them for 10 minutes. While within 30 ft of one another, a bonded creature can roll a d4 and add it to one attack roll, ability check, or saving throw it makes — once per turn each. Ends early if any bonded creature drops to 0 HP, or you finish a Long Rest."},{"kind":"feature","id":"wizard.spellcasting","name":"Spellcasting (Wizard)","subtitle":"Wizard 1 · INT-based · Spellbook","source":{"type":"class","name":"Wizard","level":1},"categories":[],"text":"Intelligence is your Wizard spellcasting ability. Wizard Spell Save DC 16, Wizard Spell Attack +8. Prepare INT mod + Wizard level = 9 wizard spells from your spellbook. Spellbook is your arcane focus. Add 2 wizard spells to spellbook each Wizard level (and via copying scrolls)."},{"kind":"action","id":"wizard.arcaneRecovery","name":"Arcane Recovery","subtitle":"Wizard 1 · 1/LR (on Short Rest)","source":{"type":"class","name":"Wizard","level":1},"categories":["free","limited"],"actionType":"free","tags":["1/LR","Short Rest"],"uses":{"consumes":{"resourceId":"wizard.arcaneRecovery","amount":1}},"text":"Once per Long Rest, on a Short Rest, recover wizard spell slots whose combined level is ≤ ⌈Wizard level / 2⌉ = 2 (no slot of 6th level or higher). E.g. one 2nd-level slot, or two 1st-level slots."},{"kind":"feature","id":"wizard.ritualCasting","name":"Ritual Casting","subtitle":"Wizard 1","source":{"type":"class","name":"Wizard","level":1},"categories":[],"tags":["Ritual"],"text":"You can cast a wizard spell as a ritual if it has the ritual tag and is in your spellbook — without preparing it. Casting time +10 minutes."},{"kind":"feature","id":"chronurgy.tradition","name":"Chronurgy Magic","subtitle":"Wizard 2 · Arcane Tradition","source":{"type":"subclass","name":"Chronurgy Magic","level":2},"categories":[],"text":"You bend time itself. Tradition unlocks Chronal Shift and Temporal Awareness at L2; further features at Wizard 6 / 10 / 14."},{"kind":"action","id":"chronurgy.chronalShift","name":"Chronal Shift","subtitle":"Chronurgy 2 · Reaction · 2/LR","source":{"type":"subclass","name":"Chronurgy Magic","level":2},"categories":["reaction","limited"],"actionType":"reaction","tags":["2/LR"],"uses":{"consumes":{"resourceId":"chronurgy.chronalShift","amount":1}},"text":"When a creature you can see within 30 ft (or yourself) makes an attack roll, ability check, or saving throw, you can spend 1 use to force a reroll. Choose which of the two results is used. 2 uses per Long Rest."},{"kind":"trait","id":"chronurgy.temporalAwareness","name":"Temporal Awareness","subtitle":"Chronurgy 2 · always-on","source":{"type":"subclass","name":"Chronurgy Magic","level":2},"categories":["free"],"passive":true,"text":"Add your Intelligence modifier (+5) to initiative rolls. (Already included in Initiative +7 = DEX +2 + INT +5.)"},{"kind":"feature","id":"species.variantHuman","name":"Variant Human","subtitle":"Species (PHB 2014)","source":{"type":"species","name":"Human (Variant)","level":1},"categories":[],"text":"+1 to two different ability scores. One skill proficiency (Perception). One feat (Skill Expert). One additional language of choice."},{"kind":"feature","id":"feat.skillExpert","name":"Skill Expert","subtitle":"Variant Human bonus feat (Tasha's)","source":{"type":"feat","name":"Skill Expert","level":1},"categories":[],"text":"+1 to one ability score (INT). Proficiency in one new skill (History). Expertise in one skill you're proficient in (Investigation — doubled PB → +11)."},{"kind":"feature","id":"asi.wizard4","name":"Ability Score Improvement","subtitle":"Wizard 4","source":{"type":"class","name":"Wizard","level":4},"categories":[],"text":"+2 Intelligence (18 → 20). Capped at the standard 20."},{"kind":"feature","id":"background.hauntedOne","name":"Haunted One — Heart of Darkness","subtitle":"Background feature","source":{"type":"background","name":"Haunted One","level":1},"categories":[],"text":"Common folk recognize that you have been exposed to terrible evil. They will offer you simple shelter, food, and audiences with leaders to be rid of you, though they will not risk their lives or coin for you. Skill profs: Arcana, Investigation. Trinket from Haunted One trinkets table."},{"kind":"feature","id":"flavor.favoredByChronarch","name":"Favored by the Chronarch","subtitle":"Flavor","categories":[],"text":"A roleplay-only blessing tied to the Chronarch deity. No mechanical effect; ask your DM if you want to interact with this in play."},{"kind":"feature","id":"familiar.echo","name":"Echo — The Silent Witness","subtitle":"Familiar via Find Familiar","categories":[],"text":"An otherworldly owl that sees and remembers all. It never speaks, but observes everything. Mechanically a Find Familiar (owl shape) — see Find Familiar spell card for action economy."},{"kind":"action","id":"weapon.quarterstaff","name":"Quarterstaff (Obsidian)","subtitle":"Simple melee · versatile","categories":["action","attack"],"actionType":"action","itemRef":"inv.quarterstaff","attack":{"ability":"STR","toHit":"+1","reach":"5 ft","type":"melee weapon attack"},"damage":"1d6 - 2 bludgeoning (1d8 - 2 two-handed)","properties":["Versatile"],"text":"STR-based: PB +3 + STR -2 = +1 to hit, 1d6 - 2 (or 1d8 - 2 two-handed) bludgeoning. Carrying as Black-Eclipse-style focus / staff."},{"kind":"action","id":"universal.opportunityAttack","name":"Opportunity Attack","categories":["reaction"],"actionType":"reaction","text":"When a creature within your reach moves out of it, use your Reaction to make one melee attack against the provoking creature."},{"kind":"spell","id":"spell.sacredFlame","name":"Sacred Flame","subtitle":"Cleric · DC 13 DEX","spellLevel":0,"school":"Evocation","source":{"type":"class","name":"Cleric","level":1},"castingTime":"action","range":"60 ft","components":{"v":true,"s":true},"duration":"Instantaneous","categories":["action"],"actionType":"action","tags":["Cantrip"],"save":{"ability":"DEX","dc":13,"effect":"1d8 Radiant on fail; no effect on success. Target gains no benefit from cover for this save."},"text":"Flame-like radiance descends on the target. DC 13 DEX save (Cleric DC), 1d8 Radiant on fail. Damage scales: 2d8 at L5, 3d8 at L11, 4d8 at L17."},{"kind":"spell","id":"spell.tollTheDead","name":"Toll the Dead","subtitle":"Cleric · DC 13 WIS","spellLevel":0,"school":"Necromancy","source":{"type":"class","name":"Cleric","level":1},"castingTime":"action","range":"60 ft","components":{"v":true,"s":true},"duration":"Instantaneous","categories":["action"],"actionType":"action","tags":["Cantrip"],"save":{"ability":"WIS","dc":13,"effect":"1d8 Necrotic on fail (1d12 if target is already injured); no effect on success."},"text":"DC 13 WIS save. On fail: 1d8 Necrotic, or 1d12 if the target is missing any HP. Damage scales: +1 die at L5/11/17."},{"kind":"spell","id":"spell.guidance","name":"Guidance","subtitle":"Cleric · concentration","spellLevel":0,"school":"Divination","source":{"type":"class","name":"Cleric","level":1},"castingTime":"action","range":"Touch","components":{"v":true,"s":true},"duration":"Concentration, 1 min","concentration":true,"categories":["action"],"actionType":"action","tags":["Cantrip"],"text":"Touched willing creature can roll +1d4 once on an ability check it makes before the spell ends."},{"kind":"spell","id":"spell.fireBolt","name":"Fire Bolt","subtitle":"Wizard · ranged spell attack","spellLevel":0,"school":"Evocation","source":{"type":"class","name":"Wizard","level":1},"castingTime":"action","range":"120 ft","components":{"v":true,"s":true},"duration":"Instantaneous","categories":["action","attack"],"actionType":"action","tags":["Cantrip"],"attack":{"ability":"INT","toHit":"=spellAttack","type":"ranged spell attack"},"damage":"2d10 Fire","text":"Ranged spell attack +8. On hit: 2d10 Fire. Unattended flammable objects ignite. Damage scales: +1 die at L5/11/17 (currently 2d10 at L5)."},{"kind":"spell","id":"spell.mageHand","name":"Mage Hand","subtitle":"Wizard · 1 minute","spellLevel":0,"school":"Conjuration","source":{"type":"class","name":"Wizard","level":1},"castingTime":"action","range":"30 ft","components":{"v":true,"s":true},"duration":"1 min","categories":["action"],"actionType":"action","tags":["Cantrip"],"text":"Spectral, floating hand at a chosen point within range. Manipulate objects, open unlocked containers, retrieve items. Cannot attack or carry > 10 lb. 30-ft range. Re-spend an Action to control it on your turns."},{"kind":"spell","id":"spell.minorIllusion","name":"Minor Illusion","subtitle":"Wizard · 1 minute","spellLevel":0,"school":"Illusion","source":{"type":"class","name":"Wizard","level":1},"castingTime":"action","range":"30 ft","components":{"s":true,"m":"a bit of fleece"},"duration":"1 min","categories":["action"],"actionType":"action","tags":["Cantrip"],"text":"Create a sound (volume from whisper to scream) OR an image of an object (no larger than 5-ft cube) within range. Investigation check vs DC 16 to discern as illusory."},{"kind":"spell","id":"spell.prestidigitation","name":"Prestidigitation","subtitle":"Wizard · 1 hr","spellLevel":0,"school":"Transmutation","source":{"type":"class","name":"Wizard","level":1},"castingTime":"action","range":"10 ft","components":{"v":true,"s":true},"duration":"1 hour (some effects)","categories":["action"],"actionType":"action","tags":["Cantrip"],"text":"A minor magical trick: light/snuff a flame, clean/soil an object, chill/warm/flavor 1 cu ft, create a tiny mark/symbol for 1 hour, create a non-magical trinket (lasts until end of next turn). Up to 3 effects active at once."},{"kind":"spell","id":"spell.shield","name":"Shield","subtitle":"Wizard · Reaction","spellLevel":1,"school":"Abjuration","source":{"type":"class","name":"Wizard","level":1},"castingTime":"reaction","range":"Self","components":{"v":true,"s":true},"duration":"1 round","categories":["reaction"],"actionType":"reaction","prepared":true,"text":"Trigger: you're hit by an attack roll OR targeted by Magic Missile. Effect: +5 AC (including against the triggering attack — can retroactively miss) AND immunity to Magic Missile. Lasts until the start of your next turn. ★ Essential."},{"kind":"spell","id":"spell.absorbElements","name":"Absorb Elements","subtitle":"Wizard · Reaction · concentration-free","spellLevel":1,"school":"Abjuration","source":{"type":"class","name":"Wizard","level":1},"castingTime":"reaction","range":"Self","components":{"s":true},"duration":"1 round","categories":["reaction"],"actionType":"reaction","prepared":true,"upcast":"+1d6 absorbed/added per slot level above 1st.","text":"Trigger: you take Acid, Cold, Fire, Lightning, or Thunder damage. Effect: gain Resistance to that damage type until the start of your next turn, and your next melee attack before then deals +1d6 of the absorbed damage type. ★ Essential."},{"kind":"spell","id":"spell.findFamiliar","name":"Find Familiar","subtitle":"Wizard · Ritual · Echo (owl)","spellLevel":1,"school":"Conjuration","source":{"type":"class","name":"Wizard","level":1},"castingTime":"1 hour (ritual)","range":"10 ft","components":{"v":true,"s":true,"m":"10 gp of charcoal, incense, and herbs (consumed)"},"duration":"Until dispelled","ritual":true,"categories":["action"],"actionType":"action","tags":["Ritual"],"prepared":true,"text":"Summon Echo, your owl familiar (Celestial / Fey / Fiend at choice — flavored otherworldly here). Telepathic link within 100 ft. Help action, scout via shared sight, deliver touch spells. Resummon if it drops to 0 by re-casting (no new components if same form)."},{"kind":"spell","id":"spell.healingWord","name":"Healing Word","subtitle":"Cleric · Bonus Action","spellLevel":1,"school":"Evocation","source":{"type":"class","name":"Cleric","level":1},"castingTime":"bonus","range":"60 ft","components":{"v":true},"duration":"Instantaneous","categories":["bonus"],"actionType":"bonus","prepared":true,"upcast":"+1d4 healing per slot level above 1st.","text":"Target creature regains 1d4 + 2 HP (Cleric WIS mod). Bonus Action range pickup. Saves an ally at 0 HP from the next failed death save."},{"kind":"spell","id":"spell.guidingBolt","name":"Guiding Bolt","subtitle":"Cleric · ranged spell attack","spellLevel":1,"school":"Evocation","source":{"type":"class","name":"Cleric","level":1},"castingTime":"action","range":"120 ft","components":{"v":true,"s":true},"duration":"1 round","categories":["action","attack"],"actionType":"action","prepared":true,"attack":{"ability":"WIS","toHit":"+5","type":"ranged spell attack (Cleric)"},"damage":"4d6 Radiant","upcast":"+1d6 Radiant per slot level above 1st.","text":"Ranged spell attack +5 (Cleric WIS). On hit: 4d6 Radiant, and the next attack roll against the target before the end of your next turn has Advantage."},{"kind":"spell","id":"spell.heroism","name":"Heroism","subtitle":"Cleric · Peace Domain · Always Prepared","spellLevel":1,"school":"Enchantment","source":{"type":"subclass","name":"Peace Domain (Domain Spell)","level":1},"castingTime":"action","range":"Touch","components":{"v":true,"s":true},"duration":"Concentration, 1 min","concentration":true,"categories":["action"],"actionType":"action","alwaysPrepared":true,"tags":["Domain"],"upcast":"+1 additional creature per slot level above 1st.","text":"Touched willing creature is immune to being Frightened and gains 2 Temp HP at the start of each of its turns (=Cleric spellcasting mod = WIS +2). Concentration."},{"kind":"spell","id":"spell.sanctuary","name":"Sanctuary","subtitle":"Cleric · Peace Domain · Bonus Action · Always Prepared","spellLevel":1,"school":"Abjuration","source":{"type":"subclass","name":"Peace Domain (Domain Spell)","level":1},"castingTime":"bonus","range":"30 ft","components":{"v":true,"s":true,"m":"a small silver mirror"},"duration":"1 min","categories":["bonus"],"actionType":"bonus","alwaysPrepared":true,"tags":["Domain"],"save":{"ability":"WIS","dc":13,"effect":"creatures targeting the warded creature must save or pick a new target / lose the spell"},"text":"Ward a creature within 30 ft. When a creature targets the warded creature with an attack or harmful spell, the attacker must succeed on a DC 13 WIS save or choose a new target (or lose the attack/spell). Ends if the warded creature attacks/casts a damaging spell."},{"kind":"spell","id":"spell.web","name":"Web","subtitle":"Wizard · concentration","spellLevel":2,"school":"Conjuration","source":{"type":"class","name":"Wizard","level":1},"castingTime":"action","range":"60 ft","components":{"v":true,"s":true,"m":"a bit of spiderweb"},"duration":"Concentration, 1 hr","concentration":true,"categories":["action"],"actionType":"action","prepared":true,"save":{"ability":"DEX","dc":"=spellSaveDC","effect":"Restrained while in webs"},"text":"20-ft cube of thick webs. Difficult terrain; lightly obscured. Creature ending its turn in the area or entering it: DEX save (DC 16) or Restrained. Vulnerable to Fire (5 fire = burned away in 1 round). ★ Essential."},{"kind":"spell","id":"spell.mistyStep","name":"Misty Step","subtitle":"Wizard · Bonus Action","spellLevel":2,"school":"Conjuration","source":{"type":"class","name":"Wizard","level":1},"castingTime":"bonus","range":"Self","components":{"v":true},"duration":"Instantaneous","categories":["bonus"],"actionType":"bonus","prepared":true,"text":"Teleport up to 30 ft to an unoccupied space you can see. ★ Essential repositioning / escape lever."},{"kind":"spell","id":"spell.mirrorImage","name":"Mirror Image","subtitle":"Wizard · concentration-free","spellLevel":2,"school":"Illusion","source":{"type":"class","name":"Wizard","level":1},"castingTime":"action","range":"Self","components":{"v":true,"s":true},"duration":"1 min","categories":["action"],"actionType":"action","prepared":true,"text":"Create 3 illusory duplicates. Each time a creature targets you with an attack, roll a d20: 6+ (3 images), 8+ (2), 11+ (1) → attack hits a duplicate (which is destroyed) instead. AC of duplicates = 10 + DEX (+2) = 12. Doesn't require concentration — pairs with concentration spells."},{"kind":"spell","id":"spell.hypnoticPattern","name":"Hypnotic Pattern","subtitle":"Wizard · concentration · DM-approved at L4","spellLevel":3,"school":"Illusion","source":{"type":"class","name":"Wizard","level":1},"castingTime":"action","range":"120 ft","components":{"s":true,"m":"a glowing stick of incense or a crystal vial of phosphorescent material"},"duration":"Concentration, 1 min","concentration":true,"categories":["action"],"actionType":"action","prepared":true,"save":{"ability":"WIS","dc":"=spellSaveDC","effect":"Charmed and Incapacitated, speed 0, until end of duration or until damaged"},"text":"30-ft cube. Creatures who can see the pattern: WIS save (DC 16) or Charmed + Incapacitated + speed 0. Effect ends if a creature is shaken awake (action) or takes damage. ★★ Core win condition. NOTE: Wizard 4 cannot normally prepare 3rd-level spells; confirm DM allowance (multiclass slot ≠ multiclass prepared list)."},{"kind":"spell","id":"spell.counterspell","name":"Counterspell","subtitle":"Wizard · Reaction · DM-approved at L4","spellLevel":3,"school":"Abjuration","source":{"type":"class","name":"Wizard","level":1},"castingTime":"reaction","range":"60 ft","components":{"s":true},"duration":"Instantaneous","categories":["reaction"],"actionType":"reaction","prepared":true,"upcast":"Auto-counters spells of level ≤ slot used. For higher-level spells: ability check (DC 10 + spell level), spellcasting modifier (+5), or use a higher slot.","text":"Reaction when you see a creature within 60 ft casting a spell. 3rd-level slot auto-counters spells of level 3 or lower; for 4th+, make an INT check (DC 10 + spell level). NOTE: Wizard 4 cannot normally prepare 3rd-level spells; confirm DM allowance."}],"inventory":[{"id":"inv.quarterstaff","name":"Quarterstaff (Obsidian)","quantity":1,"equipped":true,"description":"1d6 / 1d8 bludgeoning, versatile. Carved obsidian — serves as a foreboding focus."},{"id":"inv.chainShirt","name":"Chain Shirt","quantity":1,"equipped":true,"description":"Medium armor: AC 13 + DEX (max +2) = 15. No Stealth disadvantage."},{"id":"inv.spellbook","name":"Spellbook","quantity":1,"equipped":true,"description":"Wizard's arcane focus. Contains all known wizard spells."},{"id":"inv.componentsPouch","name":"Components Pouch","quantity":1,"description":"Holds material components for spells without specific cost."},{"id":"inv.holySymbol","name":"Holy Symbol — Black Eclipse","quantity":1,"equipped":true,"description":"Cleric divine focus. Stylized eclipse marking; symbol of the Chronarch."},{"id":"inv.robesOfASage","name":"Robes of a Sage","quantity":1,"equipped":true,"description":"Worn over the chain shirt. Flavor garment of an arcane scholar."},{"id":"inv.pack","name":"Pack","quantity":1,"description":"Standard adventuring kit (bedroll, rations, rope, etc.)."},{"id":"inv.hauntedTrinket","name":"Haunted One Trinket","quantity":1,"description":"A Haunted One trinket from the Curse of Strahd / Van Richten's table. Specific item TBD."}],"narrative":{"knownAs":{"chant":"He Who Conquers Time","chantNote":"The One Who Has Seen All Futures · Domain: Time, Fate, Balance"},"flavorLine":"Once a kind cleric who wanted to save everyone — now a Chronurgist who has watched thousands of timelines fail and stopped trying.","flavorNote":"\"There is no future that does not end with me.\"","personalityTraits":["Cold, deliberate, almost emotionally absent. Treats outcomes like equations.","Speaks in the cadence of someone who has already had every conversation before.","Never visibly surprised — the appearance of foreknowledge is itself a tactic."],"ideals":["Inevitability. Every choice has already played out somewhere. The work is choosing which ending becomes real.","Detachment. Saving everyone is a fool's errand he has tried thousands of times. He saves what can be saved and walks away from what cannot."],"bonds":["The Chronarch — a deity of time he serves, or believes he serves, or is gradually replacing.","Echo — his familiar, the only constant witness across every timeline he has touched.","The unnamed home that was destroyed before he learned to rewrite fate. He cannot remember its name, only the shape of its loss."],"flaws":["Has stopped distinguishing between people he is trying to save and pieces on a board.","Believes boredom is more dangerous than death — and acts on that belief.","Casual cruelty when other people slow down a timeline he has already calculated."],"physicalDescription":"A pale, slim figure in dark robes worn loosely over a chain shirt. Carries an obsidian quarterstaff that hums faintly when stationary. A black-eclipse holy symbol rests against his chest. His eyes track motion a half-beat ahead of where it actually happens. A faint, silver owl — Echo — drifts at his shoulder or in the room above him.","overviewSummary":"Vanitas was once a kind, warm Peace cleric who believed in saving everyone. When his home was destroyed, he was given a chance to rewrite that fate, and he began altering time. He saved his world — again, and again, and again. Thousands of timelines. Thousands of deaths. Eventually, he stopped trying to save everyone. Now he walks the line between savior and destroyer, feeling almost nothing, choosing outcomes with the cold precision of someone who has already seen every ending.","backstoryFull":"Once, Vanitas was a kind and warm cleric who believed in saving everyone.\n\nWhen his home was destroyed, he was given a chance to rewrite that fate. He began altering time. He saved his world — again and again. Thousands of timelines. Thousands of deaths.\n\nEventually, he stopped trying to save everyone.\n\nNow he walks the line between savior and destroyer, feeling nothing, choosing outcomes with cold precision. The Chronarch — whatever the Chronarch is, or was, or becomes — favors him, or wears him, or is built from him.\n\nHis ultimate goal is to ascend beyond the concept of time entirely: to become the still point from which all timelines begin. Whether that is salvation, annihilation, or merely the only ending he hasn't yet rejected, he has not decided. Or he has decided in another timeline, and that decision is already in motion.","dmHooks":"The Chronarch is named but not detailed — is it a real deity, an entity Vanitas has constructed, or his future self? Echo is positioned as a witness across timelines — what does Echo know that Vanitas doesn't? Vanitas is a multiclass Cleric/Wizard with 3rd-level spell slots from multiclass math but cannot RAW-prepare 3rd-level wizard spells at Wizard 4 — Hypnotic Pattern and Counterspell are listed; confirm with player whether this is a campaign-allowed homebrew, a magic-item grant, or a sheet error to fix on level-up."},"advisoryBanners":[{"id":"vanitas-3rd-level-prep","tone":"warn","title":"3rd-level wizard prep — needs DM confirmation.","body":"Multiclass slot rule grants Vanitas 3rd-level spell slots (Cleric 1 + Wizard 4 = caster level 5). However, a Wizard 4 RAW cannot copy 3rd-level spells into the spellbook or prepare them. Hypnotic Pattern and Counterspell are listed as prepared on the source MD — confirm with DM whether this is a homebrew allowance or should be replaced with 1st/2nd-level spells.","dismissible":true},{"id":"vanitas-vh-asi","tone":"info","title":"Variant Human +1/+1 — second placement assumed.","body":"Source MD documents only the +1 INT half of the Variant Human ASI. The second +1 has been placed in CON (assumption). Confirm and adjust abilityBumps[] if this should land elsewhere (e.g. DEX).","dismissible":true}],"tabs":[{"id":"overview","title":"Overview"},{"id":"actions","title":"Actions"},{"id":"spells","title":"Spells"},{"id":"resources","title":"Resources"},{"id":"features","title":"Features"},{"id":"inventory","title":"Inventory"},{"id":"background","title":"Background"},{"id":"notes","title":"Notes"}]};
+
+// ============================================================
+// D&D Character Sheet — app logic (bundled)
+// ============================================================
+
+const SKILLS_TABLE = {
+  "Acrobatics":"DEX","Animal Handling":"WIS","Arcana":"INT","Athletics":"STR",
+  "Deception":"CHA","History":"INT","Insight":"WIS","Intimidation":"CHA",
+  "Investigation":"INT","Medicine":"WIS","Nature":"INT","Perception":"WIS",
+  "Performance":"CHA","Persuasion":"CHA","Religion":"INT","Sleight of Hand":"DEX",
+  "Stealth":"DEX","Survival":"WIS"
+};
+const PB_BY_LEVEL = [0, 2,2,2,2, 3,3,3,3, 4,4,4,4, 5,5,5,5, 6,6,6,6];
+const ABILITY_KEYS = ["STR","DEX","CON","INT","WIS","CHA"];
+
+const LAST_CHAR_KEY = "charsheet_last_character";
+const MIN_SCHEMA_VERSION = 2;
+
+const FEATURE_SOURCE_ORDER = ["class","subclass","species","background","feat"];
+const FEATURE_SOURCE_LABEL = { class:"Class", subclass:"Subclass", species:"Species", background:"Background", feat:"Feat" };
+const ACTION_SOURCE_LABEL  = { class:"Class Actions", subclass:"Subclass", species:"Species", background:"Background", feat:"Feat", universal:"Universal Actions" };
+
+const ACTIONS_FILTER_CHIPS = [
+  { filter:"all", label:"All" }, { filter:"action", label:"Action" },
+  { filter:"bonus", label:"Bonus Action" }, { filter:"reaction", label:"Reaction" },
+  { filter:"attack", label:"Attack" }, { filter:"free", label:"Free / Passive" },
+  { filter:"limited", label:"Limited Use" }
+];
+const FEATURES_FILTER_CHIPS = [
+  { filter:"all", label:"All" }, { filter:"class", label:"Class" },
+  { filter:"subclass", label:"Subclass" }, { filter:"species", label:"Species" },
+  { filter:"background", label:"Background" }, { filter:"feat", label:"Feat" }
+];
+const SPELLS_FILTER_CHIPS = [
+  { filter:"all", label:"All" }, { filter:"cantrip", label:"Cantrips" },
+  { filter:"lvl1", label:"1st Level" }, { filter:"lvl2", label:"2nd Level" },
+  { filter:"lvl3", label:"3rd Level" }, { filter:"lvl4", label:"4th Level" },
+  { filter:"lvl5", label:"5th Level" }, { filter:"conc", label:"Concentration" },
+  { filter:"ritual", label:"Ritual" }, { filter:"circle", label:"Circle / Always" }
+];
+const SPELL_LEVEL_LABEL = {
+  0:"Cantrips", 1:"1st Level", 2:"2nd Level", 3:"3rd Level",
+  4:"4th Level", 5:"5th Level", 6:"6th Level", 7:"7th Level", 8:"8th Level", 9:"9th Level"
+};
+
+// 2024 conditions (Exhaustion tracked separately via its own numeric stepper)
+const CONDITIONS_2024 = [
+  "Blinded", "Charmed", "Deafened", "Frightened", "Grappled",
+  "Incapacitated", "Invisible", "Paralyzed", "Petrified", "Poisoned",
+  "Prone", "Restrained", "Stunned", "Unconscious"
+];
+
+// Portrait target dimensions (drag-drop auto-optimize)
+// Sizes are generous enough to stay sharp on retina/HiDPI displays and if the overview portrait is later displayed larger.
+const PORTRAIT_TARGETS = {
+  thumbnail: { maxSide: 256,  squareCrop: true,  quality: 0.88 },
+  portrait:  { maxSide: 1200, squareCrop: false, quality: 0.88 }
+};
+
+// ============ MODULE STATE ============
+let character = null;
+let derived = null;
+let runtime = null;
+let pendingRest = null;
+
+// ============ HELPERS ============
+function esc(s) { return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function fmt(n) { return n >= 0 ? "+" + n : "" + n; }
+function abilityMod(score) { return Math.floor((score - 10) / 2); }
+function renderText(text) {
+  if (!text) return "";
+  return String(text).split(/\n\n+/).map(p => `<p>${esc(p).replace(/\n/g,"<br>")}</p>`).join("");
+}
+
+// Minimal markdown renderer for the Notes tab — supports headings, bold, italic, code,
+// links, lists, blockquotes, horizontal rules, and paragraphs. URL sanitization blocks
+// javascript:/data: schemes.
+function renderMarkdown(md) {
+  if (!md) return "";
+  const out = [];
+  const lines = String(md).split(/\r?\n/);
+  let listType = null;
+  let inCode = false;
+  const codeBuf = [];
+  const closeList = () => { if (listType) { out.push(`</${listType}>`); listType = null; } };
+  const escRaw = (s) => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const inline = (text) => {
+    let t = escRaw(text);
+    t = t.replace(/`([^`]+)`/g, (_m, c) => `<code>${c}</code>`);
+    t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    t = t.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+    t = t.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+    t = t.replace(/(^|[^_])_([^_\n]+)_/g, "$1<em>$2</em>");
+    t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, txt, url) => {
+      if (/^(javascript|data):/i.test(url.trim())) return txt;
+      const safeUrl = url.replace(/"/g, "&quot;");
+      return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${txt}</a>`;
+    });
+    return t;
+  };
+  for (const line of lines) {
+    if (/^```/.test(line)) {
+      if (inCode) { out.push(`<pre><code>${codeBuf.map(escRaw).join("\n")}</code></pre>`); codeBuf.length = 0; inCode = false; }
+      else       { closeList(); inCode = true; }
+      continue;
+    }
+    if (inCode) { codeBuf.push(line); continue; }
+    if (!line.trim()) { closeList(); continue; }
+    const h = line.match(/^(#{1,6})\s+(.*)/);
+    if (h) { closeList(); out.push(`<h${h[1].length}>${inline(h[2])}</h${h[1].length}>`); continue; }
+    if (/^---+$/.test(line.trim())) { closeList(); out.push("<hr>"); continue; }
+    if (/^>\s?/.test(line)) { closeList(); out.push(`<blockquote>${inline(line.replace(/^>\s?/, ""))}</blockquote>`); continue; }
+    let m = line.match(/^\s*[-*+]\s+(.*)/);
+    if (m) {
+      if (listType !== "ul") { closeList(); out.push("<ul>"); listType = "ul"; }
+      out.push(`<li>${inline(m[1])}</li>`);
+      continue;
+    }
+    m = line.match(/^\s*\d+\.\s+(.*)/);
+    if (m) {
+      if (listType !== "ol") { closeList(); out.push("<ol>"); listType = "ol"; }
+      out.push(`<li>${inline(m[1])}</li>`);
+      continue;
+    }
+    closeList();
+    out.push(`<p>${inline(line)}</p>`);
+  }
+  closeList();
+  if (inCode && codeBuf.length) out.push(`<pre><code>${codeBuf.map(escRaw).join("\n")}</code></pre>`);
+  return out.join("\n");
+}
+
+// ============ TOKEN RESOLUTION ============
+function resolveToken(tok) {
+  if (!derived) return null;
+  for (const k of ABILITY_KEYS) {
+    if (tok === "=" + k.toLowerCase())         return derived.abilities[k].total;
+    if (tok === "=" + k.toLowerCase() + "Mod") return derived.abilities[k].mod;
+  }
+  if (tok === "=pb")           return derived.pb;
+  if (tok === "=level")        return derived.totalLevel;
+  if (tok === "=walkingSpeed") return derived.walkingSpeed;
+  if (tok === "=monkDC")       return derived.monkDC;
+  if (tok === "=spellSaveDC")  return derived.spellSaveDC;
+  if (tok === "=spellAttack")  return derived.spellAttack != null ? fmt(derived.spellAttack) : null;
+  const m = tok.match(/^=(\w+?)Level$/);
+  if (m) {
+    const name = m[1].toLowerCase();
+    const cls = (character.classes || []).find(c => c.name.toLowerCase() === name);
+    return cls ? cls.level : 0;
+  }
+  console.warn("Unknown token:", tok);
+  return null;
+}
+function resolveValue(v) {
+  if (typeof v === "string" && v.startsWith("=")) return resolveToken(v);
+  return v;
+}
+
+// ============ DERIVATION ============
+function derive() {
+  const abilities = {};
+  for (const k of ABILITY_KEYS) {
+    const base = (character.abilities && character.abilities[k]) ?? 10;
+    const bumps = (character.abilityBumps || []).filter(b => b.ability === k);
+    const total = base + bumps.reduce((s, b) => s + (b.bonus || 0), 0);
+    abilities[k] = { base, total, mod: abilityMod(total), bumps };
+  }
+  const totalLevel = (character.classes || []).reduce((s, c) => s + (c.level || 0), 0);
+  const pb = PB_BY_LEVEL[totalLevel] || 2;
+  const classLevels = {};
+  for (const c of character.classes || []) classLevels[c.name.toLowerCase()] = c.level;
+  const monkLevel = classLevels["monk"] || 0;
+
+  let walkingSpeed = (character.speeds && character.speeds.walk) || 30;
+  const hasTrait = (id) => (character.abilities_list || []).some(a => a.id === id);
+  if (hasTrait("monk.unarmoredMovement") && monkLevel >= 2) walkingSpeed += 10;
+
+  let ac, acSource;
+  if (character.ac?.value != null) {
+    ac = character.ac.value;
+    acSource = character.ac.source || "";
+  } else if (hasTrait("monk.unarmoredDefense")) {
+    ac = 10 + abilities.DEX.mod + abilities.WIS.mod;
+    acSource = "Unarmored Defense (DEX + WIS)";
+  } else {
+    ac = 10 + abilities.DEX.mod;
+    acSource = "10 + DEX";
+  }
+
+  const monkDC = monkLevel > 0 ? (8 + pb + abilities.WIS.mod) : null;
+  let spellSaveDC = null, spellAttack = null;
+  if (character.spellcasting?.ability) {
+    const mod = abilities[character.spellcasting.ability].mod;
+    spellSaveDC = 8 + pb + mod;
+    spellAttack = pb + mod;
+  }
+
+  const initiative = abilities.DEX.mod;
+  const saveProfs = (character.proficiencies && character.proficiencies.saves) || [];
+  const saves = {};
+  for (const k of ABILITY_KEYS) {
+    const prof = saveProfs.includes(k);
+    saves[k] = { mod: abilities[k].mod + (prof ? pb : 0), proficient: prof };
+  }
+  const skillProfs = (character.proficiencies && character.proficiencies.skills) || [];
+  const extraBonuses = character.skillBonuses || [];
+  const resolveInline = (v) => {
+    if (typeof v === "number") return v;
+    if (typeof v !== "string" || !v.startsWith("=")) return 0;
+    const m = v.match(/^=(str|dex|con|int|wis|cha)Mod$/i);
+    if (m) return abilities[m[1].toUpperCase()].mod;
+    if (v === "=pb") return pb;
+    return 0;
+  };
+  const skills = {};
+  for (const [name, abil] of Object.entries(SKILLS_TABLE)) {
+    const profEntry = skillProfs.find(s => s.skill === name);
+    const mod = abilities[abil].mod;
+    const extras = extraBonuses.filter(b => b.skill === name).map(b => ({ amount: resolveInline(b.bonus), source: b.source, raw: b.bonus }));
+    const extraTotal = extras.reduce((s, e) => s + e.amount, 0);
+    const bonus = mod + (profEntry ? pb : 0) + extraTotal;
+    skills[name] = { ability: abil, mod, proficient: !!profEntry, bonus, source: profEntry?.source, extras };
+  }
+  return { abilities, totalLevel, pb, classLevels, walkingSpeed, ac, acSource, monkDC, spellSaveDC, spellAttack, initiative, saves, skills };
+}
+
+// ============ RUNTIME STATE ============
+function storageKey() { return character.storageKey || "charsheet_default"; }
+function defaultRuntime() {
+  const rt = {
+    hp: { current: character.hp?.max ?? 10, temp: 0 },
+    inspiration: false, resources: {}, userNotes: "",
+    advisoryDismissed: {}, activeTab: (character.tabs || [{id:"overview"}])[0].id,
+    activeFilters: {},
+    // play-state
+    conditions: [],
+    concentration: null,
+    deathSaves: { successes: 0, failures: 0 },
+    exhaustion: 0,
+    notesMode: "write"
+  };
+  for (const res of character.resources || []) {
+    const max = resolveValue(res.max);
+    if (res.poolType === "pips")   rt.resources[res.id] = new Array(max).fill(false);
+    else if (res.poolType === "hpPool") rt.resources[res.id] = max;
+  }
+  return rt;
+}
+function loadRuntime() {
+  const d = defaultRuntime();
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(storageKey()) || "null"); } catch(e) {}
+  if (!saved) return d;
+  const merged = {
+    hp: { current: saved.hp?.current ?? d.hp.current, temp: saved.hp?.temp ?? 0 },
+    inspiration: !!saved.inspiration,
+    resources: { ...d.resources },
+    userNotes: saved.userNotes || "",
+    advisoryDismissed: saved.advisoryDismissed || {},
+    activeTab: saved.activeTab || d.activeTab,
+    activeFilters: saved.activeFilters || {},
+    conditions: Array.isArray(saved.conditions) ? saved.conditions : [],
+    concentration: saved.concentration || null,
+    deathSaves: {
+      successes: Math.max(0, Math.min(3, saved.deathSaves?.successes || 0)),
+      failures:  Math.max(0, Math.min(3, saved.deathSaves?.failures  || 0))
+    },
+    exhaustion: Math.max(0, Math.min(6, typeof saved.exhaustion === "number" ? saved.exhaustion : 0)),
+    notesMode: saved.notesMode === "preview" ? "preview" : "write"
+  };
+  if (merged.hp.current > character.hp.max) merged.hp.current = character.hp.max;
+  if (merged.hp.current < 0) merged.hp.current = 0;
+  for (const res of character.resources || []) {
+    const max = resolveValue(res.max);
+    const savedVal = saved.resources?.[res.id];
+    if (res.poolType === "pips") {
+      if (Array.isArray(savedVal)) merged.resources[res.id] = new Array(max).fill(false).map((_, i) => savedVal[i] === true);
+      else merged.resources[res.id] = new Array(max).fill(false);
+    } else if (res.poolType === "hpPool") {
+      merged.resources[res.id] = Math.min(max, typeof savedVal === "number" ? savedVal : max);
+    }
+  }
+  return merged;
+}
+function saveRuntime() { try { localStorage.setItem(storageKey(), JSON.stringify(runtime)); } catch(e) {} }
+
+// ============ RENDER — TOP BAR ============
+function renderThumbFallback(el) {
+  const name = (character?.identity?.name || "?").trim();
+  const initial = (name.charAt(0) || "?").toUpperCase();
+  el.innerHTML = `<div class="thumb-fallback">${esc(initial)}</div>`;
+}
+function thumbFailed(img) {
+  const parent = img.parentElement;
+  if (parent) renderThumbFallback(parent);
+}
+function renderTopBar() {
+  const thumbWrap = document.getElementById("char-thumbnail-wrap");
+  const replaceBtn = `<button class="portrait-replace-btn" onclick="event.stopPropagation();openPortraitPicker('thumbnail')" title="Replace thumbnail (or drag a new image here)">Replace</button>`;
+  if (character.thumbnail?.src) {
+    thumbWrap.innerHTML = `<img src="${esc(character.thumbnail.src)}" alt="${esc(character.thumbnail.alt || '')}" onclick="openLightbox(this.src, this.alt)" onerror="thumbFailed(this)">${replaceBtn}`;
+  } else {
+    renderThumbFallback(thumbWrap);
+    thumbWrap.insertAdjacentHTML("beforeend", replaceBtn);
+  }
+  const nameEl = document.getElementById("char-name");
+  const subEl = document.getElementById("char-subtitle");
+  const name = character.identity?.name || "— unnamed —";
+  const sub = character.identity?.subtitle || "";
+  nameEl.textContent = name; nameEl.title = name;
+  subEl.textContent = sub;   subEl.title = sub;
+
+  document.getElementById("hp-current").value = runtime.hp.current;
+  document.getElementById("hp-max").textContent = character.hp.max;
+  document.getElementById("hp-temp").value = runtime.hp.temp;
+  document.getElementById("ac-value").textContent = derived.ac;
+  document.getElementById("ac-source").textContent = derived.acSource;
+  document.getElementById("initiative-value").textContent = fmt(derived.initiative);
+  document.getElementById("inspiration-toggle").classList.toggle("active", runtime.inspiration);
+}
+
+function renderBanners() {
+  const container = document.getElementById("advisory-banners");
+  container.innerHTML = "";
+  for (const banner of character.advisoryBanners || []) {
+    if (runtime.advisoryDismissed[banner.id]) continue;
+    const el = document.createElement("div");
+    el.className = "advisory-banner";
+    el.innerHTML = `<button class="advisory-close" onclick="dismissBanner('${esc(banner.id)}')">&times;</button><strong>${esc(banner.title)}</strong> ${esc(banner.body)}`;
+    container.appendChild(el);
+  }
+}
+
+function renderSidebar() {
+  const grid = document.getElementById("ability-grid");
+  grid.innerHTML = "";
+  for (const k of ABILITY_KEYS) {
+    const a = derived.abilities[k];
+    const save = derived.saves[k];
+    const bumpNotes = a.bumps.length ? a.bumps.map(b => `+${b.bonus} from ${b.source}`).join("; ") : "no ASI applied";
+    const tip = `${k} ${a.total} = ${a.base} rolled${a.bumps.length ? " (" + bumpNotes + ")" : ""}\nSave ${fmt(save.mod)} = ${fmt(a.mod)} mod${save.proficient ? " + " + derived.pb + " prof" : ""}`;
+    const el = document.createElement("div");
+    el.className = "ability-box" + (save.proficient ? " prof" : "");
+    el.title = tip;
+    el.innerHTML = `<div class="name">${k}</div><div class="mod">${fmt(a.mod)}</div><div class="score">${a.total}</div><div class="save">save ${fmt(save.mod)}${save.proficient ? " ★" : ""}</div>`;
+    grid.appendChild(el);
+  }
+  const combat = document.getElementById("combat-stats");
+  const rows = [];
+  rows.push({ label:"Proficiency", value: fmt(derived.pb) });
+  rows.push({ label:"Speed", value: derived.walkingSpeed + " ft" });
+  if ((character.abilities_list || []).some(a => a.id === "monk.unarmoredMovement")) rows.push({ label:"Unarmored Movement", value:"+10 ft" });
+  const classes = character.classes || [];
+  const hitDie = character.hp?.hitDie || "d8";
+  if (classes.length === 1) rows.push({ label:"Hit Dice", value: classes[0].level + hitDie });
+  else if (classes.length > 1) rows.push({ label:"Hit Dice", value: classes.map(c => c.level + (c.hitDie || "d8")).join(" + ") });
+  if (derived.spellSaveDC != null) {
+    rows.push({ label:"Spell Save DC", value: derived.spellSaveDC });
+    rows.push({ label:"Spell Attack",  value: fmt(derived.spellAttack) });
+  }
+  rows.push({ label:"Passive Perception",    value: 10 + derived.skills["Perception"].bonus });
+  rows.push({ label:"Passive Insight",       value: 10 + derived.skills["Insight"].bonus });
+  rows.push({ label:"Passive Investigation", value: 10 + derived.skills["Investigation"].bonus });
+  if (derived.monkDC !== null) rows.push({ label:"Ki Save DC", value: derived.monkDC });
+  combat.innerHTML = rows.map(r => `<div class="stat-row"><span>${esc(r.label)}</span><span class="val">${esc(r.value)}</span></div>`).join("");
+
+  const skillsEl = document.getElementById("skills-list");
+  const skillNames = Object.keys(SKILLS_TABLE).sort();
+  skillsEl.innerHTML = skillNames.map(name => {
+    const s = derived.skills[name];
+    const extraLines = (s.extras || []).map(x => `+${x.amount} from ${x.source}`).join("; ");
+    const baseLine = s.proficient
+      ? `Proficient from ${s.source}. ${fmt(s.mod)} ${s.ability} mod + ${derived.pb} prof`
+      : `Not proficient. ${fmt(s.mod)} ${s.ability} mod`;
+    const tip = `${fmt(s.bonus)} = ${baseLine}${extraLines ? " + " + extraLines : ""}.`;
+    return `<div class="skill-row" title="${esc(tip)}"><div class="skill-dot ${s.proficient ? "prof" : ""}"></div><span class="skill-abil">${s.ability}</span><span class="skill-name">${esc(name)}</span><span class="skill-mod">${fmt(s.bonus)}</span></div>`;
+  }).join("");
+
+  const p = character.proficiencies || {};
+  const profEl = document.getElementById("proficiencies-list");
+  const armor = (p.armor || []).map(x => x.specific || x.category).filter(Boolean);
+  const weapons = (p.weapons || []).map(x => x.specific || x.category).filter(Boolean);
+  const tools = (p.tools || []).map(x => x.tool).filter(Boolean);
+  profEl.innerHTML = `<div class="stat-row"><span>Armor</span><span class="val">${armor.length ? esc(armor.join(", ")) : "None"}</span></div><div class="stat-row"><span>Weapons</span><span class="val">${weapons.length ? esc(weapons.join(", ")) : "None"}</span></div><div class="stat-row"><span>Tools</span><span class="val">${tools.length ? esc(tools.join(", ")) : "None"}</span></div>`;
+
+  const langs = character.languages || [];
+  document.getElementById("languages-list").innerHTML = langs.map(l => `<div class="stat-row"><span>${esc(l.language)}</span></div>`).join("");
+}
+
+// ============ TABS ============
+function renderTabBar() {
+  const bar = document.getElementById("tab-bar");
+  bar.innerHTML = "";
+  const tabs = character.tabs || [{ id:"overview", title:"Overview" }];
+  for (const t of tabs) {
+    const btn = document.createElement("button");
+    btn.className = "tab-btn" + (t.id === runtime.activeTab ? " active" : "");
+    btn.dataset.tab = t.id;
+    btn.textContent = t.title || t.id;
+    btn.onclick = () => switchTab(t.id);
+    bar.appendChild(btn);
+  }
+}
+function switchTab(id) {
+  runtime.activeTab = id; saveRuntime();
+  document.querySelectorAll("#tab-contents .tab-content").forEach(el => el.classList.toggle("active", el.dataset.tabId === id));
+  document.querySelectorAll(".tab-btn").forEach(el => el.classList.toggle("active", el.dataset.tab === id));
+}
+function renderTabContents() {
+  const container = document.getElementById("tab-contents");
+  container.innerHTML = "";
+  const tabs = character.tabs || [{ id:"overview", title:"Overview" }];
+  for (const t of tabs) {
+    const div = document.createElement("div");
+    div.className = "tab-content" + (t.id === runtime.activeTab ? " active" : "");
+    div.dataset.tabId = t.id;
+    div.id = "tab-" + t.id;
+    div.innerHTML = renderTabBody(t);
+    container.appendChild(div);
+  }
+  wireFilterChips();
+}
+function renderTabBody(tab) {
+  if (tab.custom) {
+    const custom = character.customTabs?.[tab.id];
+    if (custom?.type === "stances")     return renderStances(custom);
+    if (custom?.type === "selak-forms") return renderSelakForms(custom);
+    return `<p>[Unknown custom tab type: ${esc(custom?.type || "none")}]</p>`;
+  }
+  switch (tab.id) {
+    case "overview":   return renderOverviewTab();
+    case "actions":    return renderActionsTab();
+    case "spells":     return renderSpellsTab();
+    case "features":   return renderFeaturesTab();
+    case "resources":  return renderResourcesTab();
+    case "inventory":  return renderInventoryTab();
+    case "background": return renderBackgroundTab();
+    case "backstory":  return renderBackstoryTab();
+    case "notes":      return renderNotesTab();
+    default:           return `<p>[Tab ${esc(tab.id)} not yet implemented]</p>`;
+  }
+}
+
+// ---------- Overview ----------
+function renderOverviewTab() {
+  const n = character.narrative || {};
+  const replaceBtn = `<button class="portrait-replace-btn" onclick="event.stopPropagation();openPortraitPicker('portrait')" title="Replace portrait (or drag a new image here)">Replace</button>`;
+  const portrait = character.portrait?.src
+    ? `<div class="overview-portrait-wrap" data-portrait-target="portrait"><img class="overview-portrait" src="${esc(character.portrait.src)}" alt="${esc(character.portrait.alt || '')}" onclick="openLightbox(this.src, this.alt)" title="Click to enlarge · drag an image here or use Replace to set a new portrait">${replaceBtn}</div>`
+    : `<div class="overview-portrait-wrap" data-portrait-target="portrait" onclick="openPortraitPicker('portrait')" style="cursor:pointer;"><div class="overview-portrait" style="display:flex;align-items:center;justify-content:center;min-height:200px;color:var(--text-muted);font-style:italic;">Drag or click to set a portrait</div>${replaceBtn}</div>`;
+  const summary = renderText(n.overviewSummary || "");
+  return `<div class="overview-simple">${portrait}<div class="overview-display-name">${esc(character.identity?.name || "")}</div><div class="overview-subtitle">${esc(character.identity?.subtitle || "")}</div><div class="overview-section-head">Backstory &amp; Personality</div><div class="overview-body">${summary}</div></div>`;
+}
+
+// ---------- Actions ----------
+function renderActionsTab() {
+  const all = character.abilities_list || [];
+  const items = all.filter(a => Array.isArray(a.categories) && a.categories.length > 0);
+  const chips = ACTIONS_FILTER_CHIPS.map(c => {
+    const active = (runtime.activeFilters.actions || "all") === c.filter;
+    return `<div class="chip ${active ? "active" : ""}" data-filter="${esc(c.filter)}">${esc(c.label)}</div>`;
+  }).join("");
+  const groupOrder = ["class","subclass","species","background","feat","universal"];
+  const groups = {};
+  for (const item of items) (groups[item.source?.type || "universal"] = groups[item.source?.type || "universal"] || []).push(item);
+  let body = "";
+  for (const key of groupOrder) {
+    const entries = groups[key] || [];
+    if (!entries.length) continue;
+    body += `<div class="section-head" data-section-group="actions">${esc(ACTION_SOURCE_LABEL[key] || key)}</div>`;
+    for (const item of entries) body += renderCard(item);
+  }
+  return `<div class="filter-chips" data-filter-group="actions">${chips}</div>${body}`;
+}
+
+// ---------- Features ----------
+function renderFeaturesTab() {
+  const all = character.abilities_list || [];
+  const items = all.filter(a => a.source && FEATURE_SOURCE_ORDER.includes(a.source.type));
+  const chips = FEATURES_FILTER_CHIPS.map(c => {
+    const active = (runtime.activeFilters.features || "all") === c.filter;
+    return `<div class="chip ${active ? "active" : ""}" data-filter="${esc(c.filter)}">${esc(c.label)}</div>`;
+  }).join("");
+  const grouped = {};
+  for (const item of items) {
+    const t = item.source.type, n = item.source.name || "";
+    if (!grouped[t]) grouped[t] = {};
+    if (!grouped[t][n]) grouped[t][n] = [];
+    grouped[t][n].push(item);
+  }
+  for (const t of Object.keys(grouped)) for (const n of Object.keys(grouped[t]))
+    grouped[t][n].sort((a, b) => (a.source.level || 0) - (b.source.level || 0));
+  let body = "";
+  for (const t of FEATURE_SOURCE_ORDER) {
+    if (!grouped[t]) continue;
+    for (const name of Object.keys(grouped[t])) {
+      body += `<div class="section-head" data-section-group="features">${esc(name || FEATURE_SOURCE_LABEL[t])}</div>`;
+      for (const item of grouped[t][name]) body += renderCard(item);
+    }
+  }
+  return `<div class="filter-chips" data-filter-group="features">${chips}</div>${body}`;
+}
+
+// ---------- Card renderer ----------
+function renderCard(item) {
+  const classes = ["card"];
+  if (item.kind === "form")  classes.push("form-card");
+  if (item.kind === "spell") classes.push("spell-card");
+  if (item.kind === "spell" && item.concentration && runtime.concentration?.spellId === item.id) classes.push("is-concentrating");
+  const cats = (item.categories || []).join(" ");
+  const sourceType = item.source?.type || "";
+
+  const tags = [];
+  const catTagOrder = ["attack","action","bonus","reaction","free","limited"];
+  for (const c of catTagOrder) {
+    if ((item.categories || []).includes(c)) {
+      const label = { attack:"Attack", action:"Action", bonus:"Bonus", reaction:"Reaction", free:"Passive", limited:limitedLabel(item) }[c];
+      tags.push(`<span class="tag ${c}">${esc(label)}</span>`);
+    }
+  }
+  if (sourceType && FEATURE_SOURCE_ORDER.includes(sourceType)) tags.push(`<span class="tag ${sourceType}">${esc(FEATURE_SOURCE_LABEL[sourceType])}</span>`);
+  if (item.kind === "spell") {
+    const lvl = item.spellLevel;
+    if (lvl === 0) tags.push(`<span class="tag cantrip">Cantrip</span>`);
+    else if (lvl === 1) tags.push(`<span class="tag lvl1">1st</span>`);
+    else if (lvl === 2) tags.push(`<span class="tag lvl2">2nd</span>`);
+    else if (lvl === 3) tags.push(`<span class="tag lvl3">3rd</span>`);
+    else if (lvl > 0)   tags.push(`<span class="tag lvl3">${lvl}th</span>`);
+    if (item.concentration) tags.push(`<span class="tag conc">Concentration</span>`);
+    if (item.ritual)        tags.push(`<span class="tag ritual">Ritual</span>`);
+    if (isCircleSpell(item))tags.push(`<span class="tag circle">Circle</span>`);
+  }
+
+  const stats = [];
+  if (item.kind === "spell") {
+    const ct = castingTimeLabel(item.castingTime);
+    if (ct) stats.push(`<span><strong>${esc(ct)}</strong></span>`);
+    if (item.range) stats.push(`<span>${esc(item.range)}</span>`);
+    const comps = componentsLabel(item.components);
+    if (comps) stats.push(`<span>${esc(comps)}</span>`);
+    if (item.duration) stats.push(`<span>${esc(item.duration)}</span>`);
+  }
+  if (item.attack?.toHit) {
+    const toHit = resolveValue(item.attack.toHit);
+    stats.push(`<span><strong>To Hit:</strong> ${esc(toHit ?? item.attack.toHit)}</span>`);
+  }
+  if (item.attack?.reach) stats.push(`<span><strong>Reach:</strong> ${esc(item.attack.reach)}</span>`);
+  if (item.attack?.range && item.kind !== "spell") stats.push(`<span><strong>Range:</strong> ${esc(item.attack.range)}</span>`);
+  if (item.attack?.ability && item.kind !== "spell") stats.push(`<span><strong>Ability:</strong> ${esc(item.attack.ability)}</span>`);
+  if (item.attack?.type) stats.push(`<span><strong>Type:</strong> ${esc(item.attack.type)}</span>`);
+  if (item.properties?.length) stats.push(`<span><strong>Properties:</strong> ${esc(item.properties.join(", "))}</span>`);
+  if (item.damage) stats.push(`<span><strong>Damage:</strong> <span class="damage">${esc(item.damage)}</span></span>`);
+  if (item.save) {
+    const dc = resolveValue(item.save.dc);
+    const dcStr = dc != null ? `DC ${dc}` : esc(item.save.dc || "");
+    stats.push(`<span><strong>Save:</strong> ${esc(item.save.ability)} ${dcStr}${item.save.effect ? " — " + esc(item.save.effect) : ""}</span>`);
+  }
+  if (item.heal) {
+    const dice = resolveValue(item.heal.dice);
+    stats.push(`<span><strong>Heal:</strong> ${dice ?? item.heal.dice} × ${esc(item.heal.dieSize)}</span>`);
+  }
+
+  // Upcast info for leveled spells
+  const upcastBlock = (item.kind === "spell" && item.upcast)
+    ? `<div class="spell-upcast"><strong>Higher levels:</strong> ${esc(item.upcast)}</div>`
+    : "";
+
+  let formBlock = "";
+  if (item.kind === "form" && item.grants) {
+    const flyRaw = item.grants.flySpeed;
+    const fly = resolveValue(flyRaw);
+    const flyStr = flyRaw ? (fly != null ? `${fly} ft` : esc(flyRaw)) : "";
+    const dur = item.duration ? esc(item.duration) : "";
+    const entry = item.entry?.actionType ? `<span><strong>Entry:</strong> ${esc(item.entry.actionType)} action</span>` : "";
+    const flyPill = flyStr ? `<span><strong>Fly speed:</strong> ${flyStr}</span>` : "";
+    const durPill = dur ? `<span><strong>Duration:</strong> ${dur}</span>` : "";
+    const riders = (item.grants.riders || []).map(r => {
+      if (r.damage) {
+        const bonus = resolveValue(r.damage.bonus);
+        return `<p><em>Rider: +${bonus ?? r.damage.bonus} ${esc(r.damage.type || "")} damage — ${esc(r.text || "")}</em></p>`;
+      }
+      return r.text ? `<p><em>Rider: ${esc(r.text)}</em></p>` : "";
+    }).join("");
+    const extraStats = [entry, flyPill, durPill].filter(Boolean).join("");
+    formBlock = extraStats ? `<div class="card-stats">${extraStats}</div>${riders}` : riders;
+  }
+
+  // Resource pips — if this ability consumes a pip resource, show them inline (single source of truth; cross-tab synced)
+  let resourceBlock = "";
+  const consumesInfo = item.uses?.consumes || item.uses?.optional?.consumes;
+  const isOptional   = !!item.uses?.optional?.consumes;
+  if (consumesInfo?.resourceId) {
+    const res = (character.resources || []).find(r => r.id === consumesInfo.resourceId);
+    if (res && res.poolType === "pips") {
+      const max = resolveValue(res.max);
+      const arr = runtime.resources[res.id] || [];
+      const pipsHtml = Array.from({length: max}, (_, i) =>
+        `<div class="pip pip-sm${res.pipClass ? " " + esc(res.pipClass) : ""}${arr[i] ? " used" : ""}" data-resource="${esc(res.id)}" data-idx="${i}"></div>`
+      ).join("");
+      const remaining = arr.filter(v => !v).length;
+      const labelSuffix = isOptional ? " (optional)" : "";
+      resourceBlock = `<div class="card-resource"><span class="card-resource-label">${esc(res.display)}${labelSuffix}</span><span class="card-resource-count">${remaining}/${max}</span><div class="pips">${pipsHtml}</div></div>`;
+    }
+  }
+
+  // Concentration toggle button — appears only on spells with concentration:true
+  let concBlock = "";
+  if (item.kind === "spell" && item.concentration) {
+    const active = runtime.concentration?.spellId === item.id;
+    const label = active ? "&check; Concentrating — click to drop" : "Start concentrating";
+    // Use data attributes + delegated listener (safer than inline onclick with arbitrary spell names)
+    concBlock = `<div class="card-conc-toggle"><button class="btn-xs conc-toggle-btn ${active ? "active" : ""}" data-spell-id="${esc(item.id)}" data-spell-name="${esc(item.name)}">${label}</button></div>`;
+  }
+
+  // Cast buttons for leveled spells — one per available slot level, base level highlighted
+  const castBlock = renderCastButtons(item);
+
+  const title = `${esc(item.name)}${item.subtitle ? ` <span class="sub">${esc(item.subtitle)}</span>` : ""}`;
+  const spellAttrs = item.kind === "spell"
+    ? ` data-spell-level="${item.spellLevel ?? ''}" data-conc="${!!item.concentration}" data-ritual="${!!item.ritual}" data-circle="${isCircleSpell(item)}"`
+    : "";
+
+  return `<div class="${classes.join(" ")}" data-categories="${esc(cats)}" data-sourcetype="${esc(sourceType)}" data-kind="${esc(item.kind)}"${spellAttrs}><div class="card-header"><div class="card-title">${title}</div><div class="card-tags">${tags.join("")}</div></div>${stats.length ? `<div class="card-stats">${stats.join("")}</div>` : ""}${upcastBlock}${formBlock}<div class="card-body">${renderText(item.text || "")}</div>${castBlock}${concBlock}${resourceBlock}</div>`;
+}
+
+function renderCastButtons(spell) {
+  if (!spell || spell.kind !== "spell") return "";
+  const base = spell.spellLevel;
+  if (typeof base !== "number" || base < 1) return ""; // cantrips handled separately (concentration toggle suffices)
+
+  // Find character's max slot level (look at spell.slots.N resources)
+  const slotResources = (character.resources || []).filter(r => /^spell\.slots\.\d+$/.test(r.id));
+  if (!slotResources.length) return "";
+  const maxLevel = Math.max(...slotResources.map(r => parseInt(r.id.split(".")[2])));
+  if (maxLevel < base) return ""; // character can't cast at this level
+
+  const buttons = [];
+  for (let lvl = base; lvl <= maxLevel; lvl++) {
+    const resId = `spell.slots.${lvl}`;
+    const arr = runtime.resources[resId] || [];
+    const remaining = arr.filter(v => !v).length;
+    const total = arr.length;
+    const disabled = remaining === 0;
+    const isBase = lvl === base;
+    const label = isBase ? `Cast (L${lvl})` : `Upcast L${lvl}`;
+    const title = `${remaining}/${total} ${ordinal(lvl)}-level slots remaining`;
+    buttons.push(`<button class="btn-cast ${isBase ? 'base' : ''}" data-cast-spell="${esc(spell.id)}" data-cast-level="${lvl}" ${disabled ? 'disabled' : ''} title="${esc(title)}">${label}</button>`);
+  }
+  return `<div class="cast-row"><span class="cast-label">Cast</span>${buttons.join("")}</div>`;
+}
+
+function ordinal(n) {
+  const s = ["th","st","nd","rd"], v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+function castSpell(spellId, slotLevel) {
+  const spell = (character.abilities_list || []).find(a => a.id === spellId);
+  if (!spell) return;
+
+  // Consume slot
+  const resId = `spell.slots.${slotLevel}`;
+  const arr = runtime.resources[resId];
+  if (!Array.isArray(arr)) { showToast(`No ${ordinal(slotLevel)}-level slots.`, "error"); return; }
+  const firstAvail = arr.findIndex(v => !v);
+  if (firstAvail === -1) { showToast(`No ${ordinal(slotLevel)}-level slots remaining.`, "error"); return; }
+  arr[firstAvail] = true;
+
+  // Sync pip visuals across all tabs for this slot
+  document.querySelectorAll(`.pip[data-resource="${CSS.escape(resId)}"][data-idx="${firstAvail}"]`).forEach(p => p.classList.add("used"));
+  document.querySelectorAll(`.card-resource`).forEach(el => {
+    if (!el.querySelector(`.pip[data-resource="${CSS.escape(resId)}"]`)) return;
+    const countEl = el.querySelector(".card-resource-count");
+    if (countEl) countEl.textContent = `${arr.filter(v => !v).length}/${arr.length}`;
+  });
+
+  // Trigger concentration if spell is a concentration spell
+  let concNote = "";
+  if (spell.concentration) {
+    const wasConc = runtime.concentration?.spellId;
+    runtime.concentration = { spellId: spell.id, spellName: spell.name };
+    concNote = wasConc && wasConc !== spell.id ? " (concentration replaced)" : " (now concentrating)";
+  }
+
+  saveRuntime();
+  renderPlayStateBar();
+  // Re-render spells + actions tabs so cast button disabled states reflect new slot counts
+  reRenderTab("spells");
+  reRenderTab("actions");
+
+  const upcastNote = slotLevel > spell.spellLevel ? ` (upcast from ${ordinal(spell.spellLevel)})` : "";
+  showToast(`Cast ${spell.name} at ${ordinal(slotLevel)} level${upcastNote}${concNote}.`);
+}
+
+function isCircleSpell(item) {
+  if (!item || item.kind !== "spell") return false;
+  return item.source?.type === "subclass" && /Circle Spell/i.test(item.source.name || "");
+}
+function castingTimeLabel(ct) {
+  if (!ct) return null;
+  if (typeof ct === "string") {
+    if (ct === "action")   return "Action";
+    if (ct === "bonus")    return "Bonus Action";
+    if (ct === "reaction") return "Reaction";
+    return ct;
+  }
+  return null;
+}
+function componentsLabel(c) {
+  if (!c) return null;
+  const bits = [];
+  if (c.v) bits.push("V");
+  if (c.s) bits.push("S");
+  if (c.m) bits.push("M");
+  return bits.length ? bits.join(", ") : null;
+}
+function limitedLabel(item) {
+  if (item.uses?.consumes?.resourceId) {
+    const res = (character.resources || []).find(r => r.id === item.uses.consumes.resourceId);
+    if (res) {
+      const amt = item.uses.consumes.amount || 1;
+      return `${amt} ${res.display}`;
+    }
+  }
+  const tag = (item.tags || []).find(t => /\/ ?LR$|\/ ?SR$|LR|SR/i.test(t));
+  return tag || "Limited";
+}
+
+// ---------- Spells ----------
+function renderSpellsTab() {
+  const all = character.abilities_list || [];
+  const spells = all.filter(a => a.kind === "spell");
+  const chips = SPELLS_FILTER_CHIPS
+    .filter(c => c.filter !== "all" ? spellChipApplies(c.filter, spells) : true)
+    .map(c => {
+      const active = (runtime.activeFilters.spells || "all") === c.filter;
+      return `<div class="chip ${active ? "active" : ""}" data-filter="${esc(c.filter)}">${esc(c.label)}</div>`;
+    }).join("");
+
+  const slotRes = (character.resources || []).filter(r => /^spell\.slots\./.test(r.id));
+  let slotsBlock = "";
+  if (slotRes.length) {
+    const rows = slotRes.map(res => {
+      const max = resolveValue(res.max);
+      const arr = runtime.resources[res.id] || [];
+      const pips = Array.from({length: max}, (_, i) =>
+        `<div class="pip${res.pipClass ? " " + esc(res.pipClass) : ""}${arr[i] ? " used" : ""}" data-resource="${esc(res.id)}" data-idx="${i}"></div>`
+      ).join("");
+      return `<div class="pip-row" style="margin:0 0 6px;padding:6px 10px;"><div class="pip-label">${esc(res.display)} <span class="pip-sub">${max} slots</span></div><div class="pips">${pips}</div></div>`;
+    }).join("");
+    slotsBlock = `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:16px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px;">Spell Slots (click to expend/recover)</div>${rows}</div>`;
+  }
+
+  const byLevel = {};
+  for (const s of spells) (byLevel[s.spellLevel ?? -1] = byLevel[s.spellLevel ?? -1] || []).push(s);
+  const levels = Object.keys(byLevel).map(Number).sort((a, b) => a - b);
+  let body = "";
+  for (const lvl of levels) {
+    const items = byLevel[lvl];
+    const circle = items.filter(isCircleSpell);
+    const regular = items.filter(s => !isCircleSpell(s));
+    if (regular.length) {
+      body += `<div class="section-head" data-section-group="spells">${esc(SPELL_LEVEL_LABEL[lvl] || "Level " + lvl)}${lvl === 0 ? "" : " (Prepared)"}</div>`;
+      for (const s of regular) body += renderCard(s);
+    }
+    if (circle.length) {
+      body += `<div class="section-head" data-section-group="spells">${esc(SPELL_LEVEL_LABEL[lvl] || "Level " + lvl)} — Circle / Always Prepared</div>`;
+      for (const s of circle) body += renderCard(s);
+    }
+  }
+  const swap = (character.spellsSwapCandidates || []);
+  const swapBlock = swap.length ? `<div class="quote"><strong>Swap candidates</strong> (change on Long Rest): ${swap.map(s => esc(s.name) + (s.reason ? ` (${esc(s.reason)})` : "")).join(", ")}.</div>` : "";
+  return `<div class="filter-chips" data-filter-group="spells">${chips}</div>${slotsBlock}${body}${swapBlock}`;
+}
+function spellChipApplies(filter, spells) {
+  if (filter === "cantrip") return spells.some(s => s.spellLevel === 0);
+  const m = filter.match(/^lvl(\d)$/);
+  if (m) return spells.some(s => s.spellLevel === parseInt(m[1]));
+  if (filter === "conc")    return spells.some(s => s.concentration);
+  if (filter === "ritual")  return spells.some(s => s.ritual);
+  if (filter === "circle")  return spells.some(isCircleSpell);
+  return true;
+}
+
+// ---------- Selak Forms (custom tab type) ----------
+function renderSelakForms(cfg) {
+  const intro = cfg.intro ? `<div class="selak-intro">${esc(cfg.intro).replace(/·/g, "<strong style=\"color:var(--accent)\">·</strong>")}</div>` : "";
+  const forms = (cfg.forms || []).map(f => {
+    const pills = (f.statPills || []).map(p => `<div class="stat-pill"><strong>${esc(p.label)}</strong> ${esc(p.value)}</div>`).join("");
+    const body = (f.body || []).map(p => `<p>${esc(p)}</p>`).join("");
+    const marker = f.marker ? `<span class="marker">${esc(f.marker)}</span>` : "";
+    const subtitle = f.subtitle ? `<span class="subtitle">${esc(f.subtitle)}</span>` : "";
+    return `<div class="selak-form ${esc(f.colorClass || "")}"><h3>${marker}${esc(f.name)}${subtitle}</h3>${f.tagline ? `<div class="tagline">${esc(f.tagline)}</div>` : ""}${pills ? `<div class="stat-pills">${pills}</div>` : ""}<div class="card-body">${body}</div></div>`;
+  }).join("");
+  const shared = cfg.shared ? `<div class="section-head">${esc(cfg.shared.title || "Shared")}</div><div class="card"><div class="card-body">${(cfg.shared.body || []).map(p => `<p>${esc(p)}</p>`).join("")}</div></div>` : "";
+  const footer = cfg.footer ? `<div class="section-head">${esc(cfg.footer.title || "")}</div><div class="card"><div class="card-body">${(cfg.footer.body || []).map(p => `<p>${esc(p)}</p>`).join("")}</div></div>` : "";
+  return `${intro}${forms}${shared}${footer}`;
+}
+
+// ---------- Resources ----------
+function renderResourcesTab() {
+  let body = "";
+  for (const res of character.resources || []) {
+    const max = resolveValue(res.max);
+    if (res.poolType === "pips") {
+      const pips = runtime.resources[res.id] || [];
+      const pipsHtml = Array.from({length: max}, (_, i) =>
+        `<div class="pip${res.pipClass ? " " + esc(res.pipClass) : ""}${pips[i] ? " used" : ""}" data-resource="${esc(res.id)}" data-idx="${i}"></div>`
+      ).join("");
+      body += `<div class="section-head">${esc(res.display)}</div><div class="pip-row"><div class="pip-label">${esc(res.display)}<span class="pip-sub">${max} total · refreshes on <strong>${esc(refreshLabel(res.refresh))}</strong></span></div><div class="pips">${pipsHtml}</div></div>${res.note ? `<div class="placeholder-note">${esc(res.note)}</div>` : ""}`;
+    }
+  }
+  return body;
+}
+function refreshLabel(r) { return { shortRest:"Short Rest", longRest:"Long Rest", longRestHalf:"Long Rest (up to half)", dawn:"Dawn", dusk:"Dusk", endOfCombat:"End of Combat" }[r] || r; }
+
+// ---------- Inventory ----------
+function renderInventoryTab() {
+  const inv = character.inventory || [];
+  const wish = character.wishlist || [];
+  const items = inv.map(i => `<div class="item"><div class="item-name">${esc(i.name)}${i.quantity > 1 ? ` × ${i.quantity}` : ""}</div><div class="item-desc">${esc(i.description || "")}</div></div>`).join("");
+  const wishItems = wish.map(i => `<div class="item"><div class="item-name">${esc(i.name)}</div><div class="item-desc">${esc(i.description || "")}</div></div>`).join("");
+  return `<div class="section-head">Inventory</div><div class="inventory-grid">${items}</div>${wish.length ? `<div class="section-head">Upgrade Wishlist</div><div class="inventory-grid">${wishItems}</div>` : ""}`;
+}
+
+// ---------- Background ----------
+function renderBackgroundTab() {
+  const n = character.narrative || {};
+  const id = character.identity || {};
+  const sections = [];
+  const hasBackstoryTab = (character.tabs || []).some(t => t.id === "backstory");
+
+  const identityBits = [];
+  if (id.name) identityBits.push(`<strong>Name:</strong> <strong>${esc(id.name)}</strong>${id.birthName ? ` <span style="color:var(--text-muted);">(birth name: <em>${esc(id.birthName)}</em>)</span>` : ""}`);
+  if (character.species?.name) identityBits.push(`<strong>Species:</strong> ${esc(character.species.name)}`);
+  if (id.pronouns)  identityBits.push(`<strong>Pronouns:</strong> ${esc(id.pronouns)}`);
+  if (id.age)       identityBits.push(`<strong>Age:</strong> ${esc(id.age)}`);
+  if (id.height)    identityBits.push(`<strong>Height:</strong> ${esc(id.height)}`);
+  if (id.heritage)  identityBits.push(`<strong>Heritage:</strong> ${esc(id.heritage)}`);
+  if (id.alignment) identityBits.push(`<strong>Alignment:</strong> ${esc(id.alignment)}`);
+  if (identityBits.length) sections.push({ head:"Identity", body:`<p>${identityBits.join("</p><p>")}</p>` });
+
+  if (n.knownAs?.chant) sections.push({ head:"Known As — the town's chant", body:`<div class="quote" style="font-size:16px;"><em>"${esc(n.knownAs.chant)}"</em></div>${n.knownAs.chantNote ? `<p style="font-size:12px;color:var(--text-dim);margin-top:8px;">${esc(n.knownAs.chantNote)}</p>` : ""}` });
+  if (n.flavorLine) sections.push({ head:"Flavor — the concept in one line", body:`<p><em>"${esc(n.flavorLine)}"</em></p>${n.flavorNote ? `<p class="placeholder-note">${esc(n.flavorNote)}</p>` : ""}` });
+  if (n.personalityTraits?.length) sections.push({ head:"Personality Traits", body: n.personalityTraits.map(t => `<p>• ${esc(t)}</p>`).join("") });
+  if (n.ideals?.length) sections.push({ head:"Ideals", body: n.ideals.map(t => `<p>• ${esc(t)}</p>`).join("") });
+  if (n.bonds?.length)  sections.push({ head:"Bonds",  body: n.bonds.map(t => `<p>• ${esc(t)}</p>`).join("") });
+  if (n.flaws?.length)  sections.push({ head:"Flaws",  body: n.flaws.map(t => `<p>• ${esc(t)}</p>`).join("") });
+  if (n.physicalDescription) sections.push({ head:"Physical Description", body:`<p class="placeholder-note">${esc(n.physicalDescription)}</p>` });
+
+  // Only include the full backstory here if there's no dedicated Backstory tab
+  if (!hasBackstoryTab && n.backstoryFull) {
+    const dm = n.dmHook || n.dmHooks;
+    sections.push({ head:"Full Backstory", body:`<div>${renderText(n.backstoryFull)}</div>${dm ? `<p style="font-size:11px;color:var(--text-muted);font-style:italic;margin-top:8px;">${esc(dm)}</p>` : ""}` });
+  }
+
+  return sections.map(s => `<div class="section-head">${esc(s.head)}</div><div class="card"><div class="card-body">${s.body}</div></div>`).join("");
+}
+
+// ---------- Backstory (read-only prose) ----------
+function renderBackstoryTab() {
+  const n = character.narrative || {};
+  if (!n.backstoryFull) return `<p style="color:var(--text-muted);">(No backstory written.)</p>`;
+  const dm = n.dmHook || n.dmHooks;
+  return `<div class="card"><div class="card-body backstory-prose">${renderText(n.backstoryFull)}${dm ? `<p style="font-size:11px;color:var(--text-muted);font-style:italic;margin-top:16px;border-top:1px dotted rgba(255,255,255,0.05);padding-top:12px;"><strong>DM Hooks:</strong> ${esc(dm)}</p>` : ""}</div></div>`;
+}
+
+// ---------- Notes (markdown-aware) ----------
+function renderNotesTab() {
+  const mode = runtime.notesMode === "preview" ? "preview" : "write";
+  const notes = runtime.userNotes || "";
+  const placeholder = "Combat log, DM rulings, NPC names, loot, session recap, questions to ask at the table…\n\n# Heading\n## Subheading\n**bold**, *italic*, `code`, [link](https://example.com)\n- list item\n1. numbered item\n> blockquote\n---";
+  const writeActive   = mode === "write"   ? "active" : "";
+  const previewActive = mode === "preview" ? "active" : "";
+  const body = mode === "write"
+    ? `<textarea class="backstory-area" id="user-notes" oninput="onUserNotesChange()" placeholder="${esc(placeholder)}">${esc(notes)}</textarea>
+       <div class="notes-actions"><span id="user-notes-status">Saved</span><button class="btn" onclick="clearUserNotes()">Clear notes</button></div>`
+    : `<div class="notes-preview">${notes.trim() ? renderMarkdown(notes) : '<p style="color:var(--text-muted);font-style:italic;">No notes yet — switch to Write to add some.</p>'}</div>`;
+  return `<div class="section-head">Session Notes</div><div class="card"><div class="card-body"><div class="notes-mode-toggle"><button class="btn-xs ${writeActive}" onclick="setNotesMode('write')">Write</button><button class="btn-xs ${previewActive}" onclick="setNotesMode('preview')">Preview</button><span style="flex:1"></span><span style="font-size:11px;color:var(--text-muted);font-style:italic;">Markdown supported — preview to see formatting</span></div>${body}</div></div>`;
+}
+
+function setNotesMode(mode) {
+  runtime.notesMode = mode === "preview" ? "preview" : "write";
+  saveRuntime();
+  const tab = document.querySelector('[data-tab-id="notes"]');
+  if (tab) tab.innerHTML = renderNotesTab();
+}
+
+// ---------- Stances ----------
+function renderStances(cfg) {
+  const stances = (cfg.stances || []).map(s => {
+    const pills = (s.statPills || []).map(p => `<div class="stat-pill"><strong>${esc(p.label)}</strong> ${esc(p.value)}</div>`).join("");
+    const body = (s.body || []).map(p => `<p>${esc(p)}</p>`).join("");
+    return `<div class="stance-block ${s.active ? "" : "inactive"}"><h3>${esc(s.name)}</h3>${s.tagline ? `<div class="tagline">${esc(s.tagline)}</div>` : ""}${pills ? `<div class="stat-pills">${pills}</div>` : ""}<div class="card-body">${body}</div></div>`;
+  }).join("");
+  return `${cfg.intro ? `<p style="font-size:13px;color:var(--text-dim);margin-bottom:14px;">${esc(cfg.intro)}</p>` : ""}${stances}${cfg.footer ? `<div class="quote">${esc(cfg.footer)}</div>` : ""}`;
+}
+
+// ============ EVENTS ============
+function adjustHP(delta) {
+  const oldHP = runtime.hp.current;
+  runtime.hp.current = Math.max(0, Math.min(character.hp.max + runtime.hp.temp, runtime.hp.current + delta));
+  // Leaving 0 HP clears death saves; entering 0 HP keeps them (start rolling)
+  if (oldHP === 0 && runtime.hp.current > 0) runtime.deathSaves = { successes: 0, failures: 0 };
+  document.getElementById("hp-current").value = runtime.hp.current;
+  saveRuntime();
+  renderPlayStateBar();
+}
+function onHPChange() {
+  const oldHP = runtime.hp.current;
+  const cur = parseInt(document.getElementById("hp-current").value) || 0;
+  const temp = parseInt(document.getElementById("hp-temp").value) || 0;
+  runtime.hp.current = Math.max(0, Math.min(character.hp.max + temp, cur));
+  runtime.hp.temp = Math.max(0, temp);
+  if (oldHP === 0 && runtime.hp.current > 0) runtime.deathSaves = { successes: 0, failures: 0 };
+  saveRuntime();
+  renderPlayStateBar();
+}
+function toggleInspiration() {
+  runtime.inspiration = !runtime.inspiration;
+  document.getElementById("inspiration-toggle").classList.toggle("active", runtime.inspiration);
+  saveRuntime();
+}
+function wireFilterChips() {
+  document.querySelectorAll(".filter-chips").forEach(group => {
+    const groupName = group.dataset.filterGroup;
+    group.querySelectorAll(".chip").forEach(chip => {
+      chip.onclick = () => {
+        const filter = chip.dataset.filter;
+        runtime.activeFilters[groupName] = filter;
+        group.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c === chip));
+        applyFilter(group.closest(".tab-content"), groupName, filter);
+        saveRuntime();
+      };
+    });
+    applyFilter(group.closest(".tab-content"), groupName, runtime.activeFilters[groupName] || "all");
+  });
+}
+function applyFilter(tabEl, groupName, filter) {
+  if (!tabEl) return;
+  tabEl.querySelectorAll(".card").forEach(card => {
+    let matches;
+    if (filter === "all") matches = true;
+    else if (groupName === "actions")  matches = (card.dataset.categories || "").split(/\s+/).includes(filter);
+    else if (groupName === "features") matches = card.dataset.sourcetype === filter;
+    else if (groupName === "spells") {
+      const m = filter.match(/^lvl(\d)$/);
+      if (filter === "cantrip") matches = card.dataset.spellLevel === "0";
+      else if (m)               matches = card.dataset.spellLevel === m[1];
+      else if (filter === "conc")   matches = card.dataset.conc === "true";
+      else if (filter === "ritual") matches = card.dataset.ritual === "true";
+      else if (filter === "circle") matches = card.dataset.circle === "true";
+      else matches = true;
+    } else matches = true;
+    card.classList.toggle("hidden", !matches);
+  });
+  tabEl.querySelectorAll(".section-head").forEach(head => {
+    let hasVisible = false;
+    let sib = head.nextElementSibling;
+    while (sib && !sib.classList.contains("section-head")) {
+      if (sib.classList.contains("card") && !sib.classList.contains("hidden")) { hasVisible = true; break; }
+      sib = sib.nextElementSibling;
+    }
+    head.classList.toggle("empty", !hasVisible);
+  });
+}
+function togglePip(resourceId, idx) {
+  const arr = runtime.resources[resourceId];
+  if (!Array.isArray(arr)) return;
+
+  // Special case: hit-die resources open a spend modal when going unused → used.
+  // Going used → unused is a plain toggle (mistake recovery).
+  const res = (character.resources || []).find(r => r.id === resourceId);
+  if (res?.hitDie && !arr[idx]) {
+    openHitDieModal(resourceId, idx, res);
+    return;
+  }
+
+  arr[idx] = !arr[idx];
+  saveRuntime();
+  syncPipVisuals(resourceId, arr);
+}
+
+function syncPipVisuals(resourceId, arr) {
+  // Sync every pip matching this resource/idx across every tab (Resources, Spells, Actions)
+  document.querySelectorAll(`.pip[data-resource="${CSS.escape(resourceId)}"]`).forEach(pip => {
+    const i = parseInt(pip.dataset.idx);
+    pip.classList.toggle("used", !!arr[i]);
+  });
+  // Update each visible resource-count on action cards for this resource
+  document.querySelectorAll(`.card-resource`).forEach(el => {
+    const anyPip = el.querySelector(`.pip[data-resource="${CSS.escape(resourceId)}"]`);
+    if (!anyPip) return;
+    const remaining = arr.filter(v => !v).length;
+    const countEl = el.querySelector(".card-resource-count");
+    if (countEl) countEl.textContent = `${remaining}/${arr.length}`;
+  });
+}
+
+// ---------- Hit Die spending ----------
+let pendingHitDie = null;
+
+function openHitDieModal(resourceId, idx, res) {
+  const conMod = derived.abilities.CON.mod;
+  pendingHitDie = { resourceId, pipIdx: idx, hitDie: res.hitDie, conMod };
+
+  const desc = `Roll one ${esc(res.hitDie)}, add your CON mod (${fmt(conMod)}), and regain that many HP. Minimum 1.`;
+  document.getElementById("hit-die-desc").innerHTML = desc;
+  const input = document.getElementById("hit-die-roll");
+  input.value = "";
+  document.getElementById("hit-die-total").textContent = "";
+  input.oninput = updateHitDieTotalPreview;
+  input.onkeydown = (e) => { if (e.key === "Enter") { e.preventDefault(); confirmHitDieSpend(); } };
+  document.getElementById("hit-die-modal").classList.add("active");
+  setTimeout(() => input.focus(), 50);
+}
+
+function updateHitDieTotalPreview() {
+  if (!pendingHitDie) return;
+  const roll = parseInt(document.getElementById("hit-die-roll").value);
+  if (isNaN(roll) || roll < 1) {
+    document.getElementById("hit-die-total").textContent = "";
+    return;
+  }
+  const heal = Math.max(1, roll + pendingHitDie.conMod);
+  document.getElementById("hit-die-total").textContent = `= +${heal} HP`;
+}
+
+function closeHitDieModal() {
+  document.getElementById("hit-die-modal").classList.remove("active");
+  pendingHitDie = null;
+}
+
+function confirmHitDieSpend() {
+  if (!pendingHitDie) return;
+  const roll = parseInt(document.getElementById("hit-die-roll").value);
+  if (isNaN(roll) || roll < 1) {
+    showToast("Enter a valid roll.", "error");
+    return;
+  }
+  const heal = Math.max(1, roll + pendingHitDie.conMod);
+
+  // Mark the die spent
+  const arr = runtime.resources[pendingHitDie.resourceId];
+  if (Array.isArray(arr)) arr[pendingHitDie.pipIdx] = true;
+
+  // Apply healing (clamped to max + temp HP)
+  const cap = character.hp.max + (runtime.hp.temp || 0);
+  runtime.hp.current = Math.min(cap, runtime.hp.current + heal);
+
+  saveRuntime();
+  document.getElementById("hp-current").value = runtime.hp.current;
+  syncPipVisuals(pendingHitDie.resourceId, arr);
+
+  const modNote = pendingHitDie.conMod >= 0 ? `+${pendingHitDie.conMod}` : `${pendingHitDie.conMod}`;
+  showToast(`Spent 1 ${pendingHitDie.hitDie}. Rolled ${roll} ${modNote} = +${heal} HP.`);
+  closeHitDieModal();
+}
+document.addEventListener("click", (e) => {
+  const pip = e.target.closest(".pip");
+  if (pip && pip.dataset.resource) {
+    togglePip(pip.dataset.resource, parseInt(pip.dataset.idx));
+    return;
+  }
+  const concBtn = e.target.closest(".conc-toggle-btn");
+  if (concBtn) {
+    toggleConcentration(concBtn.dataset.spellId, concBtn.dataset.spellName);
+    return;
+  }
+  const castBtn = e.target.closest(".btn-cast");
+  if (castBtn && !castBtn.disabled) {
+    castSpell(castBtn.dataset.castSpell, parseInt(castBtn.dataset.castLevel));
+  }
+});
+
+function onUserNotesChange() {
+  const el = document.getElementById("user-notes");
+  if (!el) return;
+  runtime.userNotes = el.value;
+  saveRuntime();
+  const status = document.getElementById("user-notes-status");
+  if (status) status.textContent = "Saved " + new Date().toLocaleTimeString();
+}
+function clearUserNotes() {
+  if (!confirm("Clear all session notes?")) return;
+  runtime.userNotes = "";
+  const el = document.getElementById("user-notes");
+  if (el) el.value = "";
+  saveRuntime();
+}
+function dismissBanner(id) {
+  runtime.advisoryDismissed[id] = true;
+  saveRuntime();
+  renderBanners();
+}
+
+// ---------- Rest modal ----------
+function openRest(type) {
+  pendingRest = type;
+  const modal = document.getElementById("rest-modal");
+  document.getElementById("rest-title").textContent = type === "short" ? "Take a Short Rest?" : "Take a Long Rest?";
+  const list = document.getElementById("rest-list");
+  const items = [];
+  items.push(type === "short" ? "1 hour of rest" : "8 hours of rest");
+  if (type === "long") {
+    items.push(`Restore HP to max (${character.hp.max})`);
+    items.push("Temp HP cleared");
+    items.push("Heroic Inspiration granted (if feature applies)");
+  }
+  for (const res of character.resources || []) {
+    if (type === "short" && (res.refresh === "shortRest" || res.refresh === "endOfCombat")) items.push(`Refresh ${res.display}`);
+    else if (type === "long" && (res.refresh === "longRest" || res.refresh === "shortRest" || res.refresh === "longRestHalf" || res.refresh === "endOfCombat")) {
+      if (res.refresh === "longRestHalf") items.push(`Recover half of ${res.display}`);
+      else items.push(`Refresh ${res.display}`);
+    }
+  }
+  document.getElementById("rest-desc").textContent = type === "short" ? "Short rest will reset short-rest resources." : "Long rest will heal you to full and reset all long-rest resources.";
+  list.innerHTML = "<ul>" + items.map(i => `<li>${esc(i)}</li>`).join("") + "</ul>";
+  modal.classList.add("active");
+}
+function closeRest() {
+  document.getElementById("rest-modal").classList.remove("active");
+  pendingRest = null;
+}
+function confirmRest() {
+  const type = pendingRest;
+  if (type === "long") {
+    runtime.hp.current = character.hp.max;
+    runtime.hp.temp = 0;
+    // 2024: Long Rest reduces exhaustion by 1
+    runtime.exhaustion = Math.max(0, (runtime.exhaustion || 0) - 1);
+    // Clear death saves (if they were alive enough to take a long rest)
+    runtime.deathSaves = { successes: 0, failures: 0 };
+  }
+  for (const res of character.resources || []) {
+    if (res.poolType !== "pips") continue;
+    const max = resolveValue(res.max);
+    if (type === "short" && (res.refresh === "shortRest" || res.refresh === "endOfCombat")) runtime.resources[res.id] = new Array(max).fill(false);
+    else if (type === "long") {
+      if (res.refresh === "longRest" || res.refresh === "shortRest" || res.refresh === "endOfCombat") runtime.resources[res.id] = new Array(max).fill(false);
+      else if (res.refresh === "longRestHalf") {
+        const arr = runtime.resources[res.id] || [];
+        const spent = arr.filter(Boolean).length;
+        const recover = Math.floor(spent / 2);
+        let recovered = 0;
+        for (let i = 0; i < arr.length && recovered < recover; i++) if (arr[i]) { arr[i] = false; recovered++; }
+      }
+    }
+  }
+  closeRest();
+  saveRuntime();
+  renderAll();
+}
+
+// ---------- Lightbox ----------
+function openLightbox(src, alt) {
+  const el = document.getElementById("lightbox");
+  document.getElementById("lightbox-img").src = src;
+  document.getElementById("lightbox-img").alt = alt || "";
+  el.classList.add("active");
+}
+function closeLightbox(e) {
+  if (e && e.target.tagName === "IMG") return;
+  document.getElementById("lightbox").classList.remove("active");
+}
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLightbox(); });
+
+// ============ PLAY-STATE BAR ============
+function renderPlayStateBar() {
+  const bar = document.getElementById("play-state-bar");
+  if (!bar) return;
+  const parts = [];
+
+  // Conditions
+  const conds = (runtime.conditions || []).map(c =>
+    `<span class="condition-pill">${esc(c.name)}${c.note ? ` <em>(${esc(c.note)})</em>` : ""}<button onclick="removeCondition('${esc(c.name)}')" title="Remove">&times;</button></span>`
+  ).join("");
+  parts.push(`<div class="play-section"><span class="play-label">Conditions</span><div class="conditions-list">${conds}</div><button class="btn-xs" onclick="openConditionMenu(event, this)">+ Add</button></div>`);
+
+  // Concentration (always visible — makes it easy to spot)
+  if (runtime.concentration) {
+    parts.push(`<div class="play-section"><span class="play-label">Concentrating</span><span class="concentration-pill">${esc(runtime.concentration.spellName)}<button onclick="clearConcentration()" title="Drop concentration">&times;</button></span></div>`);
+  } else {
+    parts.push(`<div class="play-section"><span class="play-label">Concentrating</span><span style="color:var(--text-muted);font-style:italic;font-size:11px;">— none —</span></div>`);
+  }
+
+  // Death saves (only visible when at 0 HP)
+  if ((runtime.hp?.current ?? 1) === 0) {
+    const ds = runtime.deathSaves || { successes: 0, failures: 0 };
+    const sPips = [0,1,2].map(i => `<span class="ds-pip success ${i < ds.successes ? 'used' : ''}" onclick="toggleDeathSave('successes', ${i})"></span>`).join("");
+    const fPips = [0,1,2].map(i => `<span class="ds-pip failure ${i < ds.failures  ? 'used' : ''}" onclick="toggleDeathSave('failures', ${i})"></span>`).join("");
+    const status = ds.successes >= 3 ? `<span class="ds-status stable">Stabilized</span>`
+                 : ds.failures  >= 3 ? `<span class="ds-status dead">Dead</span>` : "";
+    parts.push(`<div class="play-section death-saves-section"><span class="play-label">Death Saves</span><span class="ds-pips">${sPips}</span><span class="ds-sep">/</span><span class="ds-pips">${fPips}</span>${status}</div>`);
+  }
+
+  // Exhaustion (2024: −2 × level to all d20 tests)
+  const ex = runtime.exhaustion || 0;
+  const exClass = ex === 0 ? "" : ex < 3 ? "warn" : ex < 5 ? "danger" : "critical";
+  const exPenalty = ex > 0 ? `<span class="ex-penalty">−${ex*2} d20 tests</span>` : "";
+  parts.push(`<div class="play-section exhaustion-section ${exClass}"><span class="play-label">Exhaustion</span><div class="ex-stepper"><button onclick="adjustExhaustion(-1)" ${ex <= 0 ? "disabled" : ""}>−</button><span class="ex-value">${ex}</span><button onclick="adjustExhaustion(1)" ${ex >= 6 ? "disabled" : ""}>+</button></div>${exPenalty}</div>`);
+
+  bar.innerHTML = parts.join("");
+  bar.classList.remove("hidden");
+}
+
+// ---------- Conditions ----------
+function openConditionMenu(e, btn) {
+  if (e) e.stopPropagation();
+  closeConditionMenus();
+  const menu = document.createElement("div");
+  menu.className = "condition-menu";
+  const activeNames = new Set((runtime.conditions || []).map(c => c.name));
+  menu.innerHTML = `
+    <div class="condition-menu-header">Standard Conditions (2024)</div>
+    ${CONDITIONS_2024.map(c => `<div class="condition-option ${activeNames.has(c) ? 'selected' : ''}" onclick="toggleCondition('${esc(c)}')">${esc(c)}${activeNames.has(c) ? ' ✓' : ''}</div>`).join("")}
+    <div class="condition-menu-divider"></div>
+    <div class="condition-custom">
+      <input type="text" placeholder="Custom condition…" id="custom-condition-input" onkeydown="if(event.key==='Enter'){addCustomCondition();event.preventDefault();}">
+      <button onclick="addCustomCondition()">Add</button>
+    </div>
+  `;
+  document.body.appendChild(menu);
+  const rect = btn.getBoundingClientRect();
+  menu.style.position = "absolute";
+  menu.style.top = (rect.bottom + window.scrollY + 4) + "px";
+  menu.style.left = Math.min(rect.left + window.scrollX, window.innerWidth - 240) + "px";
+  setTimeout(() => { document.addEventListener("click", dismissConditionMenu); }, 10);
+}
+function dismissConditionMenu(e) {
+  if (!e.target.closest(".condition-menu")) closeConditionMenus();
+}
+function closeConditionMenus() {
+  document.querySelectorAll(".condition-menu").forEach(m => m.remove());
+  document.removeEventListener("click", dismissConditionMenu);
+}
+function toggleCondition(name) {
+  const existing = (runtime.conditions || []).find(c => c.name === name);
+  if (existing) runtime.conditions = runtime.conditions.filter(c => c.name !== name);
+  else (runtime.conditions = runtime.conditions || []).push({ name });
+  saveRuntime();
+  renderPlayStateBar();
+  closeConditionMenus();
+}
+function addCustomCondition() {
+  const input = document.getElementById("custom-condition-input");
+  if (!input) return;
+  const val = input.value.trim();
+  if (!val) return;
+  if (!runtime.conditions.some(c => c.name === val)) runtime.conditions.push({ name: val });
+  saveRuntime();
+  renderPlayStateBar();
+  closeConditionMenus();
+}
+function removeCondition(name) {
+  runtime.conditions = (runtime.conditions || []).filter(c => c.name !== name);
+  saveRuntime();
+  renderPlayStateBar();
+}
+
+// ---------- Concentration ----------
+function toggleConcentration(spellId, spellName) {
+  if (runtime.concentration?.spellId === spellId) runtime.concentration = null;
+  else runtime.concentration = { spellId, spellName };
+  saveRuntime();
+  renderPlayStateBar();
+  // Update spell cards so the concentrating spell's button reflects state
+  reRenderTab("spells");
+  reRenderTab("actions");
+}
+function clearConcentration() {
+  runtime.concentration = null;
+  saveRuntime();
+  renderPlayStateBar();
+  reRenderTab("spells");
+  reRenderTab("actions");
+}
+function reRenderTab(tabId) {
+  const tabEl = document.querySelector(`[data-tab-id="${tabId}"]`);
+  if (!tabEl) return;
+  const tab = (character.tabs || []).find(t => t.id === tabId);
+  if (!tab) return;
+  tabEl.innerHTML = renderTabBody(tab);
+  wireFilterChips();
+}
+
+// ---------- Death saves ----------
+function toggleDeathSave(type, idx) {
+  const ds = runtime.deathSaves;
+  // Click an already-used pip to un-mark at that index; click an unused one to fill up to it
+  if (idx < ds[type]) ds[type] = idx;
+  else               ds[type] = idx + 1;
+  saveRuntime();
+  renderPlayStateBar();
+}
+
+// ---------- Exhaustion ----------
+function adjustExhaustion(delta) {
+  runtime.exhaustion = Math.max(0, Math.min(6, (runtime.exhaustion || 0) + delta));
+  saveRuntime();
+  renderPlayStateBar();
+}
+
+// ============ PORTRAIT DRAG-DROP + FILE PICKER + AUTO-OPTIMIZE ============
+function setupPortraitDragDrop() {
+  // Use delegated listeners on document so re-renders don't lose them
+  if (window.__portraitDDSetup) return;
+  window.__portraitDDSetup = true;
+
+  document.addEventListener("dragover", e => {
+    const target = e.target.closest("[data-portrait-target]");
+    if (!target) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+    target.classList.add("drag-over");
+  });
+  document.addEventListener("dragleave", e => {
+    const target = e.target.closest("[data-portrait-target]");
+    if (!target) return;
+    if (!target.contains(e.relatedTarget)) target.classList.remove("drag-over");
+  });
+  document.addEventListener("drop", e => {
+    const target = e.target.closest("[data-portrait-target]");
+    if (!target) return;
+    e.preventDefault();
+    target.classList.remove("drag-over");
+    const file = e.dataTransfer.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      showToast("Not an image file.", "error");
+      return;
+    }
+    processDroppedImage(file, target.dataset.portraitTarget);
+  });
+  // Right-click on any portrait target opens the file picker (power-user shortcut)
+  document.addEventListener("contextmenu", e => {
+    const target = e.target.closest("[data-portrait-target]");
+    if (!target) return;
+    e.preventDefault();
+    openPortraitPicker(target.dataset.portraitTarget);
+  });
+}
+
+// File picker fallback — click the Replace button or right-click the portrait
+function openPortraitPicker(targetKey) {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+  input.onchange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) processDroppedImage(file, targetKey);
+  };
+  input.click();
+}
+
+async function processDroppedImage(file, targetKey) {
+  const cfg = PORTRAIT_TARGETS[targetKey];
+  if (!cfg) return;
+  const oldSize = file.size;
+  showToast(`Processing ${formatBytes(oldSize)} image…`);
+
+  try {
+    const dataUrl = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload  = () => resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(file);
+    });
+
+    const img = new Image();
+    await new Promise((resolve, reject) => {
+      img.onload  = resolve;
+      img.onerror = reject;
+      img.src = dataUrl;
+    });
+
+    // Compute crop/scale
+    const srcW = img.naturalWidth, srcH = img.naturalHeight;
+    let sx = 0, sy = 0, sw = srcW, sh = srcH, targetW, targetH;
+    if (cfg.squareCrop) {
+      const side = Math.min(srcW, srcH);
+      sx = (srcW - side) / 2; sy = (srcH - side) / 2;
+      sw = side; sh = side;
+      targetW = targetH = Math.min(cfg.maxSide, side);
+    } else {
+      const ratio = Math.min(cfg.maxSide / srcW, cfg.maxSide / srcH, 1);
+      targetW = Math.round(srcW * ratio);
+      targetH = Math.round(srcH * ratio);
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width  = targetW;
+    canvas.height = targetH;
+    canvas.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, targetW, targetH);
+
+    // Try WebP first (better compression); fall back to JPEG if browser lacks WebP encode
+    let optimized = canvas.toDataURL("image/webp", cfg.quality);
+    if (!optimized.startsWith("data:image/webp")) {
+      optimized = canvas.toDataURL("image/jpeg", cfg.quality);
+    }
+
+    // Rough byte size (base64 overhead ~4:3)
+    const base64 = optimized.split(",")[1] || "";
+    const newSize = Math.round(base64.length * 0.75);
+
+    // Write into character (both src and alt if missing)
+    if (!character[targetKey]) character[targetKey] = {};
+    character[targetKey].src = optimized;
+    if (!character[targetKey].alt) character[targetKey].alt = (character.identity?.name || "portrait") + " — " + targetKey;
+
+    // Persist as inline so edits survive across refreshes (supersedes any fetch ref)
+    saveLastCharacterRef({ type: "inline", json: character });
+
+    // Re-render the affected UI
+    renderTopBar();
+    if (targetKey === "portrait") reRenderTab("overview");
+
+    const savings = oldSize > 0 ? Math.round((1 - newSize / oldSize) * 100) : 0;
+    showToast(`Optimized: ${formatBytes(oldSize)} → ${formatBytes(newSize)}${savings > 0 ? ` (saved ${savings}%)` : ""}`);
+  } catch (err) {
+    console.error(err);
+    showToast("Could not process image: " + err.message, "error");
+  }
+}
+
+function formatBytes(n) {
+  if (n < 1024) return n + " B";
+  if (n < 1024 * 1024) return (n / 1024).toFixed(0) + " KB";
+  return (n / 1024 / 1024).toFixed(1) + " MB";
+}
+
+function showToast(msg, variant) {
+  document.querySelectorAll(".toast").forEach(t => t.remove());
+  const toast = document.createElement("div");
+  toast.className = "toast" + (variant === "error" ? " error" : "");
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add("show"));
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 2600);
+}
+
+// ============ RENDER ORCHESTRATOR ============
+function renderAll() {
+  renderTopBar();
+  renderBanners();
+  renderPlayStateBar();
+  renderSidebar();
+  renderTabBar();
+  renderTabContents();
+  document.getElementById("hp-current").oninput = onHPChange;
+  document.getElementById("hp-temp").oninput = onHPChange;
+}
+
+function applyCharacter(json) {
+  // Preserve embedded (data-URI) portraits across same-character reloads.
+  // Rationale: dragging an image onto the portrait embeds it as a data URI in the
+  // in-memory character + localStorage. But re-loading the on-disk JSON (via file
+  // picker or auto-fetch) has only the relative path — which would otherwise blow
+  // away the embed. When loading the SAME character (matched by storageKey), keep
+  // any existing data URIs rather than replacing them with disk paths.
+  try {
+    const lastRef = loadLastCharacterRef();
+    const prev = lastRef?.type === "inline" ? lastRef.json : null;
+    if (prev && prev.storageKey && json.storageKey && prev.storageKey === json.storageKey) {
+      for (const key of ["portrait", "thumbnail"]) {
+        const incoming = json[key]?.src || "";
+        const cached   = prev[key]?.src   || "";
+        // Only override if the incoming isn't already a data URI and the cached one IS.
+        if (!incoming.startsWith("data:") && cached.startsWith("data:")) {
+          json[key] = { ...(json[key] || {}), src: cached, alt: json[key]?.alt || prev[key]?.alt };
+        }
+      }
+    }
+  } catch(_) { /* best-effort merge */ }
+
+  character = json;
+  document.body.dataset.theme = json.theme || "default";
+  derived = derive();
+  runtime = loadRuntime();
+  const loader = document.getElementById("loader");
+  if (loader) loader.classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  renderAll();
+}
+
+// ============ FILE LOADING ============
+function saveLastCharacterRef(ref) { try { localStorage.setItem(LAST_CHAR_KEY, JSON.stringify(ref)); } catch(e) {} }
+function loadLastCharacterRef()    { try { return JSON.parse(localStorage.getItem(LAST_CHAR_KEY) || "null"); } catch(e) { return null; } }
+
+async function tryFetchDefault(path) {
+  try {
+    const res = await fetch(path);
+    if (!res.ok) return false;
+    const json = await res.json();
+    applyCharacter(json);
+    saveLastCharacterRef({ type:"fetch", path });
+    return true;
+  } catch(e) { return false; }
+}
+function onFileInput(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const json = JSON.parse(reader.result);
+      // Detect the type of file by content shape
+      if (json.type === "charsheet-session-backup") {
+        importSessionState(json);
+      } else if (json.schemaVersion && json.abilities_list) {
+        applyCharacter(json);
+        saveLastCharacterRef({ type:"inline", json });
+      } else {
+        alert("Couldn't identify file — expected a character JSON or a session backup.");
+      }
+    } catch(err) { alert("Could not parse JSON: " + err.message); }
+    // Reset file input so re-selecting the same file fires change again
+    try { e.target.value = ""; } catch(_) {}
+  };
+  reader.readAsText(file);
+}
+
+// Folder picker — primary character-loading flow. Grabs every file in the picked folder
+// (JSON + portraits) so we can auto-embed portraits into the character without needing
+// drag-drop or HTTP. Works on file:// in Chrome/Firefox/Safari.
+async function onFolderInput(e) {
+  const files = Array.from(e.target.files || []);
+  if (!files.length) return;
+
+  // Pick the shallowest .json file in the tree (typically character.json at the folder root)
+  const jsonFiles = files.filter(f => f.name.toLowerCase().endsWith(".json"));
+  if (!jsonFiles.length) {
+    showToast("No .json file found in that folder.", "error");
+    try { e.target.value = ""; } catch(_) {}
+    return;
+  }
+  jsonFiles.sort((a, b) => a.webkitRelativePath.split("/").length - b.webkitRelativePath.split("/").length);
+  const jsonFile = jsonFiles[0];
+
+  let json;
+  try { json = JSON.parse(await jsonFile.text()); }
+  catch(err) { showToast("Could not parse " + jsonFile.name + ": " + err.message, "error"); try { e.target.value = ""; } catch(_) {} return; }
+
+  // Session backups are self-contained — no folder-relative assets to merge
+  if (json.type === "charsheet-session-backup") {
+    importSessionState(json);
+    try { e.target.value = ""; } catch(_) {}
+    return;
+  }
+  if (!json.schemaVersion || !json.abilities_list) {
+    showToast(jsonFile.name + " doesn't look like a character JSON.", "error");
+    try { e.target.value = ""; } catch(_) {}
+    return;
+  }
+
+  // Index every file by its webkitRelativePath for portrait lookup
+  const byPath = new Map();
+  for (const f of files) byPath.set(f.webkitRelativePath, f);
+
+  // Embed portraits by matching the JSON's declared path against files in the folder.
+  // JSON typically declares paths like "characters/vaerith/portraits/full.png"; the folder
+  // picker's webkitRelativePath is rooted at the SELECTED folder, so we match on suffixes.
+  let embedCount = 0;
+  for (const key of ["portrait", "thumbnail"]) {
+    const src = json[key]?.src;
+    if (!src || src.startsWith("data:") || /^https?:\/\//i.test(src)) continue;
+    const filename = src.split("/").pop();
+    const parent = src.split("/").slice(-2, -1)[0] || "";
+    // Prefer match on "<parent>/<filename>" (e.g. portraits/full.png); fall back to filename alone
+    let match = null;
+    if (parent) {
+      for (const [path, f] of byPath) if (path.endsWith(`${parent}/${filename}`)) { match = f; break; }
+    }
+    if (!match) for (const [path, f] of byPath) if (path.endsWith(`/${filename}`) || path === filename) { match = f; break; }
+    if (!match) continue;
+    try {
+      const dataUrl = await new Promise((resolve, reject) => {
+        const r = new FileReader(); r.onload = () => resolve(r.result); r.onerror = reject; r.readAsDataURL(match);
+      });
+      json[key].src = dataUrl;
+      embedCount++;
+    } catch(err) { console.warn("Could not embed " + key + ":", err); }
+  }
+
+  applyCharacter(json);
+  saveLastCharacterRef({ type: "inline", json });
+  const name = json.identity?.name || "character";
+  showToast(embedCount > 0 ? `Loaded ${name} · embedded ${embedCount} portrait${embedCount === 1 ? "" : "s"}.` : `Loaded ${name}.`);
+  try { e.target.value = ""; } catch(_) {}
+}
+
+// ============ SESSION STATE SAVE / IMPORT ============
+// A session backup bundles: the character definition + the full runtime state
+// (HP, pips used, conditions, concentration, notes, etc.), so a single file
+// can restore exactly where you left off on any device / exported HTML.
+function saveSessionState() {
+  if (!character || !runtime) return;
+  const backup = {
+    type: "charsheet-session-backup",
+    schemaVersion: 1,
+    savedAt: new Date().toISOString(),
+    characterName: character.identity?.name || "character",
+    storageKey: character.storageKey || null,
+    character: character,
+    runtime: runtime
+  };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const slug = (character.identity?.name || "session").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const ts = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${slug}-session-${ts}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast("Session state saved.");
+}
+
+function importSessionState(backup) {
+  if (!backup || backup.type !== "charsheet-session-backup" || !backup.character || !backup.runtime) {
+    showToast("Not a valid session backup file.", "error");
+    return;
+  }
+  // Apply the character first (sets storageKey, schema, etc.)
+  applyCharacter(backup.character);
+  saveLastCharacterRef({ type: "inline", json: backup.character });
+  // Then overwrite runtime with the saved snapshot
+  try { localStorage.setItem(character.storageKey || "charsheet_default", JSON.stringify(backup.runtime)); } catch(_) {}
+  runtime = loadRuntime();
+  renderAll();
+  const when = backup.savedAt ? ` (saved ${new Date(backup.savedAt).toLocaleString()})` : "";
+  showToast(`Session restored — ${backup.characterName || "character"}${when}.`);
+}
+
+// File picker fallback for session import (used by the 📤 button in both main app and exported HTML)
+function openSessionImportPicker() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json,application/json";
+  input.onchange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const json = JSON.parse(reader.result);
+        if (json.type === "charsheet-session-backup") importSessionState(json);
+        else showToast("Not a valid session backup — use 📂 for character JSONs.", "error");
+      } catch(err) { showToast("Could not parse JSON: " + err.message, "error"); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+// ============ STANDALONE EXPORT ============
+async function exportStandalone() {
+  const exportBtn = document.getElementById("export-standalone");
+  if (exportBtn) { exportBtn.disabled = true; exportBtn.textContent = "…"; }
+  try {
+    // Read CSS and JS straight from the inlined <style> and <script> elements — no fetch needed
+    const cssText = document.getElementById("app-styles")?.textContent || "";
+    const jsText  = document.getElementById("app-js")?.textContent || "";
+    if (!cssText || !jsText) throw new Error("Could not read app assets from the page");
+
+    // Favicon — already inline in this page as a data URI on the <link rel="icon">
+    let faviconInline = "";
+    const iconLink = document.querySelector('link[rel="icon"]');
+    if (iconLink?.href?.startsWith("data:")) {
+      faviconInline = `<link rel="icon" type="image/svg+xml" href="${esc(iconLink.href)}">`;
+    }
+
+    const embedded = JSON.parse(JSON.stringify(character));
+    const portraitNote = await embedImageField(embedded, "portrait");
+    const thumbNote    = await embedImageField(embedded, "thumbnail");
+
+    const title = esc(embedded.identity?.name || "Character Sheet");
+    const slug  = (embedded.identity?.name || "character").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    const html  = buildStandaloneHtml({ title, faviconInline, cssText, jsText, characterJson: JSON.stringify(embedded) });
+
+    const blob = new Blob([html], { type:"text/html" });
+    const url  = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `${slug}-sheet.html`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    const warnings = [portraitNote, thumbNote].filter(Boolean);
+    if (warnings.length) {
+      // Soft warning via toast — the export still works (initials render as fallback in the missing cases)
+      showToast("Exported with caveats — see console.", "error");
+      console.warn("Export caveats:\n" + warnings.join("\n"));
+    } else {
+      showToast("Exported successfully.");
+    }
+  } catch (e) {
+    alert("Export failed: " + e.message);
+  } finally {
+    if (exportBtn) { exportBtn.disabled = false; exportBtn.innerHTML = "&#x1F4E5;"; }
+  }
+}
+
+// Returns a warning string if the image exists but couldn't be embedded. Silently clears src if the file doesn't exist.
+async function embedImageField(obj, key) {
+  const src = obj?.[key]?.src;
+  if (!src) return null;
+  if (src.startsWith("data:") || /^https?:\/\//i.test(src)) return null; // already embeddable / remote
+
+  // Path A: fetch (works on HTTP; blocked on file://)
+  try {
+    const res = await fetch(src);
+    if (res.ok) {
+      const blob = await res.blob();
+      const dataUrl = await new Promise((resolve, reject) => {
+        const r = new FileReader(); r.onload = () => resolve(r.result); r.onerror = reject; r.readAsDataURL(blob);
+      });
+      obj[key].src = dataUrl;
+      return null;
+    }
+  } catch(e) { /* fall through */ }
+
+  // Path B: try loading via <img>. Distinguish "image exists" from "image doesn't exist".
+  const result = await new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+        canvas.getContext("2d").drawImage(img, 0, 0);
+        resolve({ loaded: true, dataUrl: canvas.toDataURL("image/png") });
+      } catch (err) {
+        // Loaded but the canvas was tainted — file exists, we can't read it
+        resolve({ loaded: true, dataUrl: null });
+      }
+    };
+    img.onerror = () => resolve({ loaded: false, dataUrl: null });
+    img.src = src;
+  });
+
+  if (result.dataUrl) { obj[key].src = result.dataUrl; return null; }
+
+  // Embed failed (Chrome file:// cross-origin taint, or image missing). Leave the src untouched — if the exported
+  // HTML is opened in a folder where the relative path resolves, the image still renders. The "Replace"
+  // button / drag-drop flow is the way to get portraits permanently embedded into the character JSON.
+  const action = `drag-drop the image onto the ${key === "thumbnail" ? "thumbnail circle" : "portrait"} (or click the Replace button) in the app, then export again.`;
+  return result.loaded
+    ? `${key}: file exists but Chrome's file:// sandbox blocks embedding it. To embed permanently: ${action}`
+    : `${key}: file not found at ${src}. To set a portrait: ${action}`;
+}
+
+function buildStandaloneHtml({ title, faviconInline, cssText, jsText, characterJson }) {
+  const skeleton = `
+<div id="app" class="hidden">
+  <div class="top-bar">
+    <div class="char-identity">
+      <div class="char-thumbnail" id="char-thumbnail-wrap" data-portrait-target="thumbnail" title="Drag an image here to replace the thumbnail"></div>
+      <div class="char-name-block">
+        <div class="char-name" id="char-name"></div>
+        <div class="sub" id="char-subtitle"></div>
+      </div>
+    </div>
+    <div class="top-stats">
+      <div class="stat-block hp-block">
+        <div class="label">Hit Points</div>
+        <div class="hp-display">
+          <button class="btn-icon" onclick="adjustHP(-1)">&minus;</button>
+          <input type="number" id="hp-current">
+          <span class="sep">/</span>
+          <span id="hp-max"></span>
+          <button class="btn-icon" onclick="adjustHP(1)">+</button>
+        </div>
+        <div class="temp-hp">Temp: <input type="number" id="hp-temp"></div>
+      </div>
+      <div class="stat-block"><div class="label">AC</div><div class="value" id="ac-value"></div><div class="sub" id="ac-source"></div></div>
+      <div class="stat-block"><div class="label">Initiative</div><div class="value" id="initiative-value"></div></div>
+      <div class="inspiration-toggle" id="inspiration-toggle" onclick="toggleInspiration()" title="Inspiration">&starf;</div>
+    </div>
+    <div class="top-actions">
+      <div class="rest-buttons">
+        <button class="rest-btn short" onclick="openRest('short')">Short Rest</button>
+        <button class="rest-btn long" onclick="openRest('long')">Long Rest</button>
+      </div>
+      <button class="btn-ghost" onclick="saveSessionState()" title="Save session backup (character + state) to a JSON file">&#x1F4BE;</button>
+      <button class="btn-ghost" onclick="openSessionImportPicker()" title="Import a saved session backup">&#x1F4E4;</button>
+    </div>
+  </div>
+  <div id="advisory-banners"></div>
+  <div id="play-state-bar" class="hidden"></div>
+  <div id="play-state-bar" class="hidden"></div>
+  <div class="main-layout">
+    <aside>
+      <div class="sidebar-panel"><h3>Ability Scores</h3><div class="ability-grid" id="ability-grid"></div></div>
+      <div class="sidebar-panel"><h3>Combat</h3><div id="combat-stats"></div></div>
+      <div class="sidebar-panel"><h3>Skills</h3><div id="skills-list"></div></div>
+      <div class="sidebar-panel"><h3>Proficiencies</h3><div id="proficiencies-list"></div></div>
+      <div class="sidebar-panel"><h3>Languages</h3><div id="languages-list"></div></div>
+    </aside>
+    <main class="main-content"><div class="tab-bar" id="tab-bar"></div><div id="tab-contents"></div></main>
+  </div>
+</div>
+<div class="modal-overlay" id="rest-modal">
+  <div class="modal">
+    <h2 id="rest-title">Take a Rest?</h2>
+    <p id="rest-desc"></p>
+    <div id="rest-list"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeRest()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmRest()">Confirm</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="hit-die-modal">
+  <div class="modal">
+    <h2>Spend Hit Die</h2>
+    <p id="hit-die-desc"></p>
+    <div style="margin-bottom:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <label style="font-size:13px;color:var(--text-dim);">Rolled:</label>
+      <input type="number" id="hit-die-roll" min="1" style="width:70px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:4px;font-size:14px;text-align:center;">
+      <span id="hit-die-total" style="color:var(--accent);font-weight:700;"></span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeHitDieModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmHitDieSpend()">Spend</button>
+    </div>
+  </div>
+</div>
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
+  <img id="lightbox-img" alt="">
+</div>
+`;
+  // Defensive: make sure embedded JSON can't prematurely close our <script>
+  const safeJson = characterJson.replace(/<\/script/gi, "<\\/script");
+  // Note: closing tags inside the template below are written with a backslash escape (<\/script>, <\/style>, etc.)
+  // so the HTML parser doesn't close our enclosing app-js script tag when it's reading this source.
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title} — Character Sheet</title>
+${faviconInline}
+<style id="app-styles">
+${cssText}
+<\/style>
+<\/head>
+<body>
+${skeleton}
+<script id="app-js">
+window.EMBEDDED_CHARACTER = ${safeJson};
+${jsText}
+<\/script>
+<\/body>
+<\/html>`;
+}
+
+// ============ INIT ============
+async function init() {
+  const fileInput = document.getElementById("file-input");
+  if (fileInput) fileInput.addEventListener("change", onFileInput);
+  const folderInput = document.getElementById("folder-input");
+  if (folderInput) folderInput.addEventListener("change", onFolderInput);
+  setupPortraitDragDrop();
+
+  if (window.EMBEDDED_CHARACTER) {
+    applyCharacter(window.EMBEDDED_CHARACTER);
+    return;
+  }
+
+  const last = loadLastCharacterRef();
+  let loaded = false;
+  if (last?.type === "fetch" && last.path) {
+    loaded = await tryFetchDefault(last.path);
+  } else if (last?.type === "inline" && last.json) {
+    if ((last.json.schemaVersion || 0) >= MIN_SCHEMA_VERSION) {
+      try { applyCharacter(last.json); loaded = true; }
+      catch(e) { console.warn("Failed to restore last character", e); }
+    } else {
+      console.info("Discarding stale inline character (schemaVersion < " + MIN_SCHEMA_VERSION + ")");
+      localStorage.removeItem(LAST_CHAR_KEY);
+    }
+  }
+  if (!loaded) loaded = await tryFetchDefault("./characters/kevin/kevin.json");
+
+  if (!loaded) {
+    const status = document.getElementById("loader-status");
+    const hint   = document.getElementById("loader-hint");
+    if (status) status.textContent = "No character loaded.";
+    if (hint)   hint.textContent = "Click the button above to load a character JSON.";
+  }
+}
+document.addEventListener("DOMContentLoaded", init);
+
+</script>
+</body>
+</html>
